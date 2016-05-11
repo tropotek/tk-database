@@ -1,9 +1,6 @@
 <?php
 namespace Tk\Db;
 
-use Tk\Traits\InstanceKey;
-
-
 /**
  * Class Tool
  *
@@ -11,9 +8,8 @@ use Tk\Traits\InstanceKey;
  * @link http://www.tropotek.com/
  * @license Copyright 2007 Michael Mifsud
  */
-class Tool
+class Tool implements \Tk\InstanceKey
 {
-    //use InstanceKey;
 
     /**
      * Limit the number of records retrieved.
@@ -49,6 +45,12 @@ class Tool
      * @var bool
      */
     protected $distinct = true;
+
+    /**
+     * Instance base id
+     * @var string
+     */
+    protected $instanceId = '';
 
 
     /**
@@ -395,4 +397,33 @@ class Tool
         }
         return sprintf ('%s %s %s %s', $groupBy, $having, $orderBy, $limitStr);
     }
+    
+    
+    
+
+
+    /**
+     * Create request keys with prepended string
+     *
+     * returns: `{instanceId}_{$key}`
+     *
+     * @param $key
+     * @return string
+     */
+    public function makeInstanceKey($key)
+    {
+        return $this->instanceId . '_' . $key;
+    }
+
+    /**
+     * @param $str
+     */
+    public function setInstanceId($str)
+    {
+        $this->instanceId = $str;
+    }
+    
+    
+    
+    
 }
