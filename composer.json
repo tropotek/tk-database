@@ -15,8 +15,7 @@
     ],
     "autoload": {
         "psr-0": {
-            "Tk\\Db\\": "Tk",
-            "Tk\\Util\\": "Tk"
+            "Tk\\": ""
         }
     },
     "require": {
