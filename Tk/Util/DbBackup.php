@@ -1,5 +1,8 @@
 <?php
-namespace Tk\Db;
+namespace Tk\Util;
+
+use Tk\Db\Pdo;
+use Tk\Db\Exception;
 
 /**
  * Class Backup
@@ -10,7 +13,7 @@ namespace Tk\Db;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Tropotek
  */
-class Backup
+class DbBackup
 {
 
     /**
