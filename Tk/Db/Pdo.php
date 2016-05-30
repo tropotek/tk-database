@@ -141,12 +141,22 @@ class Pdo extends \PDO
      * outlined, then subsequent calls can be made with no params or just the name
      * param as required.
      * 
-     * @param string $name
+     * When calling this if only the options array is sent in place of the name value
+     * then the 'default' value is ued for the name, therefore:
+     *   Pdo::getInstance($options) is a valid call
+     * 
+     * @param string|array $name
      * @param array $options
      * @return Pdo
      */
     public static function getInstance($name = 'default', $options = [])
     {
+        // allows us to omit the name an use the default
+        if (is_array($name) && !count($options)) {
+            $options = $name;
+            $name = 'default';
+        }
+        
         if (!isset(self::$instance[$name])) {
             $dns = $options['db.type'] . ':dbname=' . $options['db.name'] . ';host=' . $options['db.host'];
             self::$instance[$name] = new self($dns, $options['db.user'], $options['db.pass'], $options);
