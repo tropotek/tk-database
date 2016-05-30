@@ -1,5 +1,5 @@
 <?php
-namespace Tk\Db;
+namespace Tk\Map;
 
 /**
  * Class Model
@@ -33,16 +33,17 @@ abstract class Model
      * The method setDb() must be called after calling getMapper() if you do not wish to use the DB from the config
      *
      *
-     * @param string $mapperClass
-     * @param array | \Tk\Config $config
+     * @param string $mapperClass 
+     * @param \Tk\Db\Pdo $db 
      * @return Mapper
      *
-     * @todo: not happy with this method as it stands.... fix it!
+     * @todo: not happy with this method as it stands....
+     * Should this be split up an external mapper factory created to manage all the Map object creation
      */
-    static function getMapper($mapperClass = '', $config = null)
+    static function getMapper($mapperClass = '', $db = null)
     {
-        if (!$config)
-            $config = \Tk\Config::getInstance();
+        if (!$db)
+            \Tk\Db\Pdo::getInstance();
 
         $append = self::$MAPPER_APPEND;
         $class = get_called_class();
@@ -51,7 +52,7 @@ abstract class Model
         }
         $mapper = Mapper::create($mapperClass, $class);
         if (!$mapper->getDb()) {
-            $mapper->setDb($config->getDb());
+            $mapper->setDb($db);
         }
         if (!$mapper->getTable()) {
             $a = explode('\\', $mapperClass);

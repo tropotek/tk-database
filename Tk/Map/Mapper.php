@@ -1,5 +1,8 @@
 <?php
-namespace Tk\Db;
+namespace Tk\Map;
+
+use \Tk\Db\Pdo;
+use \Tk\Db\Exception;
 
 /**
  * Class Mapper

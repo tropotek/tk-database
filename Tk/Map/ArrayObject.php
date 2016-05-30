@@ -1,14 +1,13 @@
 <?php
-namespace Tk\Db;
+namespace Tk\Map;
 
-use Tk\Db\Exception;
 use Tk\Db\PdoStatement;
 
 /**
  * This objected is essentially a wrapper around the PdoStatement object with added features
  * such as holding the Model Mapper, and Db\Tool objects.
  *
- * It automatially maps an obects data if the Model has the magic methods available
+ * It automatically maps an objects data if the Model has the magic methods available
  *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
@@ -99,7 +98,7 @@ class ArrayObject implements \Iterator, \Countable
      * Return the tool object associated to this result set.
      * May not exist.
      *
-     * @return \Tk\Db\Tool
+     * @return Tool
      */
     public function getTool()
     {

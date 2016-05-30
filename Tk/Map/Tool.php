@@ -1,5 +1,7 @@
 <?php
-namespace Tk\Db;
+namespace Tk\Map;
+
+use \Tk\Db\Pdo;
 
 /**
  * Class Tool

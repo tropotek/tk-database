@@ -1,5 +1,5 @@
 <?php
-namespace Tk\Db;
+namespace Tk\Map;
 
 /**
  * Interface Serializable
