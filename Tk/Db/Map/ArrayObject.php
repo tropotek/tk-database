@@ -2,6 +2,7 @@
 namespace Tk\Db\Map;
 
 use Tk\Db\PdoStatement;
+use Tk\Db\Tool;
 
 /**
  * This objected is essentially a wrapper around the PdoStatement object with added features

@@ -1,9 +1,9 @@
 <?php
 namespace Tk\Db\Map;
 
-use \Tk\Db\Pdo;
-use \Tk\Db\Exception;
-
+use Tk\Db\Pdo;
+use Tk\Db\Exception;
+use Tk\Db\Tool;
 /**
  * Class Mapper
  *
@@ -13,14 +13,6 @@ use \Tk\Db\Exception;
  */
 abstract class Mapper implements Mappable
 {
-
-    const PARAM_GROUP_BY = 'groupBy';
-    const PARAM_HAVING = 'having';
-    const PARAM_ORDER_BY = 'orderBy';
-    const PARAM_LIMIT = 'limit';
-    const PARAM_OFFSET = 'offset';
-    const PARAM_DISTINCT = 'distinct';
-    const PARAM_FOUND_ROWS = 'foundRows';
     
     /**
      * @var Mapper[]
