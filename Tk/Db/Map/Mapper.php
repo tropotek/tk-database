@@ -1,5 +1,5 @@
 <?php
-namespace Tk\Map;
+namespace Tk\Db\Map;
 
 use \Tk\Db\Pdo;
 use \Tk\Db\Exception;

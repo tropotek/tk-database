@@ -1,5 +1,7 @@
 <?php
-namespace Tk\Map;
+namespace Tk\Db\Map;
+
+use \Tk\Db\Pdo;
 
 /**
  * Class Model
@@ -34,7 +36,7 @@ abstract class Model
      *
      *
      * @param string $mapperClass 
-     * @param \Tk\Db\Pdo $db 
+     * @param Pdo $db 
      * @return Mapper
      *
      * @todo: not happy with this method as it stands....
@@ -43,7 +45,7 @@ abstract class Model
     static function getMapper($mapperClass = '', $db = null)
     {
         if (!$db)
-            \Tk\Db\Pdo::getInstance();
+            $db = Pdo::getInstance();
 
         $append = self::$MAPPER_APPEND;
         $class = get_called_class();
