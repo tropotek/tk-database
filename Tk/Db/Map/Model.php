@@ -83,7 +83,7 @@ abstract class Model
      * @param mixed $id
      * @return $this
      */
-    public function setId($id)
+    private function setId($id)
     {
         $pk = self::getMapper()->getPrimaryKey();
         if (property_exists($this, $pk)) {
