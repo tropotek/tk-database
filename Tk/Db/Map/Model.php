@@ -10,7 +10,7 @@ use \Tk\Db\Pdo;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-abstract class Model
+abstract class Model implements \Tk\Db\ModelInterface
 {
 
     /**
