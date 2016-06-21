@@ -36,6 +36,7 @@ class PdoStatement extends \PDOStatement
     protected function __construct($pdo)
     {
         $this->pdo = $pdo;
+        $this->setFetchMode(\PDO::FETCH_OBJ);
     }
 
     /**
