@@ -106,6 +106,7 @@ class Tool implements \Tk\InstanceKey
      * @param int $defaultLimit
      * @param string $instanceId
      * @return Tool
+     * @todo: check the setting the offset to 0 is correct???
      */
     static function createFromArray($array, $defaultOrderBy = '', $defaultLimit = 0, $instanceId= '')
     {
@@ -120,20 +121,19 @@ class Tool implements \Tk\InstanceKey
         }
         if (isset($array[$obj->makeInstanceKey(self::PARAM_LIMIT)])) {
             $obj->setLimit($array[$obj->makeInstanceKey(self::PARAM_LIMIT)]);
-            $obj->setOffset(0);
+            //$obj->setOffset(0);
         }
         if (isset($array[$obj->makeInstanceKey(self::PARAM_GROUP_BY)])) {
             $obj->setGroupBy($array[$obj->makeInstanceKey(self::PARAM_GROUP_BY)]);
-            $obj->setOffset(0);
+            //$obj->setOffset(0);
         }
         if (isset($array[$obj->makeInstanceKey(self::PARAM_HAVING)])) {
             $obj->setHaving($array[$obj->makeInstanceKey(self::PARAM_HAVING)]);
-            $obj->setOffset(0);
+            //$obj->setOffset(0);
         }
         if (isset($array[$obj->makeInstanceKey(self::PARAM_DISTINCT)])) {
             $obj->setDistinct($array[$obj->makeInstanceKey(self::PARAM_DISTINCT)]);
         }
-
         return $obj;
     }
 
@@ -423,7 +423,9 @@ class Tool implements \Tk\InstanceKey
      */
     public function makeInstanceKey($key)
     {
-        return $this->instanceId . '_' . $key;
+        if ($this->instanceId)
+            return $this->instanceId . '_' . $key;
+        return $key;
     }
 
     /**
