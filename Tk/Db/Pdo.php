@@ -303,13 +303,20 @@ class Pdo extends \PDO
      * @see \PDO::exec()
      * @see http://www.php.net/manual/en/pdo.exec.php
      * @param string $statement The SQL statement to prepare and execute
-     * @return  PDOStatement
+     * @return PDOStatement
+     * @throws \Tk\Db\Exception
      */
     public function exec($statement)
     {
         $this->setLastQuery($statement);
         $start = microtime(true);
         $result = parent::exec($statement);
+        if ($result === false) {
+            $info = $this->errorInfo();
+            $e = new Exception(end($info));
+            $e->setDump($statement);
+            throw $e;
+        }
         $this->addLog(
             array(
                 'query' => $statement,
@@ -329,14 +336,22 @@ class Pdo extends \PDO
      *
      * @param string $statement
      * @param int $mode The fetch mode must be one of the PDO::FETCH_* constants.
-     * @param mixed $arg3  The second and following parameters are the same as the parameters for PDOStatement::setFetchMode.
+     * @param mixed $arg3 The second and following parameters are the same as the parameters for PDOStatement::setFetchMode.
      * @return PDOStatement PDO::query returns a PDOStatement object, or FALSE on failure.
+     * @throws \Tk\Db\Exception
      */
     public function query($statement, $mode = PDO::ATTR_DEFAULT_FETCH_MODE, $arg3 = null)
     {
         $this->setLastQuery($statement);
         $start = microtime(true);
         $result = call_user_func_array(array('parent', 'query'), func_get_args());
+
+        if ($result === false) {
+            $info = $this->errorInfo();
+            $e = new Exception(end($info));
+            $e->setDump($statement);
+            throw $e;
+        }
         $this->addLog(
             array(
                 'query' => $statement,
