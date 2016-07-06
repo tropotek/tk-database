@@ -12,6 +12,14 @@ use Tk\Db\Exception;
  * @author Tropotek <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Tropotek
+ *
+ *
+ * TODO:
+ * TODO: TO USE THIS WE NEED A WAY TO BACKUP POSTGRESS AND MYSQL.....
+ * TODO:
+ * TODO: THIS ONLY WORKS FOR MYSQL CURRENTLY
+ * TODO: Would be nice to find a script where it is DB generic.....????????
+ *
  */
 class DbBackup
 {
