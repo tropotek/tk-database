@@ -79,6 +79,8 @@ class Pdo extends \PDO
      */
     private $onLogListener;
 
+    private $options = [];
+
 
     /**
      * Construct a \PDO SQL driver object
@@ -95,9 +97,10 @@ class Pdo extends \PDO
      * @param array $options
      * @throws \Exception
      */
-    public function __construct($dsn, $username, $password, $options = array())
+    public function __construct($dsn, $username, $password, $options = [])
     {
         parent::__construct($dsn, $username, $password, $options);
+        $this->options = $options;
         $this->setAttribute(PDO::ATTR_STATEMENT_CLASS, array('\Tk\Db\PdoStatement', array($this)));
 
         $regs = array();
@@ -182,6 +185,19 @@ class Pdo extends \PDO
             } catch (\Exception $e) { }
         }
         return $return;
+    }
+
+    /**
+     * Return an option that was sent to the DB on creation
+     *
+     * @param $k
+     * @return mixed|string
+     */
+    public function getOption($k)
+    {
+        if (isset($this->options[$k]))
+            return $this->options[$k];
+        return '';
     }
 
 
@@ -557,6 +573,23 @@ class Pdo extends \PDO
     }
 
     /**
+     * Remove all tables from a DB
+     * You must send true as a parameter to ensure it executes
+     *
+     * @param bool $confirm
+     * @return bool
+     */
+    public function dropAllTables($confirm = false)
+    {
+        if (!$confirm) return false;
+        foreach ($this->getTableList() as $i => $v) {
+            $sql = sprintf('DROP TABLE IF EXISTS %s CASCADE;', $this->quoteParameter($v));
+            $this->exec($sql);
+        }
+        return true;
+    }
+
+    /**
      * Get the insert id of the last added record.
      * Taken From: http://dev.mysql.com/doc/refman/5.0/en/innodb-auto-increment-handling.html
      *
@@ -586,7 +619,6 @@ class Pdo extends \PDO
             $result->execute();
             $row = $result->fetch(\PDO::FETCH_ASSOC);
             return ((int)$row['last_value']) + 1;
-
         }
 
         // Not as accurate as I would like and should not be relied upon.
@@ -633,7 +665,7 @@ class Pdo extends \PDO
     public static function quoteParameter($param)
     {
         //if (in_array($param, self::$SQL_RESERVED_WORDS))
-            return self::$PARAM_QUOTE . trim($param, self::$PARAM_QUOTE) . self::$PARAM_QUOTE;
+        return self::$PARAM_QUOTE . trim($param, self::$PARAM_QUOTE) . self::$PARAM_QUOTE;
         //return $param;
     }
 

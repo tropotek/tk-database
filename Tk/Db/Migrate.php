@@ -1,5 +1,6 @@
 <?php
 namespace Tk\Db;
+use Tk\Util\SqlBackup;
 
 /**
  * Class Migrate
@@ -10,8 +11,8 @@ namespace Tk\Db;
  *
  * Files should reside in a folder named `.../sql/{type}/*`
  *
- * For a mysql file it would look like `.../sql/mysql/000-install.sql`
- * for a postgress file `.../sql/pgsql/000-install.sql`
+ * For a mysql file it could look like `.../sql/mysql/000001.sql`
+ * for a postgress file `.../sql/pgsql/000001.sql`
  *
  * It is a good idea to start with a number to ensure that the files are
  * executed in the required order. Files found will be sorted alphabetically.
@@ -21,7 +22,9 @@ namespace Tk\Db;
  *   $migrate->run()
  * </code>
  *
- *
+ * Migration files can be of type .sql or .php.
+ * The php files are called with the include() command.
+ * It will then be up to the developer to include a script to install the required sql.
  *
  *
  * @author Michael Mifsud <info@tropotek.com>
@@ -46,6 +49,11 @@ class Migrate
      */
     protected $sitePath = '';
 
+    /**
+     * @var string
+     */
+    protected $tmpPath = '/tmp';
+
 
     /**
      * Migrate constructor.
@@ -63,89 +71,103 @@ class Migrate
         if(!$this->db->tableExists($this->table)) {
             $this->installMigrationTable();
         }
-
     }
 
     /**
-     * Run the migration script and find all non executed .sql files
+     * Run the migration script and find all non executed sql files
      *
      */
-    public function run()
+    public function migrate($path)
     {
-        $list = $this->getFileList($this->sitePath);
-
-
-        $success = false;
-        $this->error = null;
-        $bakPath = $this->getConfig()->getTmpPath();
-
-        //$this->db->createBackup($bakPath);
+        $list = $this->getFileList($path);
+        vd($list);
+        return true;
+        $dump = new SqlBackup($this->db);
+        $backupFile = $dump->save($this->tmpPath);
         try {
-            foreach ($list as $o) {
-                if ($this->pathExists($o->path)) continue;
-                $this->executeFile($o->path, $o->class);
-                $this->getConfig()->getLog()->write('  M: ' . $o->path . ' - ' . $o->class);
+            foreach ($list as $file) {
+                $this->migrateFile($file);
             }
-            $success = true;
-            $this->getConfig()->getLog()->write('--------- MIGRATION SUCCESSFUL -----------');
         } catch (\Exception $e) {
-            $this->error = $e;
-            $success = false;
-            //$this->db->restoreBackup($bakPath);
-            $this->getConfig()->getLog()->write('--------- MIGRATION FAILED -----------');
-            $this->getConfig()->getLog()->write($e->getMessage());
+            $dump->restore($backupFile);
+            unlink($backupFile);
+            throw $e;
         }
-        if (is_file($bakPath))
-            unlink($bakPath);
-        return $success;
+        unlink($backupFile);
+        return true;
+    }
 
-
-
-
-vd($fileList, $this->sitePath);
-
+    /**
+     * Check to see if there are any new migration sql files pending execution
+     *
+     * @param $path
+     * @return bool
+     */
+    public function isPending($path)
+    {
+        $list = $this->getFileList($path);
+        $pending = false;
+        foreach ($list as $file) {
+            if (!$this->hasPath($file)) {
+                $pending = true;
+                break;
+            }
+        }
+        return $pending;
     }
 
 
+    /**
+     * Set the temp path for db backup file
+     * Default '/tmp'
+     *
+     * @param string $path
+     * @return $this
+     */
+    public function setTmpPath($path)
+    {
+        $this->tmpPath = $path;
+        return $this;
+    }
+
 
     /**
-     * Recursivly get all SQL/PHP file in the supplied folder
-     * Use an underscore as the files first character to hide the file.
-     * Also dot files are ignored
-     *
-     *  - Direct children of the /sql folder are considered driver generic and executed
-     *  - Driver sub-folders are executed accordingly (IE: /sql/mysql/* will be run for mysql DB's only)
+     * search the path for *.sql files, also search the $path.'/'.$driver folder
+     * for *.sql files.
      *
      * @param string $path
      * @return array
      */
     protected function getFileList($path)
     {
-        $directory = new \RecursiveDirectoryIterator($path);
-        $iterator = new \RecursiveIteratorIterator($directory, \RecursiveIteratorIterator::CHILD_FIRST);
         $list = array();
-        foreach(new \RegexIterator($iterator, '/\/sql$/') as $file) {
-            $list = array_merge($list, $this->search($file->getPathname()));
-            $list = array_merge($list, $this->search($file->getPathname().'/'.$this->db->getDriver()));
-        }
-        usort($list, function ($a, $b) {
-            //vd($a->path, $b->path);
-            // do we need to so this str comparison?
-//            $a1 = (int)substr(basename($a->path), 0, strpos(basename($a->path), '-'));
-//            $b1 = (int)substr(basename($b->path), 0, strpos(basename($b->path), '-'));
-
-            $a1 = $a->path;
-            $b1 = $b->path;
-
-            if ($a1 > $b1) {
-                return 1;
-            }
-            if ($a1 < $b1) {
-                return -1;
-            }
-            return 0;
-        });
+        $list = array_merge($list, $this->search($path));
+        $list = array_merge($list, $this->search($path.'/'.$this->db->getDriver()));
+        sort($list);
         return $list;
+    }
+
+    /**
+     * Execute a migration class or sql script...
+     * the file is then added to the db and cannot be executed again.
+     *
+     *
+     * @param string $file
+     * @return bool
+     */
+    protected function migrateFile($file)
+    {
+        $file = $this->sitePath . $this->toRelative($file);
+        if ($this->hasPath($file)) return false;
+        if (!is_readable($file)) return false;
+
+        if (preg_match('/\.php$/i', basename($file))) {   // Include .php files
+            include($file);
+        } else {    // is sql
+            $this->db->multiQuery(file_get_contents($file));
+        }
+        $this->insertPath($file);
+        return true;
     }
 
     /**
@@ -158,21 +180,15 @@ vd($fileList, $this->sitePath);
     {
         $iterator = new \DirectoryIterator($path);
         $list = array();
-        foreach(new \RegexIterator($iterator, '/\.(php|sql)$/') as $f2) {
-            if (preg_match('/^(_|\.)/', $f2->getBasename())) continue;
-            $o = new \stdClass();
-            $o->path = str_replace($this->sitePath, '', $f2->getPathname());
-            $o->date = \Tk\Date::create()->format(\Tk\Date::ISO_DATE);
-            $list[] = $o;
+        foreach(new \RegexIterator($iterator, '/\.(php|sql)$/') as $file) {
+            if (preg_match('/^(_|\.)/', $file->getBasename())) continue;
+            $list[] = $file->getPathname();
         }
         return $list;
     }
 
 
-
-
     // Migration DB access methods
-
 
     /**
      * install the migration table to track executed scripts
@@ -180,10 +196,11 @@ vd($fileList, $this->sitePath);
      */
     protected function installMigrationTable()
     {
+        $tbl = $this->db->quoteParameter($this->table);
         $sql = <<<SQL
-CREATE TABLE IF NOT EXISTS {$this->table} (
+CREATE TABLE IF NOT EXISTS $tbl (
   path varchar(255) NOT NULL DEFAULT '',
-  date TIMESTAMP,
+  created TIMESTAMP,
   PRIMARY KEY (path)
 );
 SQL;
@@ -198,8 +215,8 @@ SQL;
      */
     protected function hasPath($path)
     {
-        $path = $this->db->escapeString($path);
-        $sql = sprintf('SELECT * FROM %s WHERE path = %s LIMIT 1', $this->table, $this->db->quote($path));
+        $path = $this->db->escapeString($this->toRelative($path));
+        $sql = sprintf('SELECT * FROM %s WHERE path = %s LIMIT 1', $this->db->quoteParameter($this->table), $this->db->quote($path));
         $res = $this->db->query($sql);
         if ($res->rowCount()) {
             return true;
@@ -213,11 +230,10 @@ SQL;
      * @param string $path
      * @return PDOStatement
      */
-    protected function insertPath($path, $class)
+    protected function insertPath($path)
     {
-        $path = $this->db->escapeString($path);
-        $class = $this->db->escapeString($class);
-        $sql = sprintf('INSERT INTO %s (path, class) VALUES (%s, %s)', $this->table, $this->db->quote($path), $this->db->quote($class));
+        $path = $this->db->escapeString($this->toRelative($path));
+        $sql = sprintf('INSERT INTO %s (path, created) VALUES (%s, NOW())', $this->db->quoteParameter($this->table), $this->db->quote($path));
         return $this->db->exec($sql);
     }
 
@@ -229,9 +245,20 @@ SQL;
      */
     protected function deletePath($path)
     {
-        $path = $this->db->escapeString($path);
-        $sql = sprintf('DELETE FROM %s WHERE path = %s LIMIT 1', $this->table, $this->db->quote($path));
+        $path = $this->db->escapeString($this->toRelative($path));
+        $sql = sprintf('DELETE FROM %s WHERE path = %s LIMIT 1', $this->db->quoteParameter($this->table), $this->db->quote($path));
         return $this->db->exec($sql);
     }
 
+    /**
+     * Return the relative path
+     *
+     * @param $path
+     * @return string
+     */
+    private function toRelative($path)
+    {
+        return rtrim(str_replace($this->sitePath, '', $path), '/');
+    }
+    
 }
