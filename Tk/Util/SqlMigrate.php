@@ -68,26 +68,30 @@ class SqlMigrate
         $this->db = $db;
         $this->table = $table;
         $this->sitePath = $sitePath;
-
-        if(!$this->db->tableExists($this->table)) {
-            $this->installMigrationTable();
-        }
     }
 
     /**
      * Run the migration script and find all non executed sql files
      *
+     * @param $path
+     * @return array
+     * @throws \Exception
+     * @throws \Tk\Db\Exception
      */
     public function migrate($path)
     {
+        if(!$this->db->tableExists($this->table)) {
+            $this->installMigrationTable();
+        }
         $list = $this->getFileList($path);
-        vd($list);
-        return true;
         $dump = new SqlBackup($this->db);
         $backupFile = $dump->save($this->tmpPath);
+        $mlist = [];
         try {
             foreach ($list as $file) {
-                $this->migrateFile($file);
+                if ($this->migrateFile($file)) {
+                    $mlist[] = $this->toRelative($file);
+                }
             }
         } catch (\Exception $e) {
             $dump->restore($backupFile);
@@ -95,7 +99,7 @@ class SqlMigrate
             throw $e;
         }
         unlink($backupFile);
-        return true;
+        return $mlist;
     }
 
     /**
@@ -106,6 +110,9 @@ class SqlMigrate
      */
     public function isPending($path)
     {
+        if(!$this->db->tableExists($this->table)) {
+            $this->installMigrationTable();
+        }
         $list = $this->getFileList($path);
         $pending = false;
         foreach ($list as $file) {
