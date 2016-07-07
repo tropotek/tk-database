@@ -1,5 +1,6 @@
 <?php
-namespace Tk\Db;
+namespace Tk\Util;
+
 use Tk\Util\SqlBackup;
 
 /**
@@ -31,7 +32,7 @@ use Tk\Util\SqlBackup;
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
-class Migrate
+class SqlMigrate
 {
 
     /**
