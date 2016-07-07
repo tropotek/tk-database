@@ -32,6 +32,17 @@ class SqlBackup
     }
 
     /**
+     * Restore a sql
+     *
+     * @param $sqlFile
+     */
+    public function restore($sqlFile)
+    {
+        $this->db->dropAllTables(true);
+        $this->db->multiQuery(file_get_contents($sqlFile));
+    }
+
+    /**
      * Save the sql to a path.
      *
      * The file name will be in the format of: {DbName}_2016-01-01-12-00-00.sql
@@ -60,6 +71,7 @@ class SqlBackup
         $pass = escapeshellarg($this->db->getOption('db.pass'));
 
         $command = '';
+        // TODO: create a windows valid commands ????
         if ('mysql' == $this->db->getDriver()) {
             //$command = sprintf('mysqldump --opt -h %s -u %s -p%s %s', $host, $user, $pass, $name);
             $command = sprintf('mysqldump --opt -h %s -u %s -p%s %s > %s', $host, $user, $pass, $name, $filepath);
@@ -84,40 +96,5 @@ class SqlBackup
 
         return $filepath;
     }
-
-    /**
-     * Restore a sql
-     *
-     * @param $sqlFile
-     */
-    public function restore($sqlFile)
-    {
-        $this->db->dropAllTables(true);
-        $this->db->multiQuery(file_get_contents($sqlFile));
-    }
-
-
-    /**
-     * Sent the file to the output stream.
-     *
-     * @param $file
-     * @todo: make this a bit more usable with the framework, left here for reference
-     */
-    public function stream($file) {
-        if (file_exists($file)) {
-            header('Content-Description: File Transfer');
-            header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename=' . basename($file));
-            header('Content-Transfer-Encoding: binary');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-            header('Pragma: public');
-            header('Content-Length: ' . filesize($file));
-            ob_clean();
-            flush();
-            readfile($file);
-        }
-    }
-
 
 }
