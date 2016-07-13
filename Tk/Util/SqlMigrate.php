@@ -86,7 +86,7 @@ class SqlMigrate
         $list = $this->getFileList($path);
         $dump = new SqlBackup($this->db);
         $backupFile = $dump->save($this->tmpPath);
-        $mlist = [];
+        $mlist = array();
         try {
             foreach ($list as $file) {
                 if ($this->migrateFile($file)) {

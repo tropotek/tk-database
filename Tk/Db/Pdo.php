@@ -79,7 +79,7 @@ class Pdo extends \PDO
      */
     private $onLogListener;
 
-    private $options = [];
+    private $options = array();
 
 
     /**
@@ -97,7 +97,7 @@ class Pdo extends \PDO
      * @param array $options
      * @throws \Exception
      */
-    public function __construct($dsn, $username, $password, $options = [])
+    public function __construct($dsn, $username, $password, $options = array())
     {
         parent::__construct($dsn, $username, $password, $options);
         $this->options = $options;
@@ -152,7 +152,7 @@ class Pdo extends \PDO
      * @param array $options
      * @return Pdo
      */
-    public static function getInstance($name = 'default', $options = [])
+    public static function getInstance($name = 'default', $options = array())
     {
         // allows us to omit the name an use the default
         if (is_array($name) && !count($options)) {
