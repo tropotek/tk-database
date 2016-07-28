@@ -601,14 +601,14 @@ class Pdo extends \PDO
     {
         if ($this->getDriver() == 'mysql') {
             $table = $this->quote($table);
-            $sql = sprintf("SHOW TABLE STATUS LIKE '%s' ", $table);
+            $sql = sprintf('SHOW TABLE STATUS LIKE %s ', $table);
             $result = $this->query($sql);
             $result->setFetchMode(\PDO::FETCH_ASSOC);
             $row = $result->fetch();
             if ($row && isset($row['Auto_increment'])) {
                 return (int)$row['Auto_increment'];
             }
-            $sql = sprintf("SELECT MAX(`%s`) AS `lastId` FROM `%s` ", $pKey, $table);
+            $sql = sprintf('SELECT MAX(`%s`) AS `lastId` FROM `%s` ', $pKey, $table);
             $result = $this->query($sql);
             $result->setFetchMode(\PDO::FETCH_ASSOC);
             $row = $result->fetch();

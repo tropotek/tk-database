@@ -23,15 +23,10 @@ abstract class Model implements \Tk\Db\ModelInterface
      * Get this object's DB mapper
      *
      * The Mapper class will be taken from this class's name if not supplied
-     *
      * By default the Database is attempted to be set from the Tk\Config object if it exists
-     *
      * Also the Default table name is generated from this object: EG: /App/Db/WebUser = 'webUser'
-     *
      * This would in-turn look for the mapper class /App/Db/WebUserMap
-     *
      * Change the self::$APPEND parameter to change the class append name
-     *
      * The method setDb() must be called after calling getMapper() if you do not wish to use the DB from the config
      *
      *
