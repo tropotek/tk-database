@@ -4,8 +4,19 @@ namespace Tk\Db\Map;
 use Tk\Db\Pdo;
 use Tk\Db\Exception;
 use Tk\Db\Tool;
+
 /**
  * Class Mapper
+ *
+ * Some reserved column names and assumed meanings:
+ *  - `id`       => An integer that is assumed to be the records primary key
+ *                  foreign keys are assumed to be named `<foreign_table>_id`
+ *  - `modified` => A timestamp that gets incremented on updates
+ *  - `created`  => A timestamp not really reserved but assumed
+ *  - `del`      => If it exists the records are marked `del` = 1 rather than deleted
+ *
+ * If your columns conflict, then you should modify the mapper or DB accordingly
+ *
  *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
@@ -17,7 +28,7 @@ abstract class Mapper implements Mappable
     /**
      * @var Mapper[]
      */
-    private static $instance = array();
+    protected static $instance = array();
 
     /**
      * @var string
@@ -44,22 +55,47 @@ abstract class Mapper implements Mappable
      */
     protected $alias = 'a';
 
+    /**
+     * @var null
+     */
+    protected $tableInfo = null;
 
+    /**
+     *
+     * @var string
+     */
+    protected $markDeleted = '';
+
+
+    /**
+     * Mapper constructor.
+     *
+     * @param null|Pdo $db
+     */
+    public function __construct($db = null)
+    {
+        if (!$db)
+            $db = Pdo::getInstance();
+        $this->setDb($db);
+        $this->setModelClass($this->getDefaultModelClass());
+        $this->setTable($this->getDefaultTable());
+    }
 
     /**
      * Get/Create an instance of a data mapper.
      *
-     * @param string $mapperClass The Model mapper class string EG: 'App\Db\UserMap'
+     * @param Pdo $db
      * @return Mapper
      */
-    static function create($mapperClass, $modelClass = '')
+    static function create($db = null)
     {
+        $mapperClass = get_called_class(); // PHP v5.5 use: $mapperClass = static::class;
         if (!isset(self::$instance[$mapperClass])) {
-            self::$instance[$mapperClass] = new $mapperClass();
-            //self::$instance[$mapperClass]->modelClass = $modelClass;
+            self::$instance[$mapperClass] = new $mapperClass($db);
         }
-        return static::$instance[$mapperClass];
+        return self::$instance[$mapperClass];
     }
+
 
     /**
      * Map the data from a DB row to the required object
@@ -70,33 +106,36 @@ abstract class Mapper implements Mappable
      *
      * Output: Should return an \stdClass or \Tk\Model object
      *
-     * @param Model|\stdClass|array $row
-     * @return Model|\stdClass
+     * @param array $row
+     * @param null|mixed $obj If null then \stdClass will be returned
+     * @return \stdClass|\Tk\Db\Map\Model
      * @since 2.0.0
      */
-    public function map($row)
+    public function map($row, $obj = null)
     {
         return (object)$row;
     }
 
     /**
      * Un-map an object to an array ready for DB insertion.
-     * All filds and types must match the required DB types.
+     * All fields and types must match the required DB types.
      *
-     * Input: This requires a \Tk\Model or \stdClass object as input
+     * Input: This requires a \Tk\Db\Map\Model or \stdClass object as input
      *
      * Output: array (
      *   'tblColumn' => 'columnValue'
      * )
      *
-     * @param Model|\stdClass $obj
+     * @param \Tk\Db\Map\Model|\stdClass $obj
+     * @param array $array
      * @return array
      * @since 2.0.0
      */
-    public function unmap($obj)
+    public function unmap($obj, $array = array())
     {
         return (array)$obj;
     }
+
 
     /**
      * Insert
@@ -110,7 +149,7 @@ abstract class Mapper implements Mappable
         if (isset($bind[$this->getPrimaryKey()]))
             unset($bind[$this->getPrimaryKey()]);
         $keys = array_keys($bind);
-        $cols = implode(', ', Pdo::quoteParameterArray($keys));
+        $cols = implode(', ', $this->getDb()->quoteParameterArray($keys));
         $values = implode(', :', array_keys($bind));
         foreach ($bind as $col => $value) {
             if ($col == 'modified' || $col == 'created') {
@@ -186,7 +225,13 @@ abstract class Mapper implements Mappable
     {
         $pk = $this->getPrimaryKey();
         $where = $this->getDb()->quoteParameter($pk) . ' = ' . $obj->$pk;
-        $sql = 'DELETE FROM ' . $this->getDb()->quoteParameter($this->table) .' ' . (($where) ? ' WHERE ' . $where : ' ');
+        if ($where) {
+            $where = 'WHERE ' . $where;
+        }
+        $sql = sprintf('DELETE FROM %s %s LIMIT 1', $this->getDb()->quoteParameter($this->table), $where);
+        if ($this->markDeleted) {
+            $sql = sprintf('UPDATE %s SET %s = 1 %s LIMIT 1', $this->getDb()->quoteParameter($this->table), $this->getDb()->quoteParameter($this->getMarkDeleted()), $where);
+        }
         $stmt = $this->getDb()->prepare($sql);
         $stmt->execute();
         return $stmt->rowCount();
@@ -201,7 +246,7 @@ abstract class Mapper implements Mappable
      * @param string $boolOperator
      * @return ArrayObject
      * @see http://www.sitepoint.com/integrating-the-data-mappers/
-     * @deprecated See if we need this ?
+     * @deprecated TODO: See if we need this ?
      */
     public function selectPrepared($bind = array(), $tool = null, $boolOperator = 'AND')
     {
@@ -212,6 +257,10 @@ abstract class Mapper implements Mappable
         $alias = $this->getAlias();
         if ($alias) {
             $alias = $alias . '.';
+        }
+
+        if ($this->getMarkDeleted() && !array_key_exists($this->getMarkDeleted(), $bind)) {
+            $bind[$this->getMarkDeleted()] = '0';
         }
 
         $from = $this->getTable() . ' ' . $this->getAlias();
@@ -280,16 +329,13 @@ abstract class Mapper implements Mappable
             $from = sprintf('%s %s', $this->getDb()->quoteParameter($this->getTable()), $this->getAlias());
         }
 
-//        if ($where) {
-//            if ($this->getMarkDeleted() && strstr($where, '`'.$this->markDeleted.'`') === false) {
-//                $where = sprintf(' %s`%s` = 0 AND ', $alias, $this->getMarkDeleted()) . $where;
-//            }
-//            $where = 'WHERE ' . $where;
-//        } else {
-//            if ($this->getMarkDeleted() && strstr($where, '`'.$this->markDeleted.'`') === false) {
-//                $where = sprintf('WHERE %s`%s` = 0 ', $alias, $this->getMarkDeleted());
-//            }
-//        }
+        if ($this->getMarkDeleted() && strstr($where, $this->getDb()->quoteParameter($this->getMarkDeleted())) === false) {
+            if ($where) {
+                $where = sprintf(' %s%s = 0 AND %s', $alias, $this->getDb()->quoteParameter($this->getMarkDeleted()), $where);
+            } else {
+                $where = sprintf(' %s%s = 0 ', $alias, $this->getDb()->quoteParameter($this->getMarkDeleted()));
+            }
+        }
 
         if ($where) {
             $where = 'WHERE ' . $where;
@@ -343,7 +389,95 @@ abstract class Mapper implements Mappable
     }
 
 
-    
+
+
+    /**
+     * Generate the default model class from this mapper class
+     * if a specific model class is required then use ::setModelClass()
+     *
+     * @return string
+     */
+    private function getDefaultModelClass()
+    {
+        $mapperClass = get_class($this);
+        if (preg_match('/(.+)(Map|Mapper)$/', $mapperClass, $regs)) {
+            return $regs[1];
+        }
+        return '';
+    }
+
+    /**
+     * Generate the default table class.
+     * If a specific table name is required then use ::setTable()
+     *
+     * @return mixed|string
+     */
+    private function getDefaultTable()
+    {
+        if ($this->modelClass) {
+            $arr = explode('\\', $this->modelClass);
+            $table = array_pop($arr);
+            $table = $this->toDbProperty($table);
+            return $table;
+        }
+        return '';
+    }
+
+    /**
+     * If set to a column name then only mark the row deleted do not delete
+     *
+     * @param string $col
+     * @return $this
+     */
+    public function setMarkDeleted($col)
+    {
+        $this->markDeleted = $col;
+        return $this;
+    }
+
+    /**
+     * Returns the name of the column to mark deleted. (update col to 1)
+     * returns null if we are to physically delete the record
+     *
+     * @return string
+     */
+    public function getMarkDeleted()
+    {
+        return $this->markDeleted;
+    }
+
+
+    /**
+     * Convert camelCase property names to underscore db property name
+     *
+     * EG: 'someProperty' is converted to 'some_property'
+     *
+     * @param $property
+     * @return string
+     */
+    public function toDbProperty($property)
+    {
+        return ltrim(strtolower(preg_replace('/[A-Z]/', '_$0', $property)), '_');
+    }
+
+    /**
+     * @return string
+     */
+    public function getModelClass()
+    {
+        return $this->modelClass;
+    }
+
+    /**
+     * @param string $modelClass
+     * @return $this
+     */
+    public function setModelClass($modelClass)
+    {
+        $this->modelClass = $modelClass;
+        return $this;
+    }
+
     /**
      * Get the table alias used for multiple table queries.
      * The default alias is 'a'
@@ -383,10 +517,29 @@ abstract class Mapper implements Mappable
 
     /**
      * @param string $table
+     * @return $this
      */
     public function setTable($table)
     {
         $this->table = $table;
+        if ($this->getDb()->tableExists($this->table)) {
+            $this->tableInfo = $this->getDb()->getTableInfo($this->table);
+        }
+        return $this;
+    }
+
+    /**
+     * If a colum name is supplied then that column info is returned
+     *
+     * @param null|string $column
+     * @return null|array
+     */
+    public function getTableInfo($column = null)
+    {
+        if ($column) {
+            return $this->tableInfo[$column];
+        }
+        return $this->tableInfo;
     }
 
     /**
@@ -399,10 +552,12 @@ abstract class Mapper implements Mappable
 
     /**
      * @param string $primaryKey
+     * @return $this
      */
     public function setPrimaryKey($primaryKey)
     {
         $this->primaryKey = $primaryKey;
+        return $this;
     }
 
     /**
@@ -415,10 +570,12 @@ abstract class Mapper implements Mappable
 
     /**
      * @param Pdo $db
+     * @return $this
      */
     public function setDb($db)
     {
         $this->db = $db;
+        return $this;
     }
 
 }

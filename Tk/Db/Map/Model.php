@@ -29,35 +29,17 @@ abstract class Model implements \Tk\Db\ModelInterface
      * Change the self::$APPEND parameter to change the class append name
      * The method setDb() must be called after calling getMapper() if you do not wish to use the DB from the config
      *
-     *
      * @param string $mapperClass 
      * @param Pdo $db 
      * @return Mapper
-     *
-     * @todo: not happy with this method as it stands....
-     * Should this be split up an external mapper factory created to manage all the Map object creation
      */
     static function getMapper($mapperClass = '', $db = null)
     {
-        if (!$db)
-            $db = Pdo::getInstance();
-
-        $append = self::$MAPPER_APPEND;
-        $class = get_called_class();
         if (!$mapperClass) {
-            $mapperClass = $class . $append;
+            $mapperClass = get_called_class() . self::$MAPPER_APPEND;
         }
-        $mapper = Mapper::create($mapperClass, $class);
-        if (!$mapper->getDb()) {
-            $mapper->setDb($db);
-        }
-        if (!$mapper->getTable()) {
-            $a = explode('\\', $mapperClass);
-            $table = lcfirst(array_pop($a));
-            $table = substr($table, 0, strrpos($table, $append));
-            $mapper->setTable($table);
-        }
-        return $mapper;
+
+        return $mapperClass::create($db);
     }
 
     /**

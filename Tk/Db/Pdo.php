@@ -536,7 +536,7 @@ class Pdo extends \PDO
                 $list[] = $row['Database'];
             }
         } else if ($this->getDriver() == 'pgsql') {
-            $sql = sprintf('SELECT datname F ROM pg_database WHERE datistemplate = false');
+            $sql = sprintf('SELECT datname FROM pg_database WHERE datistemplate = false');
             $result = $this->query($sql);
             $result->setFetchMode(\PDO::FETCH_ASSOC);
             foreach ($result as $row) {
@@ -573,11 +573,53 @@ class Pdo extends \PDO
     }
 
     /**
+     * Get an array containing all the table names for this DB
+     *
+     * @return array
+     */
+    public function getTableInfo($table)
+    {
+        $list = array();
+        $result = null;
+        if ($this->getDriver() == 'mysql') {
+            $sql = sprintf('DESCRIBE %s ', $this->quoteParameter($table));
+            $result = $this->query($sql);
+            if ($result) {
+                $result->setFetchMode(\PDO::FETCH_ASSOC);
+                foreach ($result as $row) {
+                    $list[$row['Field']] = $row;
+                }
+            }
+        } else if ($this->getDriver() == 'pgsql') { // Try to emulate the mysql DESCRIBE as close as possible
+            $sql = sprintf('select * from INFORMATION_SCHEMA.COLUMNS where table_name =  %s', $this->quote($table));
+            $result = $this->query($sql);
+            $result->setFetchMode(\PDO::FETCH_ASSOC);
+            foreach ($result as $row) {
+                $list[$row['column_name']] = array(
+                    'Field' => $row['column_name'],
+                    'Type' => $row['data_type'],
+                    'Null' => $row['is_nullable'],
+                    'Key' => '',
+                    'Default' => $row['column_default'],
+                    'Extra' => ''
+                );
+                if (preg_match('/^nextval\(/', $row['column_default'])) {
+                    $list[$row['column_name']]['Key'] = 'PRI';
+                    $list[$row['column_name']]['Extra'] = 'auto_increment';
+                }
+            }
+            $list = array_reverse($list);
+        }
+        return $list;
+    }
+
+    /**
      * Remove all tables from a DB
      * You must send true as a parameter to ensure it executes
      *
      * @param bool $confirm
      * @return bool
+     * @todo Check this is compatable with MySQL????
      */
     public function dropAllTables($confirm = false)
     {
@@ -647,7 +689,7 @@ class Pdo extends \PDO
      * @param $array
      * @return mixed
      */
-    public static function quoteParameterArray($array)
+    public function quoteParameterArray($array)
     {
         foreach($array as $k => $v) {
             $array[$k] = self::quoteParameter($v);
@@ -662,7 +704,7 @@ class Pdo extends \PDO
      * @param string $param
      * @return string
      */
-    public static function quoteParameter($param)
+    public function quoteParameter($param)
     {
         //if (in_array($param, self::$SQL_RESERVED_WORDS))
         return self::$PARAM_QUOTE . trim($param, self::$PARAM_QUOTE) . self::$PARAM_QUOTE;
