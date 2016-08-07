@@ -85,7 +85,7 @@ abstract class Mapper implements Mappable
      * Get/Create an instance of a data mapper.
      *
      * @param Pdo $db
-     * @return Mapper
+     * @return static
      */
     static function create($db = null)
     {
@@ -153,13 +153,16 @@ abstract class Mapper implements Mappable
         $values = implode(', :', array_keys($bind));
         foreach ($bind as $col => $value) {
             if ($col == 'modified' || $col == 'created') {
-                $value = date('Y-m-d H:i:s.u');
+                //$value = date('Y-m-d H:i:s.u');
+                $value = date('Y-m-d H:i:s');
             }
             unset($bind[$col]);
             $bind[':' . $col] = $value;
         }
         $sql = 'INSERT INTO ' . $this->getDb()->quoteParameter($this->table) . ' (' . $cols . ')  VALUES (:' . $values . ')';
+
         $this->getDb()->prepare($sql)->execute($bind);
+
         $seq = '';
         if ($this->getDb()->getDriver() == 'pgsql') {   // Generate the seq key for Postgres only
             $seq = $this->getTable().'_'.$this->getPrimaryKey().'_seq';

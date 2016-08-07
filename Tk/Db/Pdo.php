@@ -107,6 +107,8 @@ class Pdo extends \PDO
         preg_match('/^([a-z]+):(([a-z]+)=([a-z0-9_-]+))+/i', $dsn, $regs);
         $this->dbName = $regs[4];
 
+        $this->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
         // Get mysql to emulate standard DB's
         if ($this->getDriver() == 'mysql') {
             $this->exec('SET CHARACTER SET utf8');
