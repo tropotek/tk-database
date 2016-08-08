@@ -2,7 +2,7 @@
 
 __Project:__ tk-database  
 __Published:__ 11 May 2016  
-__Web:__ <http://www.domtemplate.com/>  
+__Web:__ <http://www.database.com/>  
 __Authors:__ Michael Mifsud <http://www.tropotek.com/>  
   
 A database lib for the Tropotek tk library.
@@ -15,7 +15,7 @@ A database lib for the Tropotek tk library.
 
 ## Installation
 
-Available on Packagist ([ttek/tk-domtemplate](http://packagist.org/packages/ttek/tk-domtemplate))
+Available on Packagist ([ttek/tk-database](http://packagist.org/packages/ttek/tk-database))
 and installable via [Composer](http://getcomposer.org/).
 
 ```bash
