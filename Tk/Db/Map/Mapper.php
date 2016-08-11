@@ -89,7 +89,7 @@ abstract class Mapper implements Mappable
      */
     static function create($db = null)
     {
-        $mapperClass = get_called_class(); // PHP v5.5 use: $mapperClass = static::class;
+        $mapperClass = get_called_class(); // PHP >= v5.5 use: $mapperClass = static::class;
         if (!isset(self::$instance[$mapperClass])) {
             self::$instance[$mapperClass] = new $mapperClass($db);
         }
@@ -400,7 +400,7 @@ abstract class Mapper implements Mappable
      *
      * @return string
      */
-    private function getDefaultModelClass()
+    protected function getDefaultModelClass()
     {
         $mapperClass = get_class($this);
         if (preg_match('/(.+)(Map|Mapper)$/', $mapperClass, $regs)) {
@@ -415,7 +415,7 @@ abstract class Mapper implements Mappable
      *
      * @return mixed|string
      */
-    private function getDefaultTable()
+    protected function getDefaultTable()
     {
         if ($this->modelClass) {
             $arr = explode('\\', $this->modelClass);
