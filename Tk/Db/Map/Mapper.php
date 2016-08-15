@@ -194,8 +194,8 @@ abstract class Mapper implements Mappable
 
         $stmt = $this->getDb()->prepare($sql);
         $stmt->execute($bind);
-        return $stmt->rowCount();
 
+        return $stmt->rowCount();
     }
 
     /**
