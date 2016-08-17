@@ -708,9 +708,7 @@ class Pdo extends \PDO
      */
     public function quoteParameter($param)
     {
-        //if (in_array($param, self::$SQL_RESERVED_WORDS))
         return self::$PARAM_QUOTE . trim($param, self::$PARAM_QUOTE) . self::$PARAM_QUOTE;
-        //return $param;
     }
 
 }

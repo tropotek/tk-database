@@ -50,7 +50,7 @@ class PdoStatement extends \PDOStatement
     public function execute($args = null)
     {
         $start  = microtime(true);
-        if (!is_array($args)) {
+        if (!is_array($args) && count(func_get_args())) {
             $args = func_get_args();
         }
         $this->bindParams = $args;
