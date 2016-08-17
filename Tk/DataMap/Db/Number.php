@@ -41,7 +41,7 @@ class Number extends Map
         if ($this->propertyExists($obj, $pname)) {
             return (int)$this->propertyValue($obj, $pname);
         }
-        return 0;
+        return 0;       //TODO: should we return null instead if a value does not exist???? This would support null values in the DB
     }
     
 }
