@@ -29,9 +29,6 @@ abstract class Model implements \Tk\Db\ModelInterface
      * Change the self::$APPEND parameter to change the class append name
      * The method setDb() must be called after calling getMapper() if you do not wish to use the DB from the config
      *
-     *
-     *
-     *
      * @param string $mapperClass 
      * @param Pdo $db 
      * @return Mapper

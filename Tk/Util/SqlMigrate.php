@@ -236,7 +236,7 @@ SQL;
      * insert
      *
      * @param string $path
-     * @return PDOStatement
+     * @return \PDOStatement
      */
     protected function insertPath($path)
     {
@@ -249,7 +249,7 @@ SQL;
      * delete
      *
      * @param string $path
-     * @return PDOStatement
+     * @return \PDOStatement
      */
     protected function deletePath($path)
     {

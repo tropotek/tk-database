@@ -138,7 +138,7 @@ class ArrayObject implements \Iterator, \Countable
 
     /**
      * @param int $i
-     * @return Model|array|null
+     * @return mixed
      */
     public function get($i)
     {
@@ -234,15 +234,25 @@ class ArrayObject implements \Iterator, \Countable
     }
 
     /**
-     * 
-     * 
+     * If the keyField and/or value field are set then the this will
+     * return the the array with a key and the required value.
+     *
+     * @param null $valueField
+     * @param null $keyField
      * @return array
      */
-    public function toArray()
+    public function toArray($valueField = null, $keyField = null)
     {
         $arr = array();
-        foreach($this as $obj) {
-            $arr[] = $obj;
+        foreach($this as $k => $obj) {
+            $v = $obj;
+            if ($valueField && in_array($valueField, get_object_vars($obj))) {
+                $v = $obj->$valueField;
+            }
+            if ($keyField && in_array($keyField, get_object_vars($obj))) {
+                $k = $obj->$keyField;
+            }
+            $arr[$k] = $v;
         }
         return $arr;
     }

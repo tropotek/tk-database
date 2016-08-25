@@ -54,7 +54,7 @@ abstract class Map
     /**
      * Return a value ready for insertion into the storage (DB)
      *
-     * @param \Tk\Db\Map\Model $obj
+     * @param \Tk\Db\ModelInterface $obj
      * @return string
      */
     abstract public function findColumnValue($obj);
