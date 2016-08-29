@@ -332,7 +332,6 @@ class Pdo extends \PDO
         if ($result === false) {
             $info = $this->errorInfo();
             $e = new Exception(end($info));
-            var_dump($statement);
             $e->setDump($statement);
             throw $e;
         }
