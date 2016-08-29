@@ -332,6 +332,7 @@ class Pdo extends \PDO
         if ($result === false) {
             $info = $this->errorInfo();
             $e = new Exception(end($info));
+            var_dump($statement);
             $e->setDump($statement);
             throw $e;
         }
@@ -626,9 +627,17 @@ class Pdo extends \PDO
     public function dropAllTables($confirm = false)
     {
         if (!$confirm) return false;
+        if ($this->getDriver() == 'mysql') {
+            $this->exec('SET FOREIGN_KEY_CHECKS = 0');
+            $this->exec('SET UNIQUE_CHECKS = 0');
+        }
         foreach ($this->getTableList() as $i => $v) {
-            $sql = sprintf('DROP TABLE IF EXISTS %s CASCADE;', $this->quoteParameter($v));
+            $sql = sprintf('DROP TABLE IF EXISTS %s CASCADE', $this->quoteParameter($v));
             $this->exec($sql);
+        }
+        if ($this->getDriver() == 'mysql') {
+            $this->exec('SET FOREIGN_KEY_CHECKS = 1');
+            $this->exec('SET UNIQUE_CHECKS = 1');
         }
         return true;
     }
