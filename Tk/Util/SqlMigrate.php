@@ -201,6 +201,8 @@ class SqlMigrate
     /**
      * install the migration table to track executed scripts
      *
+     * @todo This must be tested against mysql, pgsql and sqlite....
+     * // So far query works with mysql and pgsql drvs sqlite still to test
      */
     protected function installMigrationTable()
     {
