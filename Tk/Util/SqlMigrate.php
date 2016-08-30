@@ -66,9 +66,7 @@ class SqlMigrate
     {
         $this->db = $db;
         $this->table = $table;
-        //$this->sitePath = $sitePath;
-        $this->sitePath = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
-        vd($this->sitePath);
+        $this->sitePath = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
     }
 
     /**
