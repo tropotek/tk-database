@@ -60,14 +60,15 @@ class SqlMigrate
      * Migrate constructor.
      *
      * @param \Tk\Db\Pdo $db
-     * @param string $sitePath
      * @param string $table
      */
-    public function __construct($db, $sitePath, $table = 'migration')
+    public function __construct($db, $table = 'migration')
     {
         $this->db = $db;
         $this->table = $table;
-        $this->sitePath = $sitePath;
+        //$this->sitePath = $sitePath;
+        $this->sitePath = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
+        vd($this->sitePath);
     }
 
     /**
