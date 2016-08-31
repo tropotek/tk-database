@@ -43,7 +43,7 @@ class SqlMigrate
     /**
      * @var string
      */
-    protected $table = '';
+    protected $table = 'migration';
 
     /**
      * @var string
@@ -53,7 +53,7 @@ class SqlMigrate
     /**
      * @var string
      */
-    protected $tmpPath = '/tmp';
+    protected $tempPath = '/tmp';
 
 
     /**
@@ -62,11 +62,12 @@ class SqlMigrate
      * @param \Tk\Db\Pdo $db
      * @param string $table
      */
-    public function __construct($db, $table = 'migration')
+    public function __construct($db, $table = 'migration', $tempPath = '/tmp')
     {
         $this->db = $db;
         $this->table = $table;
         $this->sitePath = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
+        $this->tempPath = $tempPath;
         $this->installMigrationTable();
     }
 
@@ -82,7 +83,7 @@ class SqlMigrate
     {
         $list = $this->getFileList($path);
         $dump = new SqlBackup($this->db);
-        $backupFile = $dump->save($this->tmpPath);
+        $backupFile = $dump->save($this->tempPath);
         $mlist = array();
         try {
             foreach ($list as $file) {
@@ -126,9 +127,9 @@ class SqlMigrate
      * @param string $path
      * @return $this
      */
-    public function setTmpPath($path)
+    public function setTempPath($path)
     {
-        $this->tmpPath = $path;
+        $this->tempPath = $path;
         return $this;
     }
 
@@ -203,8 +204,6 @@ class SqlMigrate
         if($this->db->tableExists($this->table)) {
             return;
         }
-        die('Trying to create an existing table');
-
         $tbl = $this->db->quoteParameter($this->table);
         $sql = <<<SQL
 CREATE TABLE IF NOT EXISTS $tbl (
