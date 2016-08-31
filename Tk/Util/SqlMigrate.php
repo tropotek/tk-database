@@ -67,6 +67,7 @@ class SqlMigrate
         $this->db = $db;
         $this->table = $table;
         $this->sitePath = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
+        $this->installMigrationTable();
     }
 
     /**
@@ -79,9 +80,6 @@ class SqlMigrate
      */
     public function migrate($path)
     {
-        if(!$this->db->tableExists($this->table)) {
-            $this->installMigrationTable();
-        }
         $list = $this->getFileList($path);
         $dump = new SqlBackup($this->db);
         $backupFile = $dump->save($this->tmpPath);
@@ -109,9 +107,6 @@ class SqlMigrate
      */
     public function isPending($path)
     {
-        if(!$this->db->tableExists($this->table)) {
-            $this->installMigrationTable();
-        }
         $list = $this->getFileList($path);
         $pending = false;
         foreach ($list as $file) {
@@ -171,7 +166,7 @@ class SqlMigrate
         if (preg_match('/\.php$/i', basename($file))) {   // Include .php files
             include($file);
         } else {    // is sql
-            $this->db->multiQuery(file_get_contents($file));
+            $this->db->exec(file_get_contents($file));
         }
         $this->insertPath($file);
         return true;
@@ -205,6 +200,11 @@ class SqlMigrate
      */
     protected function installMigrationTable()
     {
+        if($this->db->tableExists($this->table)) {
+            return;
+        }
+        die('Trying to create an existing table');
+
         $tbl = $this->db->quoteParameter($this->table);
         $sql = <<<SQL
 CREATE TABLE IF NOT EXISTS $tbl (

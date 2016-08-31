@@ -436,22 +436,25 @@ class Pdo extends \PDO
      * @param $sql
      * @return bool
      * @throws Exception
+     * @deprecated Use exec(sql)
      */
     public function multiQuery($sql)
     {
-        $sql = preg_replace("(--.*)", '', $sql);
-        $queryList = preg_split('/\.*;\s*\n\s*/', $sql);
-        if (!is_array($queryList) || count($queryList) == 0) {
-            $e = new Exception('Error in SQL query data');
-            throw $e;
-        }
-        foreach ($queryList as $query) {
-            $query = trim($query);
-            if (!$query) {
-                continue;
-            }
-            $this->exec($query);
-        }
+//        $sql = preg_replace("(--.*)", '', $sql);
+//        $queryList = preg_split('/\.*;\s*\n\s*/', $sql);
+//        if (!is_array($queryList) || count($queryList) == 0) {
+//            $e = new Exception('Error in SQL query data');
+//            throw $e;
+//        }
+//        foreach ($queryList as $query) {
+//            $query = trim($query);
+//            if (!$query) {
+//                continue;
+//            }
+//            $this->exec($query);
+//        }
+
+        return $this->exec($sql);
     }
 
     /**

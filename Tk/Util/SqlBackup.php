@@ -39,7 +39,7 @@ class SqlBackup
     public function restore($sqlFile)
     {
         $this->db->dropAllTables(true);
-        $this->db->multiQuery(file_get_contents($sqlFile));
+        $this->db->exec(file_get_contents($sqlFile));
     }
 
     /**
