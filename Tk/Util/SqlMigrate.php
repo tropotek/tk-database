@@ -61,6 +61,7 @@ class SqlMigrate
      *
      * @param \Tk\Db\Pdo $db
      * @param string $table
+     * @param string $tempPath
      */
     public function __construct($db, $table = 'migration', $tempPath = '/tmp')
     {
