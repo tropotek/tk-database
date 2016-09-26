@@ -26,6 +26,7 @@ namespace Tk\Util;
  * The php files are called with the include() command.
  * It will then be up to the developer to include a script to install the required sql.
  *
+ * @todo Should this be moved to the installers lib?
  *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
@@ -33,7 +34,7 @@ namespace Tk\Util;
  */
 class SqlMigrate
 {
-    static $DB_TABLE = 'sys_session';
+    static $DB_TABLE = 'sys_migration';
 
     /**
      * @var \Tk\Db\Pdo

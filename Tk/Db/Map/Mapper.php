@@ -24,6 +24,7 @@ use Tk\Db\Tool;
  */
 abstract class Mapper implements Mappable
 {
+    static $DB_PREFIX = 'app_';
     
     /**
      * @var Mapper[]
@@ -520,15 +521,30 @@ abstract class Mapper implements Mappable
 
     /**
      * @param string $table
+     * @param bool $addPrefix   Set this to false to not add the table prefix.
      * @return $this
      */
-    public function setTable($table)
+    public function setTable($table, $addPrefix = true)
     {
+        if ($addPrefix && self::$DB_PREFIX) {
+            $table = self::$DB_PREFIX . $table;
+        }
+
         $this->table = $table;
         if ($this->getDb()->tableExists($this->table)) {
             $this->tableInfo = $this->getDb()->getTableInfo($this->table);
         }
         return $this;
+    }
+
+    /**
+     * Get the table db prefix if one is set.
+     *
+     * @return string
+     */
+    public function getPrefix()
+    {
+        return self::$DB_PREFIX;
     }
 
     /**
