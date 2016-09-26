@@ -24,7 +24,7 @@ use Tk\Db\Tool;
  */
 abstract class Mapper implements Mappable
 {
-    static $DB_PREFIX = 'app_';
+    static $DB_PREFIX = '';
     
     /**
      * @var Mapper[]

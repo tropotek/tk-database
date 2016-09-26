@@ -34,7 +34,7 @@ namespace Tk\Util;
  */
 class SqlMigrate
 {
-    static $DB_TABLE = 'sys_migration';
+    static $DB_TABLE = 'migration';
 
     /**
      * @var \Tk\Db\Pdo
