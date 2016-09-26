@@ -1,7 +1,6 @@
 <?php
 namespace Tk\Util;
 
-use Tk\Util\SqlBackup;
 
 /**
  * Class Migrate
@@ -34,16 +33,12 @@ use Tk\Util\SqlBackup;
  */
 class SqlMigrate
 {
+    static $DB_TABLE = 'sys_session';
 
     /**
      * @var \Tk\Db\Pdo
      */
     protected $db = null;
-
-    /**
-     * @var string
-     */
-    protected $table = 'migration';
 
     /**
      * @var string
@@ -60,16 +55,13 @@ class SqlMigrate
      * Migrate constructor.
      *
      * @param \Tk\Db\Pdo $db
-     * @param string $table
      * @param string $tempPath
      */
-    public function __construct($db, $table = 'migration', $tempPath = '/tmp')
+    public function __construct($db, $tempPath = '/tmp')
     {
-        $this->db = $db;
-        $this->table = $table;
         $this->sitePath = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
         $this->tempPath = $tempPath;
-        $this->installMigrationTable();
+        $this->setDb($db);
     }
 
     /**
@@ -120,7 +112,6 @@ class SqlMigrate
         return $pending;
     }
 
-
     /**
      * Set the temp path for db backup file
      * Default '/tmp'
@@ -133,7 +124,6 @@ class SqlMigrate
         $this->tempPath = $path;
         return $this;
     }
-
 
     /**
      * search the path for *.sql files, also search the $path.'/'.$driver folder
@@ -191,6 +181,37 @@ class SqlMigrate
         return $list;
     }
 
+    /**
+     * Get the table name for queries
+     *
+     * @return string
+     */
+    protected function getTable()
+    {
+        return self::$DB_TABLE;
+    }
+
+    /**
+     * @return \Tk\Db\Pdo
+     */
+    public function getDb()
+    {
+        return $this->db;
+    }
+
+    /**
+     * @param \Tk\Db\Pdo $db
+     * @return $this
+     */
+    public function setDb($db)
+    {
+        $this->db = $db;
+        $this->install();
+        return $this;
+    }
+
+
+
 
     // Migration DB access methods
 
@@ -200,12 +221,12 @@ class SqlMigrate
      * @todo This must be tested against mysql, pgsql and sqlite....
      * // So far query works with mysql and pgsql drvs sqlite still to test
      */
-    protected function installMigrationTable()
+    protected function install()
     {
-        if($this->db->tableExists($this->table)) {
+        if($this->db->tableExists($this->getTable())) {
             return;
         }
-        $tbl = $this->db->quoteParameter($this->table);
+        $tbl = $this->db->quoteParameter($this->getTable());
         $sql = <<<SQL
 CREATE TABLE IF NOT EXISTS $tbl (
   path varchar(255) NOT NULL DEFAULT '',
@@ -225,7 +246,7 @@ SQL;
     protected function hasPath($path)
     {
         $path = $this->db->escapeString($this->toRelative($path));
-        $sql = sprintf('SELECT * FROM %s WHERE path = %s LIMIT 1', $this->db->quoteParameter($this->table), $this->db->quote($path));
+        $sql = sprintf('SELECT * FROM %s WHERE path = %s LIMIT 1', $this->db->quoteParameter($this->getTable()), $this->db->quote($path));
         $res = $this->db->query($sql);
         if ($res->rowCount()) {
             return true;
@@ -242,7 +263,7 @@ SQL;
     protected function insertPath($path)
     {
         $path = $this->db->escapeString($this->toRelative($path));
-        $sql = sprintf('INSERT INTO %s (path, created) VALUES (%s, NOW())', $this->db->quoteParameter($this->table), $this->db->quote($path));
+        $sql = sprintf('INSERT INTO %s (path, created) VALUES (%s, NOW())', $this->db->quoteParameter($this->getTable()), $this->db->quote($path));
         return $this->db->exec($sql);
     }
 
@@ -255,7 +276,7 @@ SQL;
     protected function deletePath($path)
     {
         $path = $this->db->escapeString($this->toRelative($path));
-        $sql = sprintf('DELETE FROM %s WHERE path = %s LIMIT 1', $this->db->quoteParameter($this->table), $this->db->quote($path));
+        $sql = sprintf('DELETE FROM %s WHERE path = %s LIMIT 1', $this->db->quoteParameter($this->getTable()), $this->db->quote($path));
         return $this->db->exec($sql);
     }
 
