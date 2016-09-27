@@ -173,8 +173,9 @@ class SqlMigrate
      */
     protected function search($path)
     {
-        $iterator = new \DirectoryIterator($path);
         $list = array();
+        if (!is_dir($path)) return $list;
+        $iterator = new \DirectoryIterator($path);
         foreach(new \RegexIterator($iterator, '/\.(php|sql)$/') as $file) {
             if (preg_match('/^(_|\.)/', $file->getBasename())) continue;
             $list[] = $file->getPathname();
