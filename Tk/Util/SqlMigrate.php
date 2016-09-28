@@ -34,6 +34,7 @@ namespace Tk\Util;
  */
 class SqlMigrate
 {
+
     static $DB_TABLE = 'migration';
 
     /**
@@ -156,10 +157,14 @@ class SqlMigrate
         if ($this->hasPath($file)) return false;
         if (!is_readable($file)) return false;
 
+        // TODO: Add the ability to execute a callback statement for customisations
+
         if (preg_match('/\.php$/i', basename($file))) {   // Include .php files
             include($file);
         } else {    // is sql
-            $this->db->exec(file_get_contents($file));
+            // replace any table prefix
+            $sql = file_get_contents($file);
+            $this->db->exec($sql);
         }
         $this->insertPath($file);
         return true;
@@ -212,9 +217,6 @@ class SqlMigrate
         return $this;
     }
 
-
-
-
     // Migration DB access methods
 
     /**
@@ -231,7 +233,7 @@ class SqlMigrate
         $tbl = $this->db->quoteParameter($this->getTable());
         $sql = <<<SQL
 CREATE TABLE IF NOT EXISTS $tbl (
-  path varchar(255) NOT NULL DEFAULT '',
+  path VARCHAR(255) NOT NULL DEFAULT '',
   created TIMESTAMP,
   PRIMARY KEY (path)
 );
