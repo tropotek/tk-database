@@ -158,7 +158,7 @@ class SqlMigrate
         if (!is_readable($file)) return false;
 
         // TODO: Add the ability to execute a callback statement for customisations
-
+        if (substr(basename($file), 0, 1) == '_') return true;
         if (preg_match('/\.php$/i', basename($file))) {   // Include .php files
             include($file);
         } else {    // is sql
