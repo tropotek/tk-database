@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 2.0.2 [2016-10-04]:
+-------------------------------
+ - Added ability to ignore migration files starting with an underscore
+ - Fixed SqlMigrate path not found error
+
+
 Ver 2.0.1 [2016-09-05]:
 -------------------------------
  - Updated Plugin system
