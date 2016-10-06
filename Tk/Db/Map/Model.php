@@ -132,4 +132,14 @@ abstract class Model implements \Tk\Db\ModelInterface
         return $this->getId();
     }
 
+    /**
+     * Helper method to generate user hash
+     *
+     * @return string
+     * @throws \Tk\Exception
+     */
+    public function generateHash()
+    {
+        return hash('md5', sprintf('%s', $this->getVolatileId()));
+    }
 }
