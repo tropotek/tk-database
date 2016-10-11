@@ -25,14 +25,14 @@ class Pdo extends \PDO
     const ANSI_QUOTES = 'mysql.ansi.quotes';
 
     /**
-     * @var string
-     */
-    static $PARAM_QUOTE = '';
-
-    /**
      * @var bool
      */
     static $logLastQuery = true;
+
+    /**
+     * @var string
+     */
+    protected $parameterQuote = '';
 
     /**
      * Variable to count the transaction int
@@ -118,12 +118,12 @@ class Pdo extends \PDO
             if (isset($options[self::ANSI_QUOTES]) && $options[self::ANSI_QUOTES] == true) {
                 $this->exec("SET SESSION sql_mode = 'ANSI_QUOTES'");
             }
-            self::$PARAM_QUOTE = '`';
+            $this->parameterQuote = '`';
         } else {
             if (isset($options['timezone'])) {
                 $this->exec('SET TIME ZONE \'' . $options['timezone'] . '\'');
             }
-            self::$PARAM_QUOTE = '"';
+            $this->parameterQuote = '"';
         }
     }
 
@@ -705,7 +705,7 @@ class Pdo extends \PDO
     public function quoteParameterArray($array)
     {
         foreach($array as $k => $v) {
-            $array[$k] = self::quoteParameter($v);
+            $array[$k] = $this->quoteParameter($v);
         }
         return $array;
     }
@@ -719,7 +719,7 @@ class Pdo extends \PDO
      */
     public function quoteParameter($param)
     {
-        return self::$PARAM_QUOTE . trim($param, self::$PARAM_QUOTE) . self::$PARAM_QUOTE;
+        return $this->parameterQuote . trim($param, $this->parameterQuote) . $this->parameterQuote;
     }
 
 }

@@ -353,7 +353,7 @@ abstract class Mapper implements Mappable
         // OrderBy, GroupBy, Limit, etc
         $toolStr = '';
         if ($tool) {
-            $toolStr = $tool->toSql($alias);
+            $toolStr = $tool->toSql($alias, $this->getDb());
         }
         $foundRowsKey = '';
         if ($this->getDb()->getDriver() == 'mysql') {

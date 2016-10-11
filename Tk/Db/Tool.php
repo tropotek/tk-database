@@ -360,9 +360,10 @@ class Tool implements \Tk\InstanceKey
      * LIMIT 10 OFFSET 30
      *
      * @param string $tblAlias
+     * @param Pdo $db
      * @return string
      */
-    public function toSql($tblAlias = '')
+    public function toSql($tblAlias = '', $db = null)
     {
         // GROUP BY
         $groupBy = '';
@@ -380,16 +381,17 @@ class Tool implements \Tk\InstanceKey
         $orderBy = '';
         if ($this->getOrderBy()) {
             $orFields = str_replace(array(';', '-- ', '/*'), ' ', $this->getOrderBy());
-            if ($tblAlias) {
+            if ($tblAlias && $db) {
                 $arr = explode(',', $orFields);
                 foreach ($arr as $i => $str) {
                     $str = trim($str);
-                    if (!preg_match('/^(ASC|DESC|FIELD\(|RAND\(|IF\(|NULL)/i', $str)) continue;
+                    if (preg_match('/^(ASC|DESC|FIELD\(|RAND\(|IF\(|NULL)/i', $str)) continue;
+
                     //if (!preg_match('/^([a-z]+\.)?`/i', $str)) continue;
                     //if (!preg_match('/^([a-zA-Z]+\.)/', $str) && is_string($str)) {
                     if (strpos($str, '.') === false) {
                         list($param, $order) = explode(' ', $str);
-                        $str = $tblAlias . Pdo::quoteParameter($param) . ' ' . $order;
+                        $str = $tblAlias . $db->quoteParameter($param) . ' ' . $order;
                     }
                     $arr[$i] = $str;
                 }
@@ -406,7 +408,8 @@ class Tool implements \Tk\InstanceKey
                 $limitStr .= ' OFFSET ' . (int)$this->getOffset();
             }
         }
-        return sprintf ('%s %s %s %s', $groupBy, $having, $orderBy, $limitStr);
+        $sql = sprintf ('%s %s %s %s', $groupBy, $having, $orderBy, $limitStr);
+        return $sql;
     }
     
     
