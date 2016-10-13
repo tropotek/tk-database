@@ -409,6 +409,7 @@ class Tool implements \Tk\InstanceKey
             }
         }
         $sql = sprintf ('%s %s %s %s', $groupBy, $having, $orderBy, $limitStr);
+        //if ($sql) vd($sql);
         return $sql;
     }
     

@@ -101,7 +101,7 @@ class Pdo extends \PDO
     {
         parent::__construct($dsn, $username, $password, $options);
         $this->options = $options;
-        $this->setAttribute(PDO::ATTR_STATEMENT_CLASS, array('\Tk\Db\PdoStatement', array($this)));
+        $this->setAttribute(\PDO::ATTR_STATEMENT_CLASS, array('\Tk\Db\PdoStatement', array($this)));
 
         $regs = array();
         preg_match('/^([a-z]+):(([a-z]+)=([a-z0-9_-]+))+/i', $dsn, $regs);
@@ -129,7 +129,7 @@ class Pdo extends \PDO
 
     /**
      * Call this to create/get a DB instance
-     * 
+     *
      * $options = array(
      *   'db.type' => 'mysql',
      *   'db.host' => 'localhost',
@@ -139,17 +139,17 @@ class Pdo extends \PDO
      *   'timezone' => '',              // optional
      *   'mysql.ansi.quotes' => true   // optional
      * );
-     * 
+     *
      * Different database instances are stored in an array by the $name key
-     * 
+     *
      * ON the first call supply the connection params in the options as
      * outlined, then subsequent calls can be made with no params or just the name
      * param as required.
-     * 
+     *
      * When calling this if only the options array is sent in place of the name value
      * then the 'default' value is ued for the name, therefore:
      *   Pdo::getInstance($options) is a valid call
-     * 
+     *
      * @param string|array $name
      * @param array $options
      * @return Pdo
@@ -161,15 +161,15 @@ class Pdo extends \PDO
             $options = $name;
             $name = 'default';
         }
-        
+
         if (!isset(self::$instance[$name])) {
             $dns = $options['db.type'] . ':dbname=' . $options['db.name'] . ';host=' . $options['db.host'];
             self::$instance[$name] = new self($dns, $options['db.user'], $options['db.pass'], $options);
         }
         return self::$instance[$name];
     }
-    
-    
+
+
     /**
      * Method to return an array of connection attributes.
      *
@@ -358,7 +358,7 @@ class Pdo extends \PDO
      * @return PDOStatement PDO::query returns a PDOStatement object, or FALSE on failure.
      * @throws \Tk\Db\Exception
      */
-    public function query($statement, $mode = PDO::ATTR_DEFAULT_FETCH_MODE, $arg3 = null)
+    public function query($statement, $mode = \PDO::ATTR_DEFAULT_FETCH_MODE, $arg3 = null)
     {
         $this->setLastQuery($statement);
         $start = microtime(true);
@@ -423,7 +423,7 @@ class Pdo extends \PDO
         if ($this->transactionCounter >= 0) {
             $this->transactionCounter = 0;
 
-            return parent::rollback();
+            return parent::rollBack();
         }
         $this->transactionCounter = 0;
 
@@ -524,7 +524,7 @@ class Pdo extends \PDO
         $list = $this->getTableList();
         return in_array($table, $list);
     }
-    
+
     /**
      * Get an array containing all the available databases to the user
      *
@@ -558,6 +558,7 @@ class Pdo extends \PDO
      */
     public function getTableList()
     {
+        self::$logLastQuery = false;
         $list = array();
         if ($this->getDriver() == 'mysql') {
             $sql = 'SHOW TABLES';
@@ -574,6 +575,7 @@ class Pdo extends \PDO
                 $list[] = $row[0];
             }
         }
+        self::$logLastQuery = true;
         return $list;
     }
 
@@ -584,6 +586,7 @@ class Pdo extends \PDO
      */
     public function getTableInfo($table)
     {
+        self::$logLastQuery = false;
         $list = array();
         $result = null;
         if ($this->getDriver() == 'mysql') {
@@ -596,7 +599,7 @@ class Pdo extends \PDO
                 }
             }
         } else if ($this->getDriver() == 'pgsql') { // Try to emulate the mysql DESCRIBE as close as possible
-            $sql = sprintf('select * from INFORMATION_SCHEMA.COLUMNS where table_name =  %s', $this->quote($table));
+            $sql = sprintf('select * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name =  %s', $this->quote($table));
             $result = $this->query($sql);
             $result->setFetchMode(\PDO::FETCH_ASSOC);
             foreach ($result as $row) {
@@ -615,6 +618,7 @@ class Pdo extends \PDO
             }
             $list = array_reverse($list);
         }
+        self::$logLastQuery = true;
         return $list;
     }
 
@@ -654,6 +658,7 @@ class Pdo extends \PDO
      */
     public function getNextInsertId($table, $pKey = 'id')
     {
+        self::$logLastQuery = false;
         if ($this->getDriver() == 'mysql') {
             $table = $this->quote($table);
             $sql = sprintf('SHOW TABLE STATUS LIKE %s ', $table);
@@ -681,6 +686,7 @@ class Pdo extends \PDO
         $result = $this->query($sql);
         $result->setFetchMode(\PDO::FETCH_ASSOC);
         $row = $result->fetch();
+        self::$logLastQuery = true;
         return $row[$pKey]+1;
     }
 

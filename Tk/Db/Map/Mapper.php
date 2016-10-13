@@ -335,9 +335,9 @@ abstract class Mapper implements Mappable
 
         if ($this->getMarkDeleted() && strstr($where, $this->getDb()->quoteParameter($this->getMarkDeleted())) === false) {
             if ($where) {
-                $where = sprintf(' %s%s = 0 AND %s', $alias, $this->getDb()->quoteParameter($this->getMarkDeleted()), $where);
+                $where = sprintf('%s%s = 0 AND %s ', $alias, $this->getDb()->quoteParameter($this->getMarkDeleted()), $where);
             } else {
-                $where = sprintf(' %s%s = 0 ', $alias, $this->getDb()->quoteParameter($this->getMarkDeleted()));
+                $where = sprintf('%s%s = 0 ', $alias, $this->getDb()->quoteParameter($this->getMarkDeleted()));
             }
         }
 
@@ -430,10 +430,10 @@ abstract class Mapper implements Mappable
     /**
      * If set to a column name then only mark the row deleted do not delete
      *
-     * @param string $col
+     * @param string $col Set to null string to remove this as an option
      * @return $this
      */
-    public function setMarkDeleted($col)
+    public function setMarkDeleted($col = '')
     {
         $this->markDeleted = $col;
         return $this;
