@@ -115,8 +115,7 @@ abstract class Model implements \Tk\Db\ModelInterface
      */
     public function delete()
     {
-        $r = self::getMapper()->delete($this);
-        return $r;
+        return self::getMapper()->delete($this);
     }
 
     /**
