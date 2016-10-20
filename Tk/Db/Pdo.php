@@ -110,6 +110,8 @@ class Pdo extends \PDO
         $this->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
         // Get mysql to emulate standard DB's
+
+        self::$logLastQuery = false;
         if ($this->getDriver() == 'mysql') {
             $this->exec('SET CHARACTER SET utf8');
             if (isset($options['timezone'])) {
@@ -125,6 +127,7 @@ class Pdo extends \PDO
             }
             $this->parameterQuote = '"';
         }
+        self::$logLastQuery = true;
     }
 
     /**
@@ -281,7 +284,7 @@ class Pdo extends \PDO
      *
      * @return self
      */
-    protected function setLastQuery($sql)
+    public function setLastQuery($sql)
     {
         if (self::$logLastQuery)
             $this->lastQuery = $sql;

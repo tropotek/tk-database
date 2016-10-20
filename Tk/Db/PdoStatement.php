@@ -54,6 +54,7 @@ class PdoStatement extends \PDOStatement
             $args = func_get_args();
         }
         $this->bindParams = $args;
+        $this->pdo->setLastQuery($this->queryString);
         $result = parent::execute($args);
         $this->pdo->addLog(
             array(
