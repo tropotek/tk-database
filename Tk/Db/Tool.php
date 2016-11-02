@@ -409,8 +409,11 @@ class Tool implements \Tk\InstanceKey
                     //if (!preg_match('/^([a-z]+\.)?`/i', $str)) continue;
                     //if (!preg_match('/^([a-zA-Z]+\.)/', $str) && is_string($str)) {
                     if (strpos($str, '.') === false) {
-                        list($param, $order) = explode(' ', $str);
-                        $str = $tblAlias . $db->quoteParameter($param) . ' ' . $order;
+                        $a = explode(' ', $str);
+                        $str = $tblAlias . $db->quoteParameter($a[0]);
+                        if (isset($a[1])) {
+                            $str = $str . ' ' . $a[1];
+                        }
                     }
                     $arr[$i] = $str;
                 }

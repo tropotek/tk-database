@@ -152,6 +152,7 @@ class ArrayObject implements \Iterator, \Countable
             }
             return (object)$this->rows[$i];
         }
+        return null;
     }
 
     /**
