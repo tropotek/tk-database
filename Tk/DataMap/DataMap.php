@@ -42,7 +42,7 @@ class DataMap
             if ($ignoreTag && $map->getTag() == $ignoreTag) continue;
             if (!array_key_exists($map->getColumnName(), $row)) continue;
             $pname = $map->getPropertyName();
-            if ($object instanceof \stdClass) {     // TODO: See if this works
+            if ($object instanceof \stdClass) {
                 $object->$pname = $map->findPropertyValue($row);
                 continue;
             }

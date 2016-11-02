@@ -72,7 +72,10 @@ class ArrayObject implements \Iterator, \Countable
      */
     static function createFromMapper(Mapper $mapper, PdoStatement $statement, $tool = null)
     {
-
+        // TODO: One day \PDO may be able to do this serially, this is a big memory hog...
+        //       Currently we cannot subclass the PDOStatement::fetch...() methods correctly [php: 5.6.27]
+        // NOTE: For large datasets that could fill the memory, this object should not be used
+        //       instead get statement and manually iterate the data.
         $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
         $obj = new self($rows);
         $obj->foundRows = $mapper->getDb()->countFoundRows($statement->queryString);

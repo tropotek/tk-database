@@ -141,7 +141,7 @@ abstract class Mapper implements Mappable
     /**
      * Insert
      *
-     * @param mixed $obj
+     * @param Model $obj
      * @return int Returns the new insert id
      */
     public function insert($obj)
@@ -169,12 +169,13 @@ abstract class Mapper implements Mappable
             $seq = $this->getTable().'_'.$this->getPrimaryKey().'_seq';
         }
         $id = (int)$this->getDb()->lastInsertId($seq);
+
         return $id;
     }
 
     /**
      *
-     * @param $obj
+     * @param Model $obj
      * @return int
      */
     public function update($obj)
@@ -202,7 +203,6 @@ abstract class Mapper implements Mappable
     /**
      * Save the object, let the code decide weather to insert ot update the db.
      *
-     *
      * @param Model $obj
      * @throws \Exception
      */
@@ -212,7 +212,8 @@ abstract class Mapper implements Mappable
         if (!property_exists($obj, $pk)) {
             throw new \Exception('No valid primary key found');
         }
-        if ($obj->$pk == 0) {
+        //if ($obj->$pk == 0) {
+        if (!$obj->$pk) {
             $this->insert($obj);
         } else {
             $this->update($obj);
@@ -328,7 +329,6 @@ abstract class Mapper implements Mappable
         if ($alias) {
             $alias = $alias . '.';
         }
-
         if (!$from) {
             $from = sprintf('%s %s', $this->getDb()->quoteParameter($this->getTable()), $this->getAlias());
         }
@@ -354,6 +354,7 @@ abstract class Mapper implements Mappable
         $toolStr = '';
         if ($tool) {
             $toolStr = $tool->toSql($alias, $this->getDb());
+
         }
         $foundRowsKey = '';
         if ($this->getDb()->getDriver() == 'mysql') {
@@ -361,7 +362,6 @@ abstract class Mapper implements Mappable
         }
 
         $sql = sprintf('SELECT %s %s %s* FROM %s %s %s ', $foundRowsKey, $distinct, $alias, $from, $where, $toolStr);
-
         $stmt = $this->getDb()->prepare($sql);
         $stmt->execute();
 
@@ -371,7 +371,7 @@ abstract class Mapper implements Mappable
 
     /**
      *
-     * @param $id
+     * @param int $id
      * @return Model|null
      */
     public function find($id)
@@ -456,7 +456,7 @@ abstract class Mapper implements Mappable
      *
      * EG: 'someProperty' is converted to 'some_property'
      *
-     * @param $property
+     * @param string $property
      * @return string
      */
     public function toDbProperty($property)

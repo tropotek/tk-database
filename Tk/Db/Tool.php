@@ -149,43 +149,42 @@ class Tool implements \Tk\InstanceKey
     public function updateFromArray($array)
     {
         $updated = false;
-
         if (isset($array[$this->makeInstanceKey(self::PARAM_ORDER_BY)])) {
             if ($array[$this->makeInstanceKey(self::PARAM_ORDER_BY)] != $this->getOrderBy()) {
                 $this->setOrderBy($array[$this->makeInstanceKey(self::PARAM_ORDER_BY)]);
-                $updated = true;
             }
+            $updated = true;
         }
         if (isset($array[$this->makeInstanceKey(self::PARAM_LIMIT)])) {
             if ($array[$this->makeInstanceKey(self::PARAM_LIMIT)] != $this->getLimit()) {
                 $this->setLimit($array[$this->makeInstanceKey(self::PARAM_LIMIT)]);
                 $this->setOffset(0);
-                $updated = true;
             }
+            $updated = true;
         }
         if (isset($array[$this->makeInstanceKey(self::PARAM_OFFSET)])) {
             if ($array[$this->makeInstanceKey(self::PARAM_OFFSET)] != $this->getOffset()) {
                 $this->setOffset($array[$this->makeInstanceKey(self::PARAM_OFFSET)]);
-                $updated = true;
             }
+            $updated = true;
         }
         if (isset($array[$this->makeInstanceKey(self::PARAM_GROUP_BY)])) {
             if ($array[$this->makeInstanceKey(self::PARAM_GROUP_BY)] != $this->getGroupBy()) {
                 $this->setGroupBy($array[$this->makeInstanceKey(self::PARAM_GROUP_BY)]);
-                $updated = true;
             }
+            $updated = true;
         }
         if (isset($array[$this->makeInstanceKey(self::PARAM_HAVING)])) {
             if ($array[$this->makeInstanceKey(self::PARAM_HAVING)] != $this->getHaving()) {
                 $this->setHaving($array[$this->makeInstanceKey(self::PARAM_HAVING)]);
-                $updated = true;
             }
+            $updated = true;
         }
         if (isset($array[$this->makeInstanceKey(self::PARAM_DISTINCT)])) {
             if ($array[$this->makeInstanceKey(self::PARAM_DISTINCT)] != $this->isDistinct()) {
                 $this->setDistinct($array[$this->makeInstanceKey(self::PARAM_DISTINCT)]);
-                $updated = true;
             }
+            $updated = true;
         }
 
         return $updated;
@@ -226,6 +225,23 @@ class Tool implements \Tk\InstanceKey
     public function getOrderBy()
     {
         return $this->orderBy;
+    }
+
+    /**
+     * Get the order by property if available and can be found
+     *
+     * @return string
+     */
+    public function getOrderProperty()
+    {
+        $ob = $this->getOrderBy();
+        if (!$ob) return $this->getOrderBy();
+        if (!preg_match('/^(ASC|DESC|FIELD\(|RAND\(|IF\(|NULL)/i', $ob)){
+            if (preg_match('/^([a-z0-9]+\.)?([a-z0-9_-]+)/i', $ob, $regs)) {
+                return trim($regs[2]);
+            }
+        }
+        return '';
     }
 
     /**
@@ -382,6 +398,9 @@ class Tool implements \Tk\InstanceKey
         if ($this->getOrderBy()) {
             $orFields = str_replace(array(';', '-- ', '/*'), ' ', $this->getOrderBy());
             if ($tblAlias && $db) {
+                if (strpos($tblAlias, '.') === false) {
+                    $tblAlias = $tblAlias . '.';
+                }
                 $arr = explode(',', $orFields);
                 foreach ($arr as $i => $str) {
                     $str = trim($str);
