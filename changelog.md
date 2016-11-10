@@ -1,5 +1,12 @@
 #CHANGELOG#
 
+Ver 2.0.3 [2016-11-11]:
+-------------------------------
+ - Finished the Project Listing
+ - Started added UI controllers for LTI pages
+ - Added main DB Model objects
+
+
 Ver 2.0.2 [2016-10-04]:
 -------------------------------
  - Added ability to ignore migration files starting with an underscore
