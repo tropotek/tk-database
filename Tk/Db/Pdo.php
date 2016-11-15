@@ -150,7 +150,7 @@ class Pdo extends \PDO
      * param as required.
      *
      * When calling this if only the options array is sent in place of the name value
-     * then the 'default' value is ued for the name, therefore:
+     * then the 'default' value is used for the name, therefore:
      *   Pdo::getInstance($options) is a valid call
      *
      * @param string|array $name
@@ -324,7 +324,7 @@ class Pdo extends \PDO
      * @see \PDO::exec()
      * @see http://www.php.net/manual/en/pdo.exec.php
      * @param string $statement The SQL statement to prepare and execute
-     * @return PDOStatement
+     * @return PDOStatement|int
      * @throws \Tk\Db\Exception
      */
     public function exec($statement)
