@@ -14,20 +14,21 @@ use Tk\Db\Exception;
  */
 class Pdo extends \PDO
 {
-    /**
-     * @var array
-     */
-    static $instance = array();
-    
+
     /**
      * The key for the option to enable ANSI mode for MySQL
      */
     const ANSI_QUOTES = 'mysql.ansi.quotes';
 
     /**
+     * @var array
+     */
+    public static $instance = array();
+
+    /**
      * @var bool
      */
-    static $logLastQuery = true;
+    public static $logLastQuery = true;
 
     /**
      * @var string
@@ -42,7 +43,6 @@ class Pdo extends \PDO
 
     /**
      * The query log array.
-     *
      * @var array
      */
     private $log = array();
@@ -79,6 +79,9 @@ class Pdo extends \PDO
      */
     private $onLogListener;
 
+    /**
+     * @var array
+     */
     private $options = array();
 
 
@@ -181,7 +184,8 @@ class Pdo extends \PDO
      * @param array $attributes
      * @return array $return
      */
-    function getConnectionParameters($attributes = array("DRIVER_NAME", "AUTOCOMMIT", "ERRMODE", "CLIENT_VERSION", "CONNECTION_STATUS", "PERSISTENT", "SERVER_INFO", "SERVER_VERSION"))
+    public function getConnectionParameters($attributes = array("DRIVER_NAME", "AUTOCOMMIT", "ERRMODE", "CLIENT_VERSION",
+        "CONNECTION_STATUS", "PERSISTENT", "SERVER_INFO", "SERVER_VERSION"))
     {
         $return = array();
         foreach ($attributes as $val) {
@@ -406,7 +410,7 @@ class Pdo extends \PDO
      * @see http://www.php.net/manual/en/pdo.commit.php
      * @return bool
      */
-    function commit()
+    public function commit()
     {
         if (!--$this->transactionCounter)
             return parent::commit();
@@ -421,7 +425,7 @@ class Pdo extends \PDO
      * @see http://www.php.net/manual/en/pdo.rollback.php
      * @return bool
      */
-    function rollback()
+    public function rollback()
     {
         if ($this->transactionCounter >= 0) {
             $this->transactionCounter = 0;

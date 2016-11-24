@@ -16,7 +16,7 @@ abstract class Model implements \Tk\Db\ModelInterface
     /**
      * @var string
      */
-    static public $MAPPER_APPEND = 'Map';
+    public static $MAPPER_APPEND = 'Map';
 
 
     /**

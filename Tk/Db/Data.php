@@ -21,7 +21,7 @@ class Data extends \Tk\Collection
      *
      * @var string
      */
-    static $DB_TABLE = 'data';
+    public static $DB_TABLE = 'data';
 
     /**
      * The delete identifier for internal delete operation.
@@ -29,7 +29,7 @@ class Data extends \Tk\Collection
      *
      * @var string
      */
-    static $DB_DEL = 'd___';
+    public static $DB_DEL = 'd___';
 
     /**
      * @var Pdo
