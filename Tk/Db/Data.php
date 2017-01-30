@@ -53,7 +53,7 @@ class Data extends \Tk\Collection
      * @param int $foreignId
      * @param string $foreignKey
      */
-    public function __construct($foreignId = 0, $foreignKey = 'system')
+    public function __construct($foreignKey = 'system', $foreignId = 0)
     {
         parent::__construct();
         $this->foreignId = $foreignId;
@@ -69,9 +69,9 @@ class Data extends \Tk\Collection
      * @param string $foreignKey
      * @return static
      */
-    public static function create($foreignId = 0, $foreignKey = 'system')
+    public static function create($foreignKey = 'system', $foreignId = 0)
     {
-        $obj = new static($foreignId, $foreignKey);
+        $obj = new static($foreignKey, $foreignId);
         $obj->setDb(\Tk\Config::getInstance()->getDb());
         $obj->load();
         return $obj;
