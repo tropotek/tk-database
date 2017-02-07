@@ -56,8 +56,8 @@ class Data extends \Tk\Collection
     public function __construct($foreignKey = 'system', $foreignId = 0)
     {
         parent::__construct();
-        $this->foreignId = $foreignId;
         $this->foreignKey = $foreignKey;
+        $this->foreignId = $foreignId;
 
     }
 
@@ -85,7 +85,7 @@ class Data extends \Tk\Collection
      */
     private function install()
     {
-        if ($this->getDb()->tableExists($this->getTable())) return;
+        if ($this->getDb()->tableExists($this->getTable())) return $this;
         $tbl = $this->getDb()->quoteParameter($this->getTable());
         // mysql
         $sql = '';
