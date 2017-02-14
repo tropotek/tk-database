@@ -13,7 +13,7 @@ class Exception extends \Tk\Exception
 
 
     /**
-     * Set any memory, code dump data to display in the eception error
+     * Set any memory, code dump data to display in the exception error
      *
      * @param string $dump
      */

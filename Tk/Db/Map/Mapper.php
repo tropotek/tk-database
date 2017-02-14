@@ -547,6 +547,7 @@ abstract class Mapper implements Mappable
         return self::$DB_PREFIX;
     }
 
+
     /**
      * If a colum name is supplied then that column info is returned
      *
@@ -596,5 +597,54 @@ abstract class Mapper implements Mappable
         $this->db = $db;
         return $this;
     }
+
+
+
+    /**
+     * Use this function to quote and escape a table name and add a prefix if it is set
+     *
+     * @param string $table
+     * @return string
+     */
+    public function quoteTable($table)
+    {
+        return  $this->getDb()->quoteParameter($this->getPrefix() . $table);
+    }
+
+    /**
+     * Use this function to escape a table name and add a prefix if it is set
+     *
+     * @param string $str
+     * @return string
+     */
+    public function quote($str)
+    {
+        return  $this->getDb()->quote($str);
+    }
+
+    /**
+     * Quote a parameter based on the quote system
+     * if the param exists in the reserved words list
+     *
+     * @param $str
+     * @return string
+     */
+    public function quoteParameter($str)
+    {
+        return  $this->getDb()->quoteParameter($str);
+    }
+
+    /**
+     * Encode string to avoid sql injections.
+     *
+     * @param string $str
+     * @return string
+     */
+    public function escapeString($str)
+    {
+        return  $this->getDb()->escapeString($str);
+    }
+
+
 
 }

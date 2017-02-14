@@ -369,8 +369,11 @@ class Pdo extends \PDO
     {
         $this->setLastQuery($statement);
         $start = microtime(true);
-        $result = call_user_func_array(array('parent', 'query'), func_get_args());
+        try {
+            $result = call_user_func_array(array('parent', 'query'), func_get_args());
+        } catch (\Exception $e) {
 
+        }
         if ($result === false) {
             $info = $this->errorInfo();
             $e = new Exception(end($info));
