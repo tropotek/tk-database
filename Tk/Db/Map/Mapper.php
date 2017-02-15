@@ -160,7 +160,7 @@ abstract class Mapper implements Mappable
             unset($bind[$col]);
             $bind[':' . $col] = $value;
         }
-        $sql = 'INSERT INTO ' . $this->getDb()->quoteParameter($this->table) . ' (' . $cols . ')  VALUES (:' . $values . ')';
+        $sql = 'INSERT INTO ' . $this->quoteTable($this->table) . ' (' . $cols . ')  VALUES (:' . $values . ')';
 
         $this->getDb()->prepare($sql)->execute($bind);
 
@@ -189,10 +189,10 @@ abstract class Mapper implements Mappable
             }
             unset($bind[$col]);
             $bind[':' . $col] = $value;
-            $set[] = $this->getDb()->quoteParameter($col) . ' = :' . $col;
+            $set[] = $this->quoteParameter($col) . ' = :' . $col;
         }
-        $where = $this->getDb()->quoteParameter($pk) . ' = ' . $bind[':'.$pk];
-        $sql = 'UPDATE ' . $this->getDb()->quoteParameter($this->table) . ' SET ' . implode(', ', $set) . (($where) ? ' WHERE ' . $where : ' ');
+        $where = $this->quoteParameter($pk) . ' = ' . $bind[':'.$pk];
+        $sql = 'UPDATE ' . $this->quoteTable($this->table) . ' SET ' . implode(', ', $set) . (($where) ? ' WHERE ' . $where : ' ');
 
         $stmt = $this->getDb()->prepare($sql);
         $stmt->execute($bind);
@@ -229,13 +229,13 @@ abstract class Mapper implements Mappable
     public function delete($obj)
     {
         $pk = $this->getPrimaryKey();
-        $where = $this->getDb()->quoteParameter($pk) . ' = ' . $obj->$pk;
+        $where = $this->quoteParameter($pk) . ' = ' . $obj->$pk;
         if ($where) {
             $where = 'WHERE ' . $where;
         }
-        $sql = sprintf('DELETE FROM %s %s LIMIT 1', $this->getDb()->quoteParameter($this->table), $where);
+        $sql = sprintf('DELETE FROM %s %s LIMIT 1', $this->quoteParameter($this->table), $where);
         if ($this->markDeleted) {
-            $sql = sprintf('UPDATE %s SET %s = 1 %s LIMIT 1', $this->getDb()->quoteParameter($this->table), $this->getDb()->quoteParameter($this->getMarkDeleted()), $where);
+            $sql = sprintf('UPDATE %s SET %s = 1 %s LIMIT 1', $this->quoteTable($this->table), $this->quoteParameter($this->getMarkDeleted()), $where);
         }
         $stmt = $this->getDb()->prepare($sql);
         $stmt->execute();
@@ -274,7 +274,7 @@ abstract class Mapper implements Mappable
             foreach ($bind as $col => $value) {
                 unset($bind[$col]);
                 $bind[':' . $col] = $value;
-                $where[] = $alias. $this->getDb()->quoteParameter($col) . ' = :' . $col;
+                $where[] = $alias. $this->quoteParameter($col) . ' = :' . $col;
             }
         }
         $where = implode(' ' . $boolOperator . ' ', $where);
@@ -330,14 +330,14 @@ abstract class Mapper implements Mappable
             $alias = $alias . '.';
         }
         if (!$from) {
-            $from = sprintf('%s %s', $this->getDb()->quoteParameter($this->getTable()), $this->getAlias());
+            $from = sprintf('%s %s', $this->quoteTable($this->getTable()), $this->getAlias());
         }
 
-        if ($this->getMarkDeleted() && strstr($where, $this->getDb()->quoteParameter($this->getMarkDeleted())) === false) {
+        if ($this->getMarkDeleted() && strstr($where, $this->quoteParameter($this->getMarkDeleted())) === false) {
             if ($where) {
-                $where = sprintf('%s%s = 0 AND %s ', $alias, $this->getDb()->quoteParameter($this->getMarkDeleted()), $where);
+                $where = sprintf('%s%s = 0 AND %s ', $alias, $this->quoteParameter($this->getMarkDeleted()), $where);
             } else {
-                $where = sprintf('%s%s = 0 ', $alias, $this->getDb()->quoteParameter($this->getMarkDeleted()));
+                $where = sprintf('%s%s = 0 ', $alias, $this->quoteParameter($this->getMarkDeleted()));
             }
         }
 
@@ -376,7 +376,7 @@ abstract class Mapper implements Mappable
      */
     public function find($id)
     {
-        $where = sprintf('%s = %s', $this->getDb()->quoteParameter($this->getPrimaryKey()), (int)$id);
+        $where = sprintf('%s = %s', $this->quoteParameter($this->getPrimaryKey()), (int)$id);
         $list = $this->select($where);
         return $list->current();
     }
@@ -604,11 +604,14 @@ abstract class Mapper implements Mappable
      * Use this function to quote and escape a table name and add a prefix if it is set
      *
      * @param string $table
+     * @param string $prefix (optional) Override default prefix
      * @return string
      */
-    public function quoteTable($table)
+    public function quoteTable($table, $prefix = null)
     {
-        return  $this->getDb()->quoteParameter($this->getPrefix() . $table);
+        if ($prefix === null)
+            $prefix = $this->getPrefix();
+        return  $this->getDb()->quoteParameter($prefix . $table);
     }
 
     /**
