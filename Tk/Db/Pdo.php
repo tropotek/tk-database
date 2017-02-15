@@ -335,7 +335,15 @@ class Pdo extends \PDO
     {
         $this->setLastQuery($statement);
         $start = microtime(true);
-        $result = parent::exec($statement);
+
+        try {
+            $result = parent::exec($statement);
+        } catch (\Exception $e) {
+            $e = new Exception(end($info), 0);
+            $e->setDump($statement);
+            throw $e;
+        }
+
         if ($result === false) {
             $info = $this->errorInfo();
             $e = new Exception(end($info));
@@ -372,7 +380,9 @@ class Pdo extends \PDO
         try {
             $result = call_user_func_array(array('parent', 'query'), func_get_args());
         } catch (\Exception $e) {
-
+            $e = new Exception(end($info));
+            $e->setDump($statement);
+            throw $e;
         }
         if ($result === false) {
             $info = $this->errorInfo();
