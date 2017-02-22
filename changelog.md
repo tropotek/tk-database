@@ -1,5 +1,12 @@
 #CHANGELOG#
 
+Ver 2.0.5 [2017-02-22]:
+-------------------------------
+ - Minor Code Updates
+ - 252s-dev.vet.unimelb.edu.au
+ - Lets get the plugin stuff working correctly first.
+
+
 Ver 2.0.4 [2016-12-30]:
 -------------------------------
  - Minor Code Updates
