@@ -380,6 +380,7 @@ class Pdo extends \PDO
         try {
             $result = call_user_func_array(array('parent', 'query'), func_get_args());
         } catch (\Exception $e) {
+            $info = $this->errorInfo();
             $e = new Exception(end($info));
             $e->setDump($statement);
             throw $e;
@@ -643,12 +644,37 @@ class Pdo extends \PDO
     }
 
     /**
+     * drop a specific table
+     *
+     * @param $tableName
+     * @return bool
+     */
+    public function dropTable($tableName)
+    {
+        if (!$this->tableExists($tableName)) return false;
+
+        if ($this->getDriver() == 'mysql') {
+            $this->exec('SET FOREIGN_KEY_CHECKS = 0');
+            $this->exec('SET UNIQUE_CHECKS = 0');
+        }
+
+        $sql = sprintf('DROP TABLE IF EXISTS %s CASCADE', $this->quoteParameter($tableName));
+        $this->exec($sql);
+
+        if ($this->getDriver() == 'mysql') {
+            $this->exec('SET FOREIGN_KEY_CHECKS = 1');
+            $this->exec('SET UNIQUE_CHECKS = 1');
+        }
+        return true;
+    }
+
+    /**
      * Remove all tables from a DB
      * You must send true as a parameter to ensure it executes
      *
      * @param bool $confirm
      * @return bool
-     * @todo Check this is compatable with MySQL????
+     * @todo Check this is compatible with MySQL???? Also may want to also drop procedures, view, etc. ????
      */
     public function dropAllTables($confirm = false)
     {
