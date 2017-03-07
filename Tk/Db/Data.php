@@ -16,8 +16,8 @@ namespace Tk\Db;
 class Data extends \Tk\Collection
 {
     /**
-     * Table name
-     * Can be changed in the config if needed Data::$DB_DATA = '';
+     * The default table name to use
+     * Can be changed in the config if needed Data::$DB_TABLE = '';
      *
      * @var string
      */
@@ -35,6 +35,11 @@ class Data extends \Tk\Collection
      * @var Pdo
      */
     protected $db = null;
+
+    /**
+     * @var string
+     */
+    protected $table = null;
     
     /**
      * @var int
@@ -52,10 +57,13 @@ class Data extends \Tk\Collection
      * 
      * @param int $foreignId
      * @param string $foreignKey
+     * @param string $table
      */
-    public function __construct($foreignKey = 'system', $foreignId = 0)
+    public function __construct($foreignKey = 'system', $foreignId = 0, $table = '')
     {
         parent::__construct();
+        if (!$table) $table = self::$DB_TABLE;
+        $this->table = $table;
         $this->foreignKey = $foreignKey;
         $this->foreignId = $foreignId;
 
@@ -65,16 +73,38 @@ class Data extends \Tk\Collection
      * Creates an instance of the Data object and loads that data from the DB
      * By Default this method uses the Tk\Config::getDb() to get the database.
      *
-     * @param int $foreignId
      * @param string $foreignKey
+     * @param int $foreignId
+     * @param string $table
+     * @param Pdo|null $db
      * @return static
      */
-    public static function create($foreignKey = 'system', $foreignId = 0)
+    public static function create($foreignKey = 'system', $foreignId = 0, $table = '', $db = null)
     {
-        $obj = new static($foreignKey, $foreignId);
-        $obj->setDb(\Tk\Config::getInstance()->getDb());
+        $obj = new static($foreignKey, $foreignId, $table);
+        if (!$db) $db = \Tk\Config::getInstance()->getDb();
+        $obj->setDb($db);
         $obj->load();
         return $obj;
+    }
+
+    /**
+     * @return Pdo
+     */
+    public function getDb()
+    {
+        return $this->db;
+    }
+
+    /**
+     * @param Pdo $db
+     * @return $this
+     */
+    public function setDb($db)
+    {
+        $this->db = $db;
+        $this->install();
+        return $this;
     }
 
     /**
@@ -85,7 +115,7 @@ class Data extends \Tk\Collection
      */
     private function install()
     {
-        if ($this->getDb()->tableExists($this->getTable())) return $this;
+        if (!$this->getDb() || $this->getDb()->tableExists($this->getTable())) return $this;
         $tbl = $this->getDb()->quoteParameter($this->getTable());
         // mysql
         $sql = '';
@@ -118,25 +148,6 @@ SQL;
         if ($sql) {
             $this->getDb()->exec($sql);
         }
-        return $this;
-    }
-
-    /**
-     * @return Pdo
-     */
-    public function getDb()
-    {
-        return $this->db;
-    }
-
-    /**
-     * @param Pdo $db
-     * @return $this
-     */
-    public function setDb($db)
-    {
-        $this->db = $db;
-        $this->install();
         return $this;
     }
 
@@ -183,7 +194,7 @@ SQL;
      */
     protected function getTable()
     {
-        return self::$DB_TABLE;
+        return $this->table;
     }
 
     /**
