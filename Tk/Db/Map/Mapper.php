@@ -354,8 +354,8 @@ abstract class Mapper implements Mappable
         $toolStr = '';
         if ($tool) {
             $toolStr = $tool->toSql($alias, $this->getDb());
-
         }
+
         $foundRowsKey = '';
         if ($this->getDb()->getDriver() == 'mysql') {
             $foundRowsKey = 'SQL_CALC_FOUND_ROWS';
