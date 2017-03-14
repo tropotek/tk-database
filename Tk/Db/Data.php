@@ -142,7 +142,7 @@ CREATE TABLE IF NOT EXISTS $tbl (
 );
 SQL;
         } else if ($this->getDb()->getDriver() == 'sqlite') {
-            // todo
+            // TODO
         }
 
         if ($sql) {
@@ -210,7 +210,7 @@ SQL;
         $stmt = $this->db->query($sql);
         $stmt->setFetchMode(\PDO::FETCH_OBJ);
         foreach ($stmt as $row) {
-            $this->set($row->key, $row->value);
+            $this->set($row->key, $this->prepareGetValue($row->value));
         }
         Pdo::$logLastQuery = true;
         return $this;
@@ -270,9 +270,8 @@ SQL;
      */
     protected function dbSet($key, $value)
     {
-        if (is_array($value) || is_object($value)) {
-            return $this;
-        }
+        $value = $this->prepareSetValue($value);
+
         if ($this->dbHas($key)) {
             $sql = sprintf('UPDATE %s SET value = %s WHERE %s = %s AND foreign_id = %d AND foreign_key = %s ',
                 $this->db->quoteParameter($this->getTable()), $this->db->quote($value), $this->db->quoteParameter('key'), $this->db->quote($key),
@@ -302,7 +301,7 @@ SQL;
         $row = $this->db->query($sql)->fetchObject();
         Pdo::$logLastQuery = true;
         if ($row) {
-            return $row->value;
+            return $this->prepareGetValue($row->value);
         }
         return '';
     }
@@ -339,5 +338,26 @@ SQL;
         Pdo::$logLastQuery = true;
         return $this;
     }
+
+
+
+
+    protected function prepareGetValue($value)
+    {
+        if (preg_match('/^(___JSON:)/', $value)) {
+            $value = json_decode(substr($value, 8));
+        }
+        return $value;
+    }
+
+    protected function prepareSetValue($value)
+    {
+        if (is_array($value) || is_object($value)) {
+            $value = '___JSON:' . json_encode($value);
+        }
+        return $value;
+    }
+
+
     
 }
