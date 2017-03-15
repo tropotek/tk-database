@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS $tbl (
   `foreign_key` VARCHAR(128) NOT NULL DEFAULT '',
   `key` VARCHAR(255) NOT NULL DEFAULT '',
   `value` TEXT,
-  UNIQUE KEY `data_foreign_fields` (`foreign_id`, `foreign_key`, `key`)
+  UNIQUE `data_foreign_fields` (`foreign_id`, `foreign_key`, `key`)
 ) ENGINE=InnoDB;
 SQL;
         } else if ($this->getDb()->getDriver() == 'pgsql') {
@@ -138,11 +138,20 @@ CREATE TABLE IF NOT EXISTS $tbl (
   foreign_key VARCHAR(128) NOT NULL DEFAULT '',
   "key" VARCHAR(255),
   "value" TEXT,
-  CONSTRAINT data_foreign_fields UNIQUE (foreign_id, foreign_key, "key")
+  UNIQUE (foreign_id, foreign_key, "key")
 );
 SQL;
         } else if ($this->getDb()->getDriver() == 'sqlite') {
-            // TODO
+            $sql = <<<SQL
+CREATE TABLE IF NOT EXISTS $tbl (
+  id SERIAL PRIMARY KEY,
+  foreign_id INTEGER NOT NULL DEFAULT 0,
+  foreign_key VARCHAR(128) NOT NULL DEFAULT '',
+  "key" VARCHAR(255),
+  "value" TEXT,
+  UNIQUE (foreign_id, foreign_key, "key")
+);
+SQL;
         }
 
         if ($sql) {

@@ -116,7 +116,18 @@ class Pdo extends \PDO
 
         self::$logLastQuery = false;
         if ($this->getDriver() == 'mysql') {
-            $this->exec('SET CHARACTER SET utf8');
+            $version = $this->query('select version()')->fetchColumn();
+            $version = (float)mb_substr($version, 0, 6);
+
+            // TODO: Check this is working as expected???
+            if ($version < '5.5.3') {
+                $this->exec('SET CHARACTER SET utf8;');
+                $this->exec('ALTER DATABASE CHARACTER SET utf8 COLLATE utf8_unicode_ci;');
+            } else {
+                $this->exec('SET CHARACTER SET utf8mb4;');
+                $this->exec('ALTER DATABASE CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;');
+            }
+
             if (isset($options['timezone'])) {
                 $this->exec('SET time_zone = \'' . $options['timezone'] . '\'');
             }
