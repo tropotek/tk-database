@@ -12,11 +12,13 @@ abstract class Map
 {
 
     /**
+     * The storage property name, (IE: db column name)
      * @var string
      */
     protected $columnName = '';
 
     /**
+     * The object property name
      * @var string
      */
     protected $propertyName = '';
@@ -128,6 +130,7 @@ abstract class Map
 
 
     /**
+     * A tag to identify misc property settings. (IE: Fro db set 'key' to identify the primary eky property(s))
      * @return string
      */
     public function getTag()
@@ -136,6 +139,7 @@ abstract class Map
     }
 
     /**
+     * A tag to identify misc property settings. (IE: Fro db set 'key' to identify the primary eky property(s))
      * @param string $tag
      */
     public function setTag($tag)

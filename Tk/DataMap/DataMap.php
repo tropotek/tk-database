@@ -14,7 +14,7 @@ class DataMap
 {
 
     /**
-     * @var array
+     * @var Map[]|array
      */
     private $propertyMaps = array();
 
@@ -76,7 +76,7 @@ class DataMap
     /**
      * Gets the list of property mappers.
      *
-     * @param null $tag
+     * @param string $tag
      * @return array
      */
     public function getProperties($tag = null)
@@ -95,7 +95,7 @@ class DataMap
     /**
      * Gets a property map by its name
      *
-     * @param $name
+     * @param string $name
      * @return Map
      */
     public function getProperty($name)
