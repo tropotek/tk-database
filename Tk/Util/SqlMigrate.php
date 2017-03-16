@@ -81,7 +81,15 @@ class SqlMigrate
         $backupFile = $dump->save($this->tempPath);
         $mlist = array();
         try {
+            $phpFiles = array();
             foreach ($list as $file) {
+                if (preg_match('/\.php$/i', basename($file))) {   // Include .php files
+                    $phpFiles[] = $file;
+                } else if ($this->migrateFile($file)) {
+                    $mlist[] = $this->toRelative($file);
+                }
+            }
+            foreach ($phpFiles as $file) {
                 if ($this->migrateFile($file)) {
                     $mlist[] = $this->toRelative($file);
                 }
@@ -160,11 +168,18 @@ class SqlMigrate
         if (substr(basename($file), 0, 1) == '_') return false;
 
         if (preg_match('/\.php$/i', basename($file))) {   // Include .php files
-            include($file);
+            if (is_file($file))
+                include($file);
+            else 
+                return false;
         } else {    // is sql
             // replace any table prefix
-            $sql = file_get_contents($file);
-            $this->db->exec($sql);
+            try {
+                $sql = file_get_contents($file);
+                $this->db->exec($sql);
+            } catch (\Exception $e) {
+                return false;
+            }
         }
         $this->insertPath($file);
         return true;
