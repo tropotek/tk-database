@@ -233,7 +233,7 @@ class SqlMigrate
         $tbl = $this->db->quoteParameter($this->getTable());
         $sql = <<<SQL
 CREATE TABLE IF NOT EXISTS $tbl (
-  path VARCHAR(255) NOT NULL DEFAULT '',
+  path VARCHAR(128) NOT NULL DEFAULT '',
   created TIMESTAMP,
   PRIMARY KEY (path)
 );

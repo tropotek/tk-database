@@ -124,8 +124,8 @@ class Data extends \Tk\Collection
 CREATE TABLE IF NOT EXISTS $tbl (
   `id` INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `foreign_id` INT(10) NOT NULL DEFAULT 0,
-  `foreign_key` VARCHAR(128) NOT NULL DEFAULT '',
-  `key` VARCHAR(255) NOT NULL DEFAULT '',
+  `foreign_key` VARCHAR(64) NOT NULL DEFAULT '',
+  `key` VARCHAR(128) NOT NULL DEFAULT '',
   `value` TEXT,
   UNIQUE `data_foreign_fields` (`foreign_id`, `foreign_key`, `key`)
 ) ENGINE=InnoDB;
@@ -135,8 +135,8 @@ SQL;
 CREATE TABLE IF NOT EXISTS $tbl (
   id SERIAL PRIMARY KEY,
   foreign_id INTEGER NOT NULL DEFAULT 0,
-  foreign_key VARCHAR(128) NOT NULL DEFAULT '',
-  "key" VARCHAR(255),
+  foreign_key VARCHAR(64) NOT NULL DEFAULT '',
+  "key" VARCHAR(128),
   "value" TEXT,
   UNIQUE (foreign_id, foreign_key, "key")
 );
@@ -146,8 +146,8 @@ SQL;
 CREATE TABLE IF NOT EXISTS $tbl (
   id SERIAL PRIMARY KEY,
   foreign_id INTEGER NOT NULL DEFAULT 0,
-  foreign_key VARCHAR(128) NOT NULL DEFAULT '',
-  "key" VARCHAR(255),
+  foreign_key VARCHAR(64) NOT NULL DEFAULT '',
+  "key" VARCHAR(128),
   "value" TEXT,
   UNIQUE (foreign_id, foreign_key, "key")
 );
