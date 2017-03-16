@@ -350,6 +350,7 @@ class Pdo extends \PDO
         try {
             $result = parent::exec($statement);
         } catch (\Exception $e) {
+            $info = $this->errorInfo();
             $e = new Exception(end($info), 0);
             $e->setDump($statement);
             throw $e;
