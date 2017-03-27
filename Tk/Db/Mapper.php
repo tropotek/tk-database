@@ -34,16 +34,22 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
     }
 
     /**
-     *
-     * @return \Tk\DataMap\DataMap
+     * Override to return a valid DataMap
+     * @return \Tk\DataMap\DataMap|null
      */
-    abstract public function getDbMap();
+    public function getDbMap()
+    {
+        return null;
+    }
 
     /**
-     *
-     * @return \Tk\DataMap\DataMap
+     * Override to return a valid DataMap
+     * @return \Tk\DataMap\DataMap|null
      */
-    abstract public function getFormMap();
+    public function getFormMap()
+    {
+        return null;
+    }
 
 
     /**
