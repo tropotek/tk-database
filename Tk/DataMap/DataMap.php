@@ -41,14 +41,26 @@ class DataMap
         foreach ($this->getProperties() as $map) {
             if ($ignoreTag && $map->getTag() == $ignoreTag) continue;
             if (!array_key_exists($map->getColumnName(), $row)) continue;
+
             $pname = $map->getPropertyName();
+            $pvalue = $map->findPropertyValue($row);
+
+
+            // ---------------------------------------------------
+            // This should be in the dataMap\Map object so we can control how to map the data to the object.
+
             if ($object instanceof \stdClass) {
-                $object->$pname = $map->findPropertyValue($row);
+                $object->$pname = $pvalue;
                 continue;
             }
             $prop = $reflect->getProperty($pname);
             $prop->setAccessible(true);
-            $prop->setValue($object, $map->findPropertyValue($row));
+            $prop->setValue($object, $pvalue);
+
+            // ---------------------------------------------------
+
+
+
         }
         return $object;
     }

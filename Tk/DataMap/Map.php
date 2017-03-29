@@ -49,7 +49,7 @@ abstract class Map
      * Return a value ready for insertion into the Model object
      *
      * @param array $row
-     * @return string
+     * @return string|null
      */
     abstract public function findPropertyValue($row);
 
@@ -57,7 +57,7 @@ abstract class Map
      * Return a value ready for insertion into the storage (DB)
      *
      * @param \Tk\Db\ModelInterface $obj
-     * @return string
+     * @return string|null
      */
     abstract public function findColumnValue($obj);
 
@@ -89,7 +89,7 @@ abstract class Map
     }
 
     /**
-     * Allows for getting private properties
+     * Allows for getting of private properties
      *
      * NOTE: For private properties of subclasses see the note above.,.
      *

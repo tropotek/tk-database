@@ -323,13 +323,13 @@ class Pdo extends \PDO
      * @see \PDO::prepare()
      * @see http://www.php.net/manual/en/pdo.prepare.php
      * @param $statement
-     * @param array $options
-     * @return  PDOStatement
+     * @param array $driver_options
+     * @return  PDOStatement|\PDOStatement
      * @throws \PDOException
      */
-    public function prepare($statement, $options = array())
+    public function prepare($statement, $driver_options = array())
     {
-        $result = parent::prepare($statement, $options);
+        $result = parent::prepare($statement, $driver_options);
         return $result;
     }
 
@@ -382,10 +382,11 @@ class Pdo extends \PDO
      * @param string $statement
      * @param int $mode The fetch mode must be one of the PDO::FETCH_* constants.
      * @param mixed $arg3 The second and following parameters are the same as the parameters for PDOStatement::setFetchMode.
+     * @param array $ctorargs
      * @return PDOStatement PDO::query returns a PDOStatement object, or FALSE on failure.
      * @throws \Tk\Db\Exception
      */
-    public function query($statement, $mode = \PDO::ATTR_DEFAULT_FETCH_MODE, $arg3 = null)
+    public function query($statement, $mode = PDO::ATTR_DEFAULT_FETCH_MODE, $arg3 = null, array $ctorargs = array())
     {
         $this->setLastQuery($statement);
         $start = microtime(true);
@@ -463,32 +464,6 @@ class Pdo extends \PDO
         return false;
     }
 
-    /**
-     * Execute a query and return a result object
-     *
-     * @param $sql
-     * @return bool
-     * @throws Exception
-     * @deprecated Use exec(sql)
-     */
-    public function multiQuery($sql)
-    {
-//        $sql = preg_replace("(--.*)", '', $sql);
-//        $queryList = preg_split('/\.*;\s*\n\s*/', $sql);
-//        if (!is_array($queryList) || count($queryList) == 0) {
-//            $e = new Exception('Error in SQL query data');
-//            throw $e;
-//        }
-//        foreach ($queryList as $query) {
-//            $query = trim($query);
-//            if (!$query) {
-//                continue;
-//            }
-//            $this->exec($query);
-//        }
-
-        return $this->exec($sql);
-    }
 
     /**
      * Count a query and return the total possible results

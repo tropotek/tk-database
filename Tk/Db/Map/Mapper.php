@@ -62,7 +62,6 @@ abstract class Mapper implements Mappable
     protected $tableInfo = null;
 
     /**
-     *
      * @var string
      */
     protected $markDeleted = '';
@@ -91,12 +90,14 @@ abstract class Mapper implements Mappable
     static function create($db = null)
     {
         $mapperClass = get_called_class(); // PHP >= v5.5 use: $mapperClass = static::class;
+        if (version_compare(PHP_VERSION, '5.0.0', '>=')) {
+            $mapperClass = static::class;
+        }
         if (!isset(self::$instance[$mapperClass])) {
             self::$instance[$mapperClass] = new $mapperClass($db);
         }
         return self::$instance[$mapperClass];
     }
-
 
     /**
      * Map the data from a DB row to the required object
@@ -212,7 +213,7 @@ abstract class Mapper implements Mappable
         if (!property_exists($obj, $pk)) {
             throw new \Exception('No valid primary key found');
         }
-        //if ($obj->$pk == 0) {
+
         if (!$obj->$pk) {
             $this->insert($obj);
         } else {
@@ -597,7 +598,6 @@ abstract class Mapper implements Mappable
         $this->db = $db;
         return $this;
     }
-
 
 
     /**

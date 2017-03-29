@@ -25,14 +25,14 @@ class Boolean extends Map
         if (isset($row[$cname])) {
             return ($row[$cname] != $cname) ? false : true;
         }
-        return false;
+        return null;
     }
     
     /**
      * Get the DB value
      * 
      * @param mixed $obj
-     * @return string 
+     * @return string|null
      */
     public function findColumnValue($obj)
     {
@@ -40,7 +40,7 @@ class Boolean extends Map
         if ($this->propertyExists($obj, $pname)) {
             return $this->propertyValue($obj, $pname) ? $pname : '';
         }
-        return '';
+        return null;
     }
     
 }

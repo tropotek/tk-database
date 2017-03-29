@@ -32,14 +32,17 @@ abstract class Model implements \Tk\Db\ModelInterface
      * @param string $mapperClass 
      * @param Pdo $db 
      * @return Mapper
-     * @todo should this be a private/protected method and publicly use {mapperClass}::create()?
      */
     static function getMapper($mapperClass = '', $db = null)
     {
         if (!$mapperClass) {
             $mapperClass = get_called_class() . self::$MAPPER_APPEND;
+            if (version_compare(PHP_VERSION, '5.0.0', '>=')) {
+                $mapperClass = static::class . self::$MAPPER_APPEND;
+            }
         }
 
+        //return new $mapperClass($db);
         return $mapperClass::create($db);
     }
 
@@ -101,11 +104,7 @@ abstract class Model implements \Tk\Db\ModelInterface
      */
     public function save()
     {
-        if ($this->getId()) {
-            $this->update();
-        } else {
-            $this->insert();
-        }
+        self::getMapper()->save($this);
     }
 
     /**
@@ -131,14 +130,4 @@ abstract class Model implements \Tk\Db\ModelInterface
         return $this->getId();
     }
 
-    /**
-     * Helper method to generate user hash
-     *
-     * @return string
-     * @throws \Tk\Exception
-     */
-    public function generateHash()
-    {
-        return hash('md5', sprintf('%s', $this->getVolatileId()));
-    }
 }
