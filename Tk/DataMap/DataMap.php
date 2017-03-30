@@ -1,7 +1,7 @@
 <?php
 namespace Tk\DataMap;
 
-use Tk\Db\Map\Model;
+use Tk\Db\ModelInterface;
 
 /**
  * Class DataMap
@@ -19,48 +19,28 @@ class DataMap
     private $propertyMaps = array();
 
 
+
     /**
      * Using the datamap load an object with the values from an array
      *
      * @param array $row
-     * @param null|Model $object
+     * @param null|ModelInterface $object
      * @param string $ignoreTag
-     * @return \stdClass|Model
+     * @return \stdClass|ModelInterface
      * @throws \Tk\Db\Exception
      */
     public function loadObject($row, $object = null, $ignoreTag = '')
     {
-        if ($object && !$object instanceof Model) {
+        if ($object && !$object instanceof ModelInterface) {
             throw new \Tk\Db\Exception('Cannot load a non Model object.');
         }
-        if (!$object) {
-            $object = new \stdClass();
-        }
-        $reflect = new \ReflectionClass($object);
+        if ($object === null) $object = new \stdClass();
+
         /* @var Map $map */
-        foreach ($this->getProperties() as $map) {
+        foreach ($this->getPropertyMaps() as $map) {
             if ($ignoreTag && $map->getTag() == $ignoreTag) continue;
             if (!array_key_exists($map->getColumnName(), $row)) continue;
-
-            $pname = $map->getPropertyName();
-            $pvalue = $map->findPropertyValue($row);
-
-
-            // ---------------------------------------------------
-            // This should be in the dataMap\Map object so we can control how to map the data to the object.
-
-            if ($object instanceof \stdClass) {
-                $object->$pname = $pvalue;
-                continue;
-            }
-            $prop = $reflect->getProperty($pname);
-            $prop->setAccessible(true);
-            $prop->setValue($object, $pvalue);
-
-            // ---------------------------------------------------
-
-
-
+            $map->loadObject($row, $object);
         }
         return $object;
     }
@@ -68,7 +48,7 @@ class DataMap
     /**
      * Using the datamap load an array with the values from an object
      *
-     * @param Model|\stdClass $obj
+     * @param ModelInterface|\stdClass $obj
      * @param array $array
      * @param string $ignoreTag
      * @return array
@@ -76,11 +56,9 @@ class DataMap
     public function loadArray($obj, $array = array(), $ignoreTag = '')
     {
         /* @var $map Map */
-        foreach ($this->getProperties() as $map) {
+        foreach ($this->getPropertyMaps() as $map) {
             if ($ignoreTag && $map->getTag() == $ignoreTag) continue;
-            $cname = $map->getColumnName();
-            $value = $map->findColumnValue($obj);
-            $array[$cname] = $value;
+            $array = $map->loadArray($obj, $array);
         }
         return $array;
     }
@@ -91,7 +69,7 @@ class DataMap
      * @param string $tag
      * @return array
      */
-    public function getProperties($tag = null)
+    public function getPropertyMaps($tag = null)
     {
         if ($tag) {
             $list = array();
@@ -110,7 +88,7 @@ class DataMap
      * @param string $name
      * @return Map
      */
-    public function getProperty($name)
+    public function getPropertyMap($name)
     {
         if (isset($this->propertyMaps[$name])) {
             return $this->propertyMaps[$name];
@@ -123,7 +101,7 @@ class DataMap
      * @param Map $propertyMap
      * @param string $tag
      */
-    public function addProperty($propertyMap, $tag = null)
+    public function addPropertyMap($propertyMap, $tag = null)
     {
         if ($tag) $propertyMap->setTag($tag);
         $this->propertyMaps[$propertyMap->getPropertyName()] = $propertyMap;
@@ -134,9 +112,10 @@ class DataMap
      *
      * @param string $tag
      * @return Map|null
+     * @todo This should be refactored
      */
-    public function currentProperty($tag = null)
+    public function getTopPropertyMap($tag = null)
     {
-        return current($this->getProperties($tag));
+        return current($this->getPropertyMaps($tag));
     }
 }

@@ -13,9 +13,9 @@ use Tk\DataMap\Map;
 class TextEncrypt extends Map
 {
     /**
-     * @var \Tk\Encrypt
+     * @var string
      */
-    private $encrypt = '';
+    private $encryptKey = null;
 
 
     /**
@@ -23,45 +23,51 @@ class TextEncrypt extends Map
      *
      * @param string $propertyName
      * @param string $columnName
-     * @param null|\Tk\Encrypt $encrypt If null lthe default encrypt object will be created
      */
-    public function __construct($propertyName, $columnName = '', $encrypt = null)
+    public function __construct($propertyName, $columnName = '')
     {
         parent::__construct($propertyName, $columnName);
-        if (!$encrypt) {
-            $encrypt = new \Tk\Encrypt();
-        }
-        $this->encrypt = $encrypt;
+
     }
 
     /**
-     * getPropertyValue
-     * 
-     * @param array $row
-     * @return string
+     * @param $key
      */
-    public function findPropertyValue($row)
+    public function setEncryptKey($key)
     {
-        $cname = $this->getColumnName();
-        if (isset($row[$cname])) {
-            return $this->encrypt->decode($row[$cname]);
-        }
-        return '';
+        $this->encryptKey = $key;
     }
-    
+
     /**
-     * Get the DB value
-     * 
-     * @param mixed $obj
-     * @return string 
+     * Map an array column value to an object property value
+     *
+     * @param array $row
+     * @param string $columnName
+     * @return mixed|null
      */
-    public function findColumnValue($obj)
+    public function toPropertyValue($row, $columnName)
     {
-        $pname = $this->getPropertyName();
-        if ($this->propertyExists($obj, $pname)) {
-            return $this->encrypt->encode($this->propertyValue($obj, $pname));
+        $value = parent::toPropertyValue($row, $columnName);
+        if ($value) {
+            $value = \Tk\Encrypt::create($this->encryptKey)->decode($value);
         }
-        return '';
+        return $value;
+    }
+
+    /**
+     * Map an object property value to an array column value
+     *
+     * @param mixed $object
+     * @param string $propertyName
+     * @return string|null
+     */
+    public function toColumnValue($object, $propertyName)
+    {
+        $value = parent::toColumnValue($object, $propertyName);
+        if ($value) {
+            $value = \Tk\Encrypt::create($this->encryptKey)->encode($value);
+        }
+        return $value;
     }
     
 }

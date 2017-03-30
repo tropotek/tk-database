@@ -14,33 +14,35 @@ class Serial extends Map
 {
 
     /**
-     * getPropertyValue
-     * 
+     * Map an array column value to an object property value
+     *
      * @param array $row
-     * @return string
+     * @param string $columnName
+     * @return mixed|null
      */
-    public function findPropertyValue($row)
+    public function toPropertyValue($row, $columnName)
     {
-        $cname = $this->getColumnName();
-        if (isset($row[$cname])) {
-            return unserialize(base64_decode($row[$cname]));
+        $value = parent::toPropertyValue($row, $columnName);
+        if ($value) {
+            $value = unserialize(base64_decode($value));
         }
-        return '';
+        return $value;
     }
-    
+
     /**
-     * Get the DB value
-     * 
-     * @param mixed $obj
-     * @return string 
+     * Map an object property value to an array column value
+     *
+     * @param mixed $object
+     * @param string $propertyName
+     * @return string|null
      */
-    public function findColumnValue($obj)
+    public function toColumnValue($object, $propertyName)
     {
-        $pname = $this->getPropertyName();
-        if ($this->propertyExists($obj, $pname)) {
-            return base64_encode(serialize($this->propertyValue($obj, $pname)));
+        $value = parent::toColumnValue($object, $propertyName);
+        if ($value) {
+            $value = base64_encode(serialize($value));
         }
-        return '';
+        return $value;
     }
 
 }

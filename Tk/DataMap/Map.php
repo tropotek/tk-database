@@ -1,6 +1,8 @@
 <?php
 namespace Tk\DataMap;
 
+use Tk\Db\ModelInterface;
+
 /**
  * Class Iface
  *
@@ -23,7 +25,9 @@ abstract class Map
      */
     protected $propertyName = '';
 
+
     /**
+     * @todo Refactor this tag idea for primary keys in DB maps
      * @var string
      */
     protected $tag = '';
@@ -45,67 +49,73 @@ abstract class Map
         $this->columnName = $columnName;
     }
 
+
+
     /**
-     * Return a value ready for insertion into the Model object
+     * Map an array column value to an object property value
      *
      * @param array $row
-     * @return string|null
+     * @param string $columnName
+     * @return mixed|null
      */
-    abstract public function findPropertyValue($row);
-
-    /**
-     * Return a value ready for insertion into the storage (DB)
-     *
-     * @param \Tk\Db\ModelInterface $obj
-     * @return string|null
-     */
-    abstract public function findColumnValue($obj);
-
-
-    /**
-     * allows for finding private properties
-     *
-     * NOTE: Accessing private properties is possible, but care must be taken
-     * if that private property was defined lower into the inheritance chain.
-     * For example, if class A extends class B, and class B defines a private
-     * property called 'foo', getProperty will throw a ReflectionException.
-     *
-     * Instead, you can loop over getParentClass until it returns false to
-     * look for the private property, at which point you can access and/or
-     * modify its value as needed. (modify this method if needed)
-     *
-     * @param $obj
-     * @param $pname
-     * @return bool
-     */
-    protected function propertyExists($obj, $pname)
+    public function toPropertyValue($row, $columnName)
     {
-        try {
-            $reflect = new \ReflectionClass($obj);
-            $prop = $reflect->getProperty($pname);
-            if ($prop) return true;
-        } catch (\Exception $e) {}
-        return false;
+        if (isset($row[$columnName])) {
+            return $row[$columnName];
+        }
+        return null;
     }
 
     /**
-     * Allows for getting of private properties
+     * Map an object property value to an array column value
+     * Returns null if property not found or value is null
      *
-     * NOTE: For private properties of subclasses see the note above.,.
-     *
-     * @param $obj
-     * @param $pname
-     * @return mixed|null
+     * @param mixed $object
+     * @param string $propertyName
+     * @return string|null
      */
-    protected function propertyValue($obj, $pname)
+    public function toColumnValue($object, $propertyName)
     {
-        $reflect = new \ReflectionClass($obj);
-        $prop = $reflect->getProperty($pname);
-        if ($prop) {
-            $prop->setAccessible(true);
-            return $prop->getValue($obj);
+        if ($this->objectPropertyExists($object, $propertyName)) {
+            return $this->getObjectPropertyValue($object, $propertyName);
         }
         return null;
+    }
+
+    /**
+     * Default function to load an object property with a value
+     *
+     * @param $row
+     * @param ModelInterface|\stdClass $object
+     */
+    public function loadObject($row, $object)
+    {
+        $name = $this->getPropertyName();
+        $value = $this->toPropertyValue($row, $this->getColumnName());
+
+        if ($object instanceof \stdClass) {
+            $object->$name = $value;
+            return;
+        }
+        $reflect = new \ReflectionClass($object);
+        $prop = $reflect->getProperty($name);
+        $prop->setAccessible(true);
+        $prop->setValue($object, $value);
+    }
+
+    /**
+     * Load an array with a map column
+     *
+     * @param ModelInterface|\stdClass $object
+     * @param array $array
+     * @return array
+     */
+    public function loadArray($object, $array)
+    {
+        $name = $this->getColumnName();
+        $value = $this->toColumnValue($object, $this->getPropertyName());
+        $array[$name] = $value;
+        return $array;
     }
 
     /**
@@ -129,8 +139,61 @@ abstract class Map
     }
 
 
+
+    // TODO: the object helper methods may need to be removed/refactored, test to see
+
     /**
-     * A tag to identify misc property settings. (IE: Fro db set 'key' to identify the primary eky property(s))
+     * allows for finding private properties
+     *
+     * NOTE: Accessing private properties is possible, but care must be taken
+     * if that private property was defined lower into the inheritance chain.
+     * For example, if class A extends class B, and class B defines a private
+     * property called 'foo', getProperty will throw a ReflectionException.
+     *
+     * Instead, you can loop over getParentClass until it returns false to
+     * look for the private property, at which point you can access and/or
+     * modify its value as needed. (modify this method if needed)
+     *
+     * @param ModelInterface|\stdClass $object
+     * @param string $name the property name
+     * @return bool
+     */
+    protected function objectPropertyExists($object, $name)
+    {
+        try {
+            $reflect = new \ReflectionClass($object);
+            $prop = $reflect->getProperty($name);
+            if ($prop) return true;
+        } catch (\Exception $e) {}
+        return false;
+    }
+
+    /**
+     * Allows for getting of private properties
+     *
+     * NOTE: For private properties of subclasses see the note above.,.
+     *
+     * @param ModelInterface|\stdClass $object
+     * @param string $name The property name
+     * @return mixed|null
+     */
+    protected function getObjectPropertyValue($object, $name)
+    {
+        $reflect = new \ReflectionClass($object);
+        $property = $reflect->getProperty($name);
+        if ($property) {
+            $property->setAccessible(true);
+            return $property->getValue($object);
+        }
+        return null;
+    }
+
+
+
+    // TODO: the below is to ambiguous, we need to refactor this
+
+    /**
+     * A tag to identify misc property settings. (IE: For db set 'key' to identify the primary key property(s))
      * @return string
      */
     public function getTag()
@@ -139,7 +202,7 @@ abstract class Map
     }
 
     /**
-     * A tag to identify misc property settings. (IE: Fro db set 'key' to identify the primary eky property(s))
+     * A tag to identify misc property settings. (IE: For db set 'key' to identify the primary key property(s))
      * @param string $tag
      */
     public function setTag($tag)

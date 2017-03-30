@@ -12,35 +12,36 @@ use Tk\DataMap\Map;
  */
 class Text extends Map
 {
+    /**
+     * Map an array column value to an object property value
+     *
+     * @param array $row
+     * @param string $columnName
+     * @return string|null
+     */
+    public function toPropertyValue($row, $columnName)
+    {
+        $value = parent::toPropertyValue($row, $columnName);
+        if ($value !== null) {
+            $value .= '';
+        }
+        return $value;
+    }
 
     /**
-     * getPropertyValue
-     * 
-     * @param array $row
-     * @return string
+     * Map an object property value to an array column value
+     *
+     * @param mixed $object
+     * @param string $propertyName
+     * @return string|null
      */
-    public function findPropertyValue($row)
+    public function toColumnValue($object, $propertyName)
     {
-        $cname = $this->getColumnName();
-        if (isset($row[$cname])) {
-            return $row[$cname];
+        $value = parent::toColumnValue($object, $propertyName);
+        if ($value !== null) {
+            $value .= '';
         }
-        return '';
-    }
-    
-    /**
-     * Get the DB value
-     * 
-     * @param mixed $obj
-     * @return string 
-     */
-    public function findColumnValue($obj)
-    {
-        $pname = $this->getPropertyName();
-        if ($this->propertyExists($obj, $pname)) {
-            return $this->propertyValue($obj, $pname);
-        }
-        return '';
+        return $value;
     }
     
 }

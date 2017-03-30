@@ -13,38 +13,54 @@ use Tk\DataMap\Map;
 class Date extends Map
 {
 
+    protected  $format = 'd/m/Y';
+
+
+
     /**
-     * getPropertyValue
-     * 
-     * @param array $row
-     * @return null|\DateTime
+     * @param $format
+     * @return $this
      */
-    public function findPropertyValue($row)
+    public function setDateFormat($format)
     {
-        $cname = $this->getColumnName();
-        if (isset($row[$cname])) {
-            return \Tk\Date::createFormDate($row[$cname]);
-        }
-        return null;
+        $this->format = $format;
+        return $this;
     }
-    
+
     /**
-     * Get the DB value
-     * 
-     * @param mixed $obj
-     * @return string 
+     * Map an array column value to an object property value
+     *
+     * @param array $row
+     * @param string $columnName
+     * @return float|null
      */
-    public function findColumnValue($obj)
+    public function toPropertyValue($row, $columnName)
     {
-        $pname = $this->getPropertyName();
-        if ($this->propertyExists($obj, $pname)) {
-            $value = $this->propertyValue($obj, $pname);
+        $value = parent::toPropertyValue($row, $columnName);
+        if ($value !== null) {
+            // TODO: parse from the $format
+            $value = \Tk\Date::createFormDate($value);
+        }
+        return $value;
+    }
+
+    /**
+     * Map an object property value to an array column value
+     *
+     * @param mixed $object
+     * @param string $propertyName
+     * @return string|null
+     */
+    public function toColumnValue($object, $propertyName)
+    {
+        $value = parent::toColumnValue($object, $propertyName);
+        if ($value !== null) {
             if ($value instanceof \DateTime) {
-                return $value->format(\Tk\Date::$formFormat);
+                return $value->format($this->format);
             }
         }
-        return null;      // <<<----TODO null or 'NULL'
+        return $value;
     }
-    
+
 }
 

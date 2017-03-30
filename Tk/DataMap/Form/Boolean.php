@@ -14,33 +14,39 @@ class Boolean extends Map
 {
 
     /**
-     * getPropertyValue
-     * 
+     * Map an array column value to an object property value
+     *
      * @param array $row
-     * @return boolean
-     */
-    public function findPropertyValue($row)
-    {
-        $cname = $this->getColumnName();
-        if (isset($row[$cname])) {
-            return ($row[$cname] != $cname) ? false : true;
-        }
-        return null;
-    }
-    
-    /**
-     * Get the DB value
-     * 
-     * @param mixed $obj
+     * @param string $columnName
      * @return string|null
      */
-    public function findColumnValue($obj)
+    public function toPropertyValue($row, $columnName)
     {
-        $pname = $this->getPropertyName();
-        if ($this->propertyExists($obj, $pname)) {
-            return $this->propertyValue($obj, $pname) ? $pname : '';
+        $value = parent::toPropertyValue($row, $columnName);
+        if ($value !== null) {
+            if ($value == $columnName || strtolower($value) == 'yes' || strtolower($value) == 'true' || ((int)$value)) {
+                return true;
+            } else {
+                return false;
+            }
         }
-        return null;
+        return $value;
+    }
+
+    /**
+     * Map an object property value to an array column value
+     *
+     * @param mixed $object
+     * @param string $propertyName
+     * @return string|null
+     */
+    public function toColumnValue($object, $propertyName)
+    {
+        $value = parent::toColumnValue($object, $propertyName);
+        if ($value !== null) {
+            $value = ((int)$value != 0) ? $propertyName : '';
+        }
+        return $value;
     }
     
 }

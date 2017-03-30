@@ -4,41 +4,27 @@ namespace Tk\DataMap\Db;
 use Tk\DataMap\Map;
 
 /**
- * Class Date
+ * Class Number
+ * Handle Integer types
  *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
-class Date extends Map
+class Integer extends Map
 {
-
-    protected  $format = 'Y-m-d H:i:s';
-
-    /**
-     * @param $format
-     * @return $this
-     */
-    public function setDateFormat($format)
-    {
-        $this->format = $format;
-        return $this;
-    }
 
     /**
      * Map an array column value to an object property value
      *
      * @param array $row
      * @param string $columnName
-     * @return float|null
+     * @return int|null
      */
     public function toPropertyValue($row, $columnName)
     {
         $value = parent::toPropertyValue($row, $columnName);
-        if ($value !== null) {
-            // TODO: parse from the $format
-            $value = \Tk\Date::create($value);
-        }
+        if ($value !== null) $value = (int)$value;
         return $value;
     }
 
@@ -52,11 +38,7 @@ class Date extends Map
     public function toColumnValue($object, $propertyName)
     {
         $value = parent::toColumnValue($object, $propertyName);
-        if ($value !== null) {
-            if ($value instanceof \DateTime) {
-                return $value->format($this->format);
-            }
-        }
+        if ($value !== null) $value .= '';
         return $value;
     }
     

@@ -139,7 +139,7 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
     public function selectFrom($from = '', $where = '', $tool = null)
     {
         if ($tool && $tool->getOrderProperty()) {   // Do nothing if a property cannot be found in the tool
-            $mapProperty = $this->getDbMap()->getProperty($tool->getOrderProperty());
+            $mapProperty = $this->getDbMap()->getPropertyMap($tool->getOrderProperty());
             if ($mapProperty) {
                 $orderBy = $tool->getOrderBy();
                 $orderBy = str_replace($tool->getOrderProperty(), $mapProperty->getColumnName(), $orderBy);

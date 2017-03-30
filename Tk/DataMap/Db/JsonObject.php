@@ -12,35 +12,36 @@ use Tk\DataMap\Map;
  */
 class JsonObject extends Map
 {
+    /**
+     * Map an array column value to an object property value
+     *
+     * @param array $row
+     * @param string $columnName
+     * @return mixed|null
+     */
+    public function toPropertyValue($row, $columnName)
+    {
+        $value = parent::toPropertyValue($row, $columnName);
+        if ($value) {
+            $value = json_decode($value);
+        }
+        return $value;
+    }
 
     /**
-     * getPropertyValue
-     * 
-     * @param array $row
-     * @return string
+     * Map an object property value to an array column value
+     *
+     * @param mixed $object
+     * @param string $propertyName
+     * @return string|null
      */
-    public function findPropertyValue($row)
+    public function toColumnValue($object, $propertyName)
     {
-        $cname = $this->getColumnName();
-        if (isset($row[$cname])) {
-            return  json_decode($row[$cname]);
+        $value = parent::toColumnValue($object, $propertyName);
+        if ($value) {
+            $value = json_encode($value);
         }
-        return '';
-    }
-    
-    /**
-     * Get the DB value
-     * 
-     * @param mixed $obj
-     * @return string 
-     */
-    public function findColumnValue($obj)
-    {
-        $pname = $this->getPropertyName();
-        if ($this->propertyExists($obj, $pname)) {
-            return json_encode($this->propertyValue($obj, $pname));
-        }
-        return '';
+        return $value;
     }
     
 }
