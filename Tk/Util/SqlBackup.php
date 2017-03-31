@@ -65,10 +65,10 @@ class SqlBackup
         $file = $this->db->getDatabaseName() . "_" . $this->db->getDriver() . "_" . date("Y-m-d-H-i-s").".sql";
         $filepath = $path.'/'.$file;
 
-        $host = escapeshellarg($this->db->getOption('db.host'));
-        $name = escapeshellarg($this->db->getOption('db.name'));
-        $user = escapeshellarg($this->db->getOption('db.user'));
-        $pass = escapeshellarg($this->db->getOption('db.pass'));
+        $host = escapeshellarg($this->db->getOption('host'));
+        $name = escapeshellarg($this->db->getOption('name'));
+        $user = escapeshellarg($this->db->getOption('user'));
+        $pass = escapeshellarg($this->db->getOption('pass'));
 
         $command = '';
         // TODO: create a windows valid commands ????

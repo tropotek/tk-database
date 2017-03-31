@@ -148,11 +148,11 @@ class Pdo extends \PDO
      * Call this to create/get a DB instance
      *
      * $options = array(
-     *   'db.type' => 'mysql',
-     *   'db.host' => 'localhost',
-     *   'db.name' => 'database',
-     *   'db.user' => 'user',
-     *   'db.pass' => 'pass',
+     *   'type' => 'mysql',
+     *   'host' => 'localhost',
+     *   'name' => 'database',
+     *   'user' => 'user',
+     *   'pass' => 'pass',
      *   'timezone' => '',              // optional
      *   'mysql.ansi.quotes' => true   // optional
      * );
@@ -167,23 +167,26 @@ class Pdo extends \PDO
      * then the 'default' value is used for the name, therefore:
      *   Pdo::getInstance($options) is a valid call
      *
-     * @param string|array $name
-     * @param array $options
-     * @return Pdo
+     * @param string|array $name  (Optional)
+     * @param array $options 
+     * @return Pdo|null
+     * @tot Not secure puting the DB login details within the object
      */
-    public static function getInstance($name = 'default', $options = array())
+    public static function getInstance($name = '', $options = array())
     {
-        // allows us to omit the name an use the default
-        if (is_array($name) && !count($options)) {
-            $options = $name;
-            $name = 'default';
+        // return the first available DB connection if no params
+        if (!$name && !count($options) && count(self::$instance)) {
+            return current(self::$instance);
         }
-
+        
         if (!isset(self::$instance[$name])) {
-            $dns = $options['db.type'] . ':dbname=' . $options['db.name'] . ';host=' . $options['db.host'];
-            self::$instance[$name] = new self($dns, $options['db.user'], $options['db.pass'], $options);
+            $dns = $options['type'] . ':dbname=' . $options['name'] . ';host=' . $options['host'];
+            self::$instance[$name] = new self($dns, $options['user'], $options['pass'], $options);
+            return self::$instance[$name];
+        } else {
+            return self::$instance[$name];
         }
-        return self::$instance[$name];
+        return null;
     }
 
 
