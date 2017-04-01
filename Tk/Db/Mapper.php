@@ -31,7 +31,10 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
     public function __construct($db)
     {
         parent::__construct($db);
-        $this->getDbMap();
+        $map = $this->getDbMap();
+        if (count($map->getPropertyMaps('key'))) {
+            $this->setPrimaryKey(current($map->getPropertyMaps('key'))->getColumnName());
+        }
         $this->getFormMap();
     }
 

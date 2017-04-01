@@ -107,15 +107,4 @@ class DataMap
         $this->propertyMaps[$propertyMap->getPropertyName()] = $propertyMap;
     }
 
-    /**
-     * Return the property map at the top of the list
-     *
-     * @param string $tag
-     * @return Map|null
-     * @todo This should be refactored
-     */
-    public function getTopPropertyMap($tag = null)
-    {
-        return current($this->getPropertyMaps($tag));
-    }
 }
