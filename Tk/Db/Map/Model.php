@@ -37,9 +37,9 @@ abstract class Model implements \Tk\Db\ModelInterface
     {
         if (!$mapperClass) {
             $mapperClass = get_called_class() . self::$MAPPER_APPEND;
-            if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
-                $mapperClass = static::class . self::$MAPPER_APPEND;
-            }
+//            if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
+//                $mapperClass = static::class . self::$MAPPER_APPEND;
+//            }
         }
 
         //return new $mapperClass($db);
