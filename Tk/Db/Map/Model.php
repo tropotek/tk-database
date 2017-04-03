@@ -104,7 +104,15 @@ abstract class Model implements \Tk\Db\ModelInterface
      */
     public function save()
     {
-        self::getMapper()->save($this);
+        $pk = self::getMapper()->getPrimaryKey();
+        if (!property_exists($this, $pk)) {
+            throw new \Exception('No valid primary key found');
+        }
+        if (!$this->$pk) {
+            $this->insert();
+        } else {
+            $this->update();
+        }
     }
 
     /**

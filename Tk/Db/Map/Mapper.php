@@ -170,7 +170,6 @@ abstract class Mapper implements Mappable
             $seq = $this->getTable().'_'.$this->getPrimaryKey().'_seq';
         }
         $id = (int)$this->getDb()->lastInsertId($seq);
-
         return $id;
     }
 
@@ -199,26 +198,6 @@ abstract class Mapper implements Mappable
         $stmt->execute($bind);
 
         return $stmt->rowCount();
-    }
-
-    /**
-     * Save the object, let the code decide weather to insert ot update the db.
-     *
-     * @param Model $obj
-     * @throws \Exception
-     */
-    public function save($obj)
-    {
-        $pk = $this->getPrimaryKey();
-        if (!property_exists($obj, $pk)) {
-            throw new \Exception('No valid primary key found');
-        }
-
-        if (!$obj->$pk) {
-            $this->insert($obj);
-        } else {
-            $this->update($obj);
-        }
     }
 
     /**

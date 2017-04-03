@@ -39,7 +39,6 @@ class DataMap
         /* @var Map $map */
         foreach ($this->getPropertyMaps() as $map) {
             if ($ignoreTag && $map->getTag() == $ignoreTag) continue;
-            if (!array_key_exists($map->getColumnName(), $row)) continue;
             $map->loadObject($row, $object);
         }
         return $object;
