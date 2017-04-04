@@ -129,6 +129,17 @@ abstract class Map
     }
 
     /**
+     * return true if the column exists in the array
+     *
+     * @param ModelInterface|\stdClass $object
+     * @return bool
+     */
+    public function hasProperty($object)
+    {
+        return $this->objectPropertyExists($object, $this->getPropertyName());
+    }
+
+    /**
      * This is the data source (DB) column name.
      *
      * @return string
@@ -136,6 +147,17 @@ abstract class Map
     public function getColumnName()
     {
         return $this->columnName;
+    }
+
+    /**
+     * return true if the column exists in the array
+     *
+     * @param array $array
+     * @return bool
+     */
+    public function hasColumn($array)
+    {
+        return array_key_exists($this->getColumnName(), $array);
     }
 
 

@@ -82,7 +82,7 @@ abstract class Model implements \Tk\Db\ModelInterface
     public function insert()
     {
         $id = self::getMapper()->insert($this);
-        $this->setId($id);
+        $this->setId($id);  // Has to be here cause of private property
         return $id;
     }
 
@@ -104,15 +104,7 @@ abstract class Model implements \Tk\Db\ModelInterface
      */
     public function save()
     {
-        $pk = self::getMapper()->getPrimaryKey();
-        if (!property_exists($this, $pk)) {
-            throw new \Exception('No valid primary key found');
-        }
-        if (!$this->$pk) {
-            $this->insert();
-        } else {
-            $this->update();
-        }
+        self::getMapper()->save($this);
     }
 
     /**

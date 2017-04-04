@@ -222,6 +222,29 @@ abstract class Mapper implements Mappable
         return $stmt->rowCount();
     }
 
+
+    /**
+     * A Utility method that checks the id and does and insert
+     * or an update  based on the objects current state
+     *
+     * @param Model $obj
+     * @throws \Exception
+     */
+    public function save($obj)
+    {
+        $pk = $this->getPrimaryKey();
+        if (!property_exists($obj, $pk)) {
+            throw new \Exception('No valid primary key found');
+        }
+        if (!$obj->$pk) {
+            $obj->insert();
+        } else {
+            $obj->update();
+        }
+    }
+
+
+
     /**
      * A select query using a prepared statement. Less control
      *

@@ -180,13 +180,32 @@ class Pdo extends \PDO
         }
         
         if (!isset(self::$instance[$name])) {
-            $dns = $options['type'] . ':dbname=' . $options['name'] . ';host=' . $options['host'];
-            self::$instance[$name] = new self($dns, $options['user'], $options['pass'], $options);
-            return self::$instance[$name];
-        } else {
+            self::$instance[$name] = static::create($options);
             return self::$instance[$name];
         }
-        return null;
+        return self::$instance[$name];
+    }
+
+    /**
+     * Call this to create a new DB instance
+     *
+     * $options = array(
+     *   'type' => 'mysql',
+     *   'host' => 'localhost',
+     *   'name' => 'database',
+     *   'user' => 'user',
+     *   'pass' => 'pass',
+     *   'timezone' => '',              // optional
+     *   'mysql.ansi.quotes' => true   // optional
+     * );
+     * @param $options
+     * @return Pdo
+     */
+    public static function create($options)
+    {
+        $dns = $options['type'] . ':dbname=' . $options['name'] . ';host=' . $options['host'];
+        $db = new self($dns, $options['user'], $options['pass'], $options);
+        return $db;
     }
 
 
