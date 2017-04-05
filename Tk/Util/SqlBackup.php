@@ -32,38 +32,19 @@ class SqlBackup
     }
 
     /**
-     * Restore a sql
+     * Restore an sql file
      *
-     * @param $sqlFile
+     * @param string $sqlFile
+     * @throws Exception
+     * @throws \Tk\Exception
      */
     public function restore($sqlFile)
     {
-        $this->db->dropAllTables(true);
-        $this->db->exec(file_get_contents($sqlFile));
-    }
-
-    /**
-     * Save the sql to a path.
-     *
-     * The file name will be in the format of: {DbName}_2016-01-01-12-00-00.sql
-     *
-     *
-     * @param $path
-     * @return bool|string Return the sql filename  on success false on fail
-     * @throws Exception
-     */
-    public function save($path)
-    {
-        $path = rtrim($path, '/');
-        if (!is_dir($path)) {
-            mkdir($path, 0777, true);
+        //  $this->db->dropAllTables(true);     // TODO: leave this up to the user
+        //  $this->db->exec(file_get_contents($sqlFile));           // Remove, no good for large backups....
+        if (!is_readable($sqlFile)) {
+            return;
         }
-        if (!is_writable($path)) {
-            throw new \Tk\Db\Exception('Cannot access path: ' . $path);
-        }
-
-        $file = $this->db->getDatabaseName() . "_" . $this->db->getDriver() . "_" . date("Y-m-d-H-i-s").".sql";
-        $filepath = $path.'/'.$file;
 
         $host = escapeshellarg($this->db->getOption('host'));
         $name = escapeshellarg($this->db->getOption('name'));
@@ -73,11 +54,56 @@ class SqlBackup
         $command = '';
         // TODO: create a windows valid commands ????
         if ('mysql' == $this->db->getDriver()) {
-            //$command = sprintf('mysqldump --opt -h %s -u %s -p%s %s', $host, $user, $pass, $name);
-            $command = sprintf('mysqldump --opt -h %s -u %s -p%s %s > %s', $host, $user, $pass, $name, $filepath);
+            $command = sprintf('mysql %s -h %s -u %s -p%s < %s', $name, $host, $user, $pass, escapeshellarg($sqlFile));
         } else if ('pgsql' == $this->db->getDriver()) {
             //$command = sprintf('export PGPASSWORD=%s && pg_dump -h %s -U %s %s', $pass, $host, $user, $name);
-            $command = sprintf('export PGPASSWORD=%s && pg_dump --inserts -O -h %s -U %s %s > %s', $pass, $host, $user, $name, $filepath);
+            //$command = sprintf('export PGPASSWORD=%s && pg_dump --inserts -O -h %s -U %s %s > %s', $pass, $host, $user, $name, $filepath);
+            throw new \Tk\Exception('Not implemented yet!!!! Finders Keepers, Guess you have some work to do...');
+        }
+        exec($command, $out, $ret);
+        if ($ret != 0) {
+            throw new \Tk\Db\Exception(implode("\n", $out));
+        }
+
+
+    }
+
+    /**
+     * Save the sql to a path.
+     *
+     * The file name will be in the format of: {DbName}_2016-01-01-12-00-00.sql
+     * if the path does not already contain a .sql file extension
+     *
+     * @param $path
+     * @return bool|string Return the sql filename  on success false on fail
+     * @throws Exception
+     */
+    public function save($path)
+    {
+        $sqlFile = $path;
+        if (!preg_match('/\.sql$/', $sqlFile)) {
+            $path = rtrim($path, '/');
+            if (!is_dir($path)) {
+                mkdir($path, 0777, true);
+            }
+            if (!is_writable($path)) {
+                throw new \Tk\Db\Exception('Cannot access path: ' . $path);
+            }
+            $file = $this->db->getDatabaseName() . "_" . $this->db->getDriver() . "_" . date("Y-m-d-H-i-s").".sql";
+            $sqlFile = $path.'/'.$file;
+        }
+
+        $host = escapeshellarg($this->db->getOption('host'));
+        $name = escapeshellarg($this->db->getOption('name'));
+        $user = escapeshellarg($this->db->getOption('user'));
+        $pass = escapeshellarg($this->db->getOption('pass'));
+
+        $command = '';
+        // TODO: create a windows valid commands ????
+        if ('mysql' == $this->db->getDriver()) {
+            $command = sprintf('mysqldump --opt -h %s -u %s -p%s %s > %s', $host, $user, $pass, $name, escapeshellarg($sqlFile));
+        } else if ('pgsql' == $this->db->getDriver()) {
+            $command = sprintf('export PGPASSWORD=%s && pg_dump --inserts -O -h %s -U %s %s > %s', $pass, $host, $user, $name, escapeshellarg($sqlFile));
         }
 
         // Error check
@@ -88,13 +114,13 @@ class SqlBackup
         exec($command, $out, $ret);
 
         if ($ret != 0) {
-            throw new \Tk\Db\Exception(file_get_contents($filepath));
+            throw new \Tk\Db\Exception(implode("\n", $out));
         }
-        if(filesize($filepath) <= 0) {
-            throw new \Tk\Db\Exception('Size of file '.$filepath.' is ' . filesize($filepath));
+        if(filesize($sqlFile) <= 0) {
+            throw new \Tk\Db\Exception('Size of file '.$sqlFile.' is ' . filesize($sqlFile));
         }
 
-        return $filepath;
+        return $sqlFile;
     }
 
 }
