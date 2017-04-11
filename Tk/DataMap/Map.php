@@ -97,10 +97,13 @@ abstract class Map
             $object->$name = $value;
             return;
         }
-        $reflect = new \ReflectionClass($object);
-        $prop = $reflect->getProperty($name);
-        $prop->setAccessible(true);
-        $prop->setValue($object, $value);
+
+        \Tk\Object::setObjectPropertyValue($object, $name, $value);
+
+//        $reflect = new \ReflectionClass($object);
+//        $prop = $reflect->getProperty($name);
+//        $prop->setAccessible(true);
+//        $prop->setValue($object, $value);
     }
 
     /**
@@ -182,12 +185,13 @@ abstract class Map
      */
     protected function objectPropertyExists($object, $name)
     {
-        try {
-            $reflect = new \ReflectionClass($object);
-            $prop = $reflect->getProperty($name);
-            if ($prop) return true;
-        } catch (\Exception $e) {}
-        return false;
+        return \Tk\Object::objectPropertyExists($object, $name);
+//        try {
+//            $reflect = new \ReflectionClass($object);
+//            $prop = $reflect->getProperty($name);
+//            if ($prop) return true;
+//        } catch (\Exception $e) {}
+//        return false;
     }
 
     /**
@@ -201,13 +205,14 @@ abstract class Map
      */
     protected function getObjectPropertyValue($object, $name)
     {
-        $reflect = new \ReflectionClass($object);
-        $property = $reflect->getProperty($name);
-        if ($property) {
-            $property->setAccessible(true);
-            return $property->getValue($object);
-        }
-        return null;
+        return \Tk\Object::getObjectPropertyValue($object, $name);
+//        $reflect = new \ReflectionClass($object);
+//        $property = $reflect->getProperty($name);
+//        if ($property) {
+//            $property->setAccessible(true);
+//            return $property->getValue($object);
+//        }
+//        return null;
     }
 
 
