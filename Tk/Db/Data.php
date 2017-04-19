@@ -44,28 +44,28 @@ class Data extends \Tk\Collection
     /**
      * @var int
      */
-    protected $foreignId = 0;
+    protected $fid = 0;
     
     /**
      * @var string
      */
-    protected $foreignKey = 'system';
+    protected $fkey = 'system';
 
 
     /**
      * Data constructor.
      * 
-     * @param int $foreignId
-     * @param string $foreignKey
+     * @param int $fid
+     * @param string $fkey
      * @param string $table
      */
-    public function __construct($foreignKey = 'system', $foreignId = 0, $table = '')
+    public function __construct($fkey = 'system', $fid = 0, $table = '')
     {
         parent::__construct();
         if (!$table) $table = self::$DB_TABLE;
         $this->table = $table;
-        $this->foreignKey = $foreignKey;
-        $this->foreignId = $foreignId;
+        $this->fkey = $fkey;
+        $this->fid = $fid;
 
     }
 
@@ -73,15 +73,15 @@ class Data extends \Tk\Collection
      * Creates an instance of the Data object and loads that data from the DB
      * By Default this method uses the Tk\Config::getDb() to get the database.
      *
-     * @param string $foreignKey
-     * @param int $foreignId
+     * @param string $fkey
+     * @param int $fid
      * @param string $table
      * @param Pdo|null $db
      * @return static
      */
-    public static function create($foreignKey = 'system', $foreignId = 0, $table = '', $db = null)
+    public static function create($fkey = 'system', $fid = 0, $table = '', $db = null)
     {
-        $obj = new static($foreignKey, $foreignId, $table);
+        $obj = new static($fkey, $fid, $table);
         if (!$db) $db = \Tk\Config::getInstance()->getDb();
         $obj->setDb($db);
         $obj->load();
@@ -123,36 +123,36 @@ class Data extends \Tk\Collection
             $sql = <<<SQL
 CREATE TABLE IF NOT EXISTS $tbl (
   `id` INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  `foreign_id` INT(10) NOT NULL DEFAULT 0,
-  `foreign_key` VARCHAR(64) NOT NULL DEFAULT '',
+  `fid` INT(10) NOT NULL DEFAULT 0,
+  `fkey` VARCHAR(64) NOT NULL DEFAULT '',
   `key` VARCHAR(128) NOT NULL DEFAULT '',
   `value` TEXT,
-  UNIQUE `data_foreign_fields` (`foreign_id`, `foreign_key`, `key`),
-  KEY `foreign_id` (`foreign_id`)
+  UNIQUE `data_foreign_fields` (`fid`, `fkey`, `key`),
+  KEY `fid` (`fid`)
 ) ENGINE=InnoDB;
 SQL;
         } else if ($this->getDb()->getDriver() == 'pgsql') {
             $sql = <<<SQL
 CREATE TABLE IF NOT EXISTS $tbl (
   id SERIAL PRIMARY KEY,
-  foreign_id INTEGER NOT NULL DEFAULT 0,
-  foreign_key VARCHAR(64) NOT NULL DEFAULT '',
+  fid INTEGER NOT NULL DEFAULT 0,
+  fkey VARCHAR(64) NOT NULL DEFAULT '',
   "key" VARCHAR(128),
   "value" TEXT,
-  UNIQUE (foreign_id, foreign_key, "key"),
-  KEY foreign_id (foreign_id)
+  UNIQUE (fid, fkey, "key"),
+  KEY fid (fid)
 );
 SQL;
         } else if ($this->getDb()->getDriver() == 'sqlite') {
             $sql = <<<SQL
 CREATE TABLE IF NOT EXISTS $tbl (
   id SERIAL PRIMARY KEY,
-  foreign_id INTEGER NOT NULL DEFAULT 0,
-  foreign_key VARCHAR(64) NOT NULL DEFAULT '',
+  fid INTEGER NOT NULL DEFAULT 0,
+  fkey VARCHAR(64) NOT NULL DEFAULT '',
   "key" VARCHAR(128),
   "value" TEXT,
-  UNIQUE (foreign_id, foreign_key, "key"),
-  KEY foreign_id (foreign_id)
+  UNIQUE (fid, fkey, "key"),
+  KEY fid (fid)
 );
 SQL;
         }
@@ -166,36 +166,36 @@ SQL;
     /**
      * @return int
      */
-    public function getForeignId()
+    public function getFid()
     {
-        return $this->foreignId;
+        return $this->fid;
     }
 
     /**
-     * @param int $foreignId
+     * @param int $fid
      * @return $this
      */
-    public function setForeignId($foreignId)
+    public function setFid($fid)
     {
-        $this->foreignId = $foreignId;
+        $this->fid = $fid;
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getForeignKey()
+    public function getFkey()
     {
-        return $this->foreignKey;
+        return $this->fkey;
     }
 
     /**
-     * @param string $foreignKey
+     * @param string $fkey
      * @return $this
      */
-    public function setForeignKey($foreignKey)
+    public function setFkey($fkey)
     {
-        $this->foreignKey = $foreignKey;
+        $this->fkey = $fkey;
         return $this;
     }
 
@@ -216,8 +216,8 @@ SQL;
      */
     public function load()
     {
-        $sql = sprintf('SELECT * FROM %s WHERE foreign_id = %d AND foreign_key = %s ', $this->db->quoteParameter($this->getTable()),
-            (int)$this->foreignId, $this->db->quote($this->foreignKey));
+        $sql = sprintf('SELECT * FROM %s WHERE fid = %d AND fkey = %s ', $this->db->quoteParameter($this->getTable()),
+            (int)$this->fid, $this->db->quote($this->fkey));
         Pdo::$logLastQuery = false;
         $stmt = $this->db->query($sql);
         $stmt->setFetchMode(\PDO::FETCH_OBJ);
@@ -285,12 +285,12 @@ SQL;
         $value = $this->prepareSetValue($value);
 
         if ($this->dbHas($key)) {
-            $sql = sprintf('UPDATE %s SET value = %s WHERE %s = %s AND foreign_id = %d AND foreign_key = %s ',
+            $sql = sprintf('UPDATE %s SET value = %s WHERE %s = %s AND fid = %d AND fkey = %s ',
                 $this->db->quoteParameter($this->getTable()), $this->db->quote($value), $this->db->quoteParameter('key'), $this->db->quote($key),
-                (int)$this->foreignId, $this->db->quote($this->foreignKey) );
+                (int)$this->fid, $this->db->quote($this->fkey) );
         } else {
-            $sql = sprintf('INSERT INTO %s (foreign_id, foreign_key, %s, value) VALUES (%d, %s, %s, %s) ',
-                $this->db->quoteParameter($this->getTable()), $this->db->quoteParameter('key'), (int)$this->foreignId, $this->db->quote($this->foreignKey),
+            $sql = sprintf('INSERT INTO %s (fid, fkey, %s, value) VALUES (%d, %s, %s, %s) ',
+                $this->db->quoteParameter($this->getTable()), $this->db->quoteParameter('key'), (int)$this->fid, $this->db->quote($this->fkey),
                 $this->db->quote($key), $this->db->quote($value));
         }
         Pdo::$logLastQuery = false;
@@ -307,8 +307,8 @@ SQL;
      */
     protected function dbGet($key)
     {
-        $sql = sprintf('SELECT * FROM %s WHERE %s = %s AND foreign_id = %d AND foreign_key = %s ', $this->db->quoteParameter($this->getTable()),   $this->db->quoteParameter('key'),
-            $this->db->quote($key), (int)$this->foreignId, $this->db->quote($this->foreignKey));
+        $sql = sprintf('SELECT * FROM %s WHERE %s = %s AND fid = %d AND fkey = %s ', $this->db->quoteParameter($this->getTable()),   $this->db->quoteParameter('key'),
+            $this->db->quote($key), (int)$this->fid, $this->db->quote($this->fkey));
         Pdo::$logLastQuery = false;
         $row = $this->db->query($sql)->fetchObject();
         Pdo::$logLastQuery = true;
@@ -326,8 +326,8 @@ SQL;
      */
     protected function dbHas($key)
     {
-        $sql = sprintf('SELECT * FROM %s WHERE %s = %s AND foreign_id = %d AND foreign_key = %s ', $this->db->quoteParameter($this->getTable()), $this->db->quoteParameter('key'),
-            $this->db->quote($key), (int)$this->foreignId, $this->db->quote($this->foreignKey));
+        $sql = sprintf('SELECT * FROM %s WHERE %s = %s AND fid = %d AND fkey = %s ', $this->db->quoteParameter($this->getTable()), $this->db->quoteParameter('key'),
+            $this->db->quote($key), (int)$this->fid, $this->db->quote($this->fkey));
         Pdo::$logLastQuery = false;
         $res = $this->db->query($sql);
         Pdo::$logLastQuery = true;
@@ -343,8 +343,8 @@ SQL;
      */
     protected function dbDelete($key)
     {
-        $sql = sprintf('DELETE FROM %s WHERE %s = %s AND foreign_id = %d AND foreign_key = %s ', $this->db->quoteParameter($this->getTable()),  $this->db->quoteParameter('key'),
-            $this->db->quote($key), (int)$this->foreignId, $this->db->quote($this->foreignKey));
+        $sql = sprintf('DELETE FROM %s WHERE %s = %s AND fid = %d AND fkey = %s ', $this->db->quoteParameter($this->getTable()),  $this->db->quoteParameter('key'),
+            $this->db->quote($key), (int)$this->fid, $this->db->quote($this->fkey));
         Pdo::$logLastQuery = false;
         $this->db->exec($sql);
         Pdo::$logLastQuery = true;

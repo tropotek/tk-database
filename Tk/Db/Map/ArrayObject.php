@@ -184,7 +184,7 @@ class ArrayObject implements \Iterator, \Countable
     /**
      * Return the element at the current index
      *
-     * @return Model
+     * @return \Tk\Db\ModelInterface
      */
     public function current()
     {
@@ -194,7 +194,7 @@ class ArrayObject implements \Iterator, \Countable
     /**
      * Increment the counter
      *
-     * @return Model
+     * @return \Tk\Db\ModelInterface
      */
     public function next()
     {
