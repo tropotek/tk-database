@@ -347,7 +347,6 @@ abstract class Mapper implements Mappable
         if ($where) {
             $where = 'WHERE ' . $where;
         }
-
         $distinct = '';
         if ($tool->isDistinct()) {
             $distinct = 'DISTINCT';
