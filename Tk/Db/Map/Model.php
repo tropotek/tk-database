@@ -130,4 +130,11 @@ abstract class Model implements \Tk\Db\ModelInterface
         return $this->getId();
     }
 
+    /**
+     * Override this to create a validation method to check your model for errors
+     * Handy for use with forms and before saving the data to the DB
+     *
+     * @toto See if this is really needed. Maybe create an interface....
+     */
+    public function validate() { return array(); }
 }
