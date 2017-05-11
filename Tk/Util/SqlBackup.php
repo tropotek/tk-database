@@ -84,7 +84,7 @@ class SqlBackup
         if (!preg_match('/\.sql$/', $sqlFile)) {
             $path = rtrim($path, '/');
             if (!is_dir($path)) {
-                mkdir($path, 0777, true);
+                mkdir($path, \Tk\Config::getInstance()->getDirMask(), true);
             }
             if (!is_writable($path)) {
                 throw new \Tk\Db\Exception('Cannot access path: ' . $path);
