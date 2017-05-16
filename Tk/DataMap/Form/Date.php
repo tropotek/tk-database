@@ -12,7 +12,10 @@ use Tk\DataMap\Map;
  */
 class Date extends Map
 {
-
+    /**
+     * TODO: make this configurable
+     * @var string
+     */
     protected  $format = 'd/m/Y';
 
 
@@ -54,10 +57,8 @@ class Date extends Map
     public function toColumnValue($object, $propertyName)
     {
         $value = parent::toColumnValue($object, $propertyName);
-        if ($value !== null) {
-            if ($value instanceof \DateTime) {
-                return $value->format($this->format);
-            }
+        if ($value !== null && $value instanceof \DateTime) {
+            return $value->format($this->format);
         }
         return $value;
     }
