@@ -1,7 +1,6 @@
 <?php
 namespace Tk\DataMap\Form;
 
-use Tk\DataMap\Map;
 
 /**
  * Class Boolean
@@ -10,28 +9,28 @@ use Tk\DataMap\Map;
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
-class Boolean extends Map
+class Boolean extends \Tk\DataMap\Db\Boolean
 {
 
-    /**
-     * Map an array column value to an object property value
-     *
-     * @param array $row
-     * @param string $columnName
-     * @return string|null
-     */
-    public function toPropertyValue($row, $columnName)
-    {
-        $value = parent::toPropertyValue($row, $columnName);
-        if ($value !== null) {
-            if ($value == $columnName || strtolower($value) == 'yes' || strtolower($value) == 'true' || ((int)$value)) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        return $value;
-    }
+//    /**
+//     * Map an array column value to an object property value
+//     *
+//     * @param array $row
+//     * @param string $columnName
+//     * @return string|null
+//     */
+//    public function toPropertyValue($row, $columnName)
+//    {
+//        $value = parent::toPropertyValue($row, $columnName);
+//        if ($value !== null) {
+//            if ($value == $columnName || strtolower($value) == 'yes' || strtolower($value) == 'true' || ((int)$value)) {
+//                return true;
+//            } else {
+//                return false;
+//            }
+//        }
+//        return $value;
+//    }
 
     /**
      * Map an object property value to an array column value

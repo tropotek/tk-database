@@ -12,6 +12,7 @@ use Tk\DataMap\Map;
  */
 class Text extends Map
 {
+
     /**
      * Map an array column value to an object property value
      *

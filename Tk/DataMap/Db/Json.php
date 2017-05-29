@@ -4,43 +4,26 @@ namespace Tk\DataMap\Db;
 use Tk\DataMap\Map;
 
 /**
- * Class Date
+ * Class String
  *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
-class Date extends Map
+class Json extends Map
 {
-
-    /**
-     * @var string
-     */
-    protected  $format = 'Y-m-d H:i:s';
-
-    /**
-     * @param $format
-     * @return $this
-     */
-    public function setDateFormat($format)
-    {
-        $this->format = $format;
-        return $this;
-    }
-
     /**
      * Map an array column value to an object property value
      *
      * @param array $row
      * @param string $columnName
-     * @return float|null
+     * @return mixed|null
      */
     public function toPropertyValue($row, $columnName)
     {
         $value = parent::toPropertyValue($row, $columnName);
-        if ($value !== null) {
-            // TODO: parse from the $format
-            $value = \Tk\Date::create($value);
+        if ($value) {
+            $value = json_decode($value);
         }
         return $value;
     }
@@ -55,10 +38,8 @@ class Date extends Map
     public function toColumnValue($object, $propertyName)
     {
         $value = parent::toColumnValue($object, $propertyName);
-        if ($value !== null) {
-            if ($value instanceof \DateTime) {
-                return $value->format($this->format);
-            }
+        if ($value) {
+            $value = json_encode($value);
         }
         return $value;
     }

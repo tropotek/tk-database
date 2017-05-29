@@ -101,11 +101,13 @@ class DataMap
      *
      * @param Map $propertyMap
      * @param string $tag
+     * @return Map
      */
     public function addPropertyMap($propertyMap, $tag = null)
     {
         if ($tag) $propertyMap->setTag($tag);
         $this->propertyMaps[$propertyMap->getPropertyName()] = $propertyMap;
+        return $propertyMap;
     }
 
 }

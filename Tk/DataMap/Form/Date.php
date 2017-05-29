@@ -1,7 +1,6 @@
 <?php
 namespace Tk\DataMap\Form;
 
-use Tk\DataMap\Map;
 
 /**
  * Class Date
@@ -10,42 +9,13 @@ use Tk\DataMap\Map;
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
-class Date extends Map
+class Date extends \Tk\DataMap\Db\Date
 {
+
     /**
-     * TODO: make this configurable
      * @var string
      */
     protected  $format = 'd/m/Y';
-
-
-
-    /**
-     * @param $format
-     * @return $this
-     */
-    public function setDateFormat($format)
-    {
-        $this->format = $format;
-        return $this;
-    }
-
-    /**
-     * Map an array column value to an object property value
-     *
-     * @param array $row
-     * @param string $columnName
-     * @return float|null
-     */
-    public function toPropertyValue($row, $columnName)
-    {
-        $value = parent::toPropertyValue($row, $columnName);
-        if ($value !== null) {
-            // TODO: parse from the $format
-            $value = \Tk\Date::createFormDate($value);
-        }
-        return $value;
-    }
 
     /**
      * Map an object property value to an array column value

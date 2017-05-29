@@ -1,5 +1,5 @@
 <?php
-namespace Tk\DataMap\Db;
+namespace Tk\DataMap\Form;
 
 use Tk\DataMap\Map;
 
@@ -10,8 +10,9 @@ use Tk\DataMap\Map;
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
-class JsonObject extends Map
+class Json extends Map
 {
+
     /**
      * Map an array column value to an object property value
      *
@@ -23,7 +24,7 @@ class JsonObject extends Map
     {
         $value = parent::toPropertyValue($row, $columnName);
         if ($value) {
-            $value = json_decode($value);
+            $value = json_encode($value);
         }
         return $value;
     }
@@ -39,10 +40,9 @@ class JsonObject extends Map
     {
         $value = parent::toColumnValue($object, $propertyName);
         if ($value) {
-            $value = json_encode($value);
+            $value = json_decode($value);
         }
         return $value;
     }
-    
 }
 
