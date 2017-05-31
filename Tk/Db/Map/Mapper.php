@@ -374,7 +374,7 @@ abstract class Mapper implements Mappable
     /**
      *
      * @param int $id
-     * @return Model|null
+     * @return null|Model|\Tk\Db\ModelInterface
      */
     public function find($id)
     {
