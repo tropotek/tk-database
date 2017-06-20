@@ -37,7 +37,7 @@ class Date extends \Tk\DataMap\Map
     public function toPropertyValue($row, $columnName)
     {
         $value = parent::toPropertyValue($row, $columnName);
-        if ($value !== null) {
+        if ($value !== null && !$value instanceof \DateTime) {
             // TODO: parse from the $format
             $value = \Tk\Date::createFormDate($value);
         }
