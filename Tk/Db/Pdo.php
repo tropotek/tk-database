@@ -690,18 +690,17 @@ class Pdo extends \PDO
     public function dropAllTables($confirm = false)
     {
         if (!$confirm) return false;
+        $sql = '';
         if ($this->getDriver() == 'mysql') {
-            $this->exec('SET FOREIGN_KEY_CHECKS = 0');
-            $this->exec('SET UNIQUE_CHECKS = 0');
+            $sql .= sprintf('SET FOREIGN_KEY_CHECKS = 0;SET UNIQUE_CHECKS = 0;');
         }
         foreach ($this->getTableList() as $i => $v) {
-            $sql = sprintf('DROP TABLE IF EXISTS %s CASCADE', $this->quoteParameter($v));
-            $this->exec($sql);
+            $sql .= sprintf('DROP TABLE IF EXISTS %s CASCADE;', $this->quoteParameter($v));
         }
         if ($this->getDriver() == 'mysql') {
-            $this->exec('SET FOREIGN_KEY_CHECKS = 1');
-            $this->exec('SET UNIQUE_CHECKS = 1');
+            $sql .= sprintf('SET FOREIGN_KEY_CHECKS = 1;SET UNIQUE_CHECKS = 1;');
         }
+        $this->exec($sql);
         return true;
     }
 
