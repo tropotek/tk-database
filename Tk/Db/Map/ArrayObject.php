@@ -251,10 +251,9 @@ class ArrayObject implements \Iterator, \Countable
         foreach($this as $k => $obj) {
             $v = $obj;
             if ($valueField && array_key_exists($valueField, get_object_vars($obj))) {
-            //if ($valueField && in_array($valueField, get_object_vars($obj))) {
                 $v = $obj->$valueField;
             }
-            if ($keyField && in_array($keyField, get_object_vars($obj))) {
+            if ($keyField && array_key_exists($keyField, get_object_vars($obj))) {
                 $k = $obj->$keyField;
             }
             $arr[$k] = $v;
