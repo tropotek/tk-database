@@ -25,9 +25,8 @@ namespace Tk\Util;
  * Migration files can be of type .sql or .php.
  * The php files are called with the include() command.
  * It will then be up to the developer to include a script to install the required sql.
- *
+ * 
  * @todo Should this be moved to the installers lib?
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
@@ -154,8 +153,7 @@ class SqlMigrate
     /**
      * Execute a migration class or sql script...
      * the file is then added to the db and cannot be executed again.
-     *
-     *
+     * 
      * @param string $file
      * @return bool
      */
@@ -232,13 +230,11 @@ class SqlMigrate
         return $this;
     }
 
-    // Migration DB access methods
-
     /**
      * install the migration table to track executed scripts
      *
      * @todo This must be tested against mysql, pgsql and sqlite....
-     * // So far query works with mysql and pgsql drvs sqlite still to test
+     * So far query works with mysql and pgsql drvs sqlite still to test
      */
     protected function install()
     {
