@@ -152,7 +152,28 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
         return parent::selectFrom($from, $where, $tool);
     }
 
-
-
+    /**
+     * Create a sql query string from an array.
+     * Handy for testing multiple values
+     * EG:
+     *   "a.type = 'Self Assessment' AND a.type != 'Testing' AND 'Thinking'"
+     *
+     * @param array|mixed $value
+     * @param string $columnName
+     * @param string $logic   Logical Operator
+     * @param string $compare  Comparison Operator
+     * @return string
+     */
+    public function makeMultiQuery($value, $columnName, $logic = 'OR', $compare = '=')
+    {
+        if (!is_array($value)) $value = array($value);
+        $w = '';
+        foreach ($value as $r) {
+            $w .= sprintf('%s %s %s %s ', $columnName, $compare, $this->getDb()->quote($r), $logic);
+        }
+        if ($w)
+            $w = rtrim($w, ' '.$logic.' ');
+        return $w;
+    }
 
 }
