@@ -1,8 +1,6 @@
 <?php
 namespace Tk\DataMap\Form;
 
-use Tk\DataMap\Map;
-
 /**
  * Class Decimal
  * Handle Float types
@@ -11,7 +9,7 @@ use Tk\DataMap\Map;
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
-class Float extends \Tk\DataMap\Db\Float
+class Decimal extends \Tk\DataMap\Db\Decimal
 {
 
 //    /**
