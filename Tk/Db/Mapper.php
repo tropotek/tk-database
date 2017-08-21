@@ -23,7 +23,6 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
     protected $formMap = null;
 
 
-
     /**
      * Mapper constructor.
      * @param null|Pdo $db
@@ -55,7 +54,6 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
     {
         return null;
     }
-
 
     /**
      * Map the data from a DB row to the required object
@@ -99,7 +97,6 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
     {
         return $this->getDbMap()->loadArray($obj, $array);
     }
-
 
     /**
      * Map the form fields data to the object
