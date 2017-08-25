@@ -55,7 +55,16 @@ class PdoStatement extends \PDOStatement
         }
         $this->bindParams = $args;
         $this->pdo->setLastQuery($this->queryString);
-        $result = parent::execute($args);
+
+        try {
+            $result = parent::execute($args);
+        } catch (\Exception $e) {
+            $e = Exception::create($e);
+            $e->setDump($this->queryString);
+            throw $e;
+        }
+        
+        
         $this->pdo->addLog(
             array(
                 'query'  => $this->queryString,
