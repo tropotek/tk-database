@@ -93,7 +93,6 @@ class Pdo extends \PDO
      *  o $options['mysql.ansi.quotes'] = true; // Change to true to force MySQL to use ANSI quoting style.
      *  o $options['timezone'] = '';
      *
-     *
      * @param string $dsn
      * @param string $username
      * @param string $password
@@ -375,16 +374,12 @@ class Pdo extends \PDO
             $result = parent::exec($statement);
         } catch (\Exception $e) {
             $info = $this->errorInfo();
-            $e = new Exception(end($info), 0);
-            $e->setDump($statement);
-            throw $e;
+            throw new Exception(end($info), $e->getCode(), $e, $statement);
         }
 
         if ($result === false) {
             $info = $this->errorInfo();
-            $e = new Exception(end($info));
-            $e->setDump($statement);
-            throw $e;
+            throw new Exception(end($info), $this->errorCode(), null, $statement);
         }
         $this->addLog(
             array(
@@ -418,15 +413,11 @@ class Pdo extends \PDO
             $result = call_user_func_array(array('parent', 'query'), func_get_args());
         } catch (\Exception $e) {
             $info = $this->errorInfo();
-            $e = new Exception(end($info));
-            $e->setDump($statement);
-            throw $e;
+            throw new Exception(end($info), $e->getCode(), $e, $statement);
         }
         if ($result === false) {
             $info = $this->errorInfo();
-            $e = new Exception(end($info));
-            $e->setDump($statement);
-            throw $e;
+            throw new Exception(end($info), $this->errorCode(), null, $statement);
         }
         $this->addLog(
             array(

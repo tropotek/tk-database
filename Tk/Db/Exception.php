@@ -11,21 +11,15 @@ namespace Tk\Db;
 class Exception extends \Tk\Exception
 {
 
-
-    /**
-     * Set any memory, code dump data to display in the exception error
-     *
-     * @param string $dump
-     */
-    public function setDump($dump)
+    public function __construct($message = "", $code = 0, \Throwable $previous = null, $dump = '')
     {
         $dump = explode("\n", str_replace(array(',', ' WHERE', ' FROM', ' LIMIT', ' ORDER', ' LEFT JOIN'), array(', ', "\n  WHERE", "\n  FROM", "\n  LIMIT", "\n  ORDER", "\n  LEFT JOIN"),$dump));
         foreach ($dump as $i => $s) {
             $dump[$i] = wordwrap($s, 120, "\n    ");
         }
         $dump = implode("\n", $dump);
-        return parent::setDump('  '.$dump);
-    }
 
+        parent::__construct($message, $code, $previous, $dump);
+    }
 
 }
