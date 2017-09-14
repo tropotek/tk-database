@@ -365,8 +365,9 @@ abstract class Mapper implements Mappable
 
         $sql = sprintf('SELECT %s %s %s* FROM %s %s %s ', $foundRowsKey, $distinct, $alias, $from, $where, $toolStr);
         $stmt = $this->getDb()->prepare($sql);
+        
         $stmt->execute();
-
+        
         $arr = ArrayObject::createFromMapper($this, $stmt, $tool);
         return $arr;
     }

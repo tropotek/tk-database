@@ -59,10 +59,8 @@ class PdoStatement extends \PDOStatement
         try {
             $result = parent::execute($args);
         } catch (\Exception $e) {
-            vd($this->errorInfo());
-            throw $e1 = new \Tk\Exception($e->getMessage(), $e->getCode(), $e, $this->queryString);
+            throw new \Tk\Exception($e->getMessage(), $e->getCode(), $e, $this->queryString);
         }
-
         $this->pdo->addLog(
             array(
                 'query'  => $this->queryString,
@@ -70,8 +68,6 @@ class PdoStatement extends \PDOStatement
                 'values' => $args,
             )
         );
-//        $err = $this->errorInfo();
-//        vd($err[2]);
         return $result;
     }
 
