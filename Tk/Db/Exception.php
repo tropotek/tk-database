@@ -11,15 +11,24 @@ namespace Tk\Db;
 class Exception extends \Tk\Exception
 {
 
-    public function __construct($message = "", $code = 0, \Throwable $previous = null, $dump = '')
+    /**
+     * Exception constructor.
+     * @param string $message
+     * @param int $code
+     * @param \Throwable|null $previous
+     * @param string $sql
+     */
+    public function __construct($message = "", $code = 0, \Throwable $previous = null, $sql = '')
     {
-        $dump = explode("\n", str_replace(array(',', ' WHERE', ' FROM', ' LIMIT', ' ORDER', ' LEFT JOIN'), array(', ', "\n  WHERE", "\n  FROM", "\n  LIMIT", "\n  ORDER", "\n  LEFT JOIN"),$dump));
-        foreach ($dump as $i => $s) {
-            $dump[$i] = wordwrap($s, 120, "\n    ");
+        //format dump query
+        $sql = explode("\n", str_replace(array(',', ' WHERE', ' FROM', ' LIMIT', ' ORDER', ' LEFT JOIN'),
+            array(', ', "\n  WHERE", "\n  FROM", "\n  LIMIT", "\n  ORDER", "\n  LEFT JOIN"),$sql));
+        foreach ($sql as $i => $s) {
+            $sql[$i] = '  ' . wordwrap($s, 120, "\n  ");
         }
-        $dump = implode("\n", $dump);
+        $sql = "\n\nQuery: \n" . implode("\n", $sql);
 
-        parent::__construct($message, $code, $previous, $dump);
+        parent::__construct($message, $code, $previous, $sql);
     }
 
 }

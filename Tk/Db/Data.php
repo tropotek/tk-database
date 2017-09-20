@@ -69,6 +69,18 @@ class Data extends \Tk\Collection
 
     }
 
+
+    public function __sleep()
+    {
+        return array('table', 'fid', 'fkey');
+    }
+
+    public function __wakeup()
+    {
+        // TODO: hacky
+        $this->db = \Tk\Config::getInstance()->getDb();
+    }
+
     /**
      * Creates an instance of the Data object and loads that data from the DB
      * By Default this method uses the Tk\Config::getDb() to get the database.

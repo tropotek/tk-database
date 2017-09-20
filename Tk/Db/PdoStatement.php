@@ -42,10 +42,10 @@ class PdoStatement extends \PDOStatement
     /**
      * Executes a prepared statement
      *
-     *  @see http://us3.php.net/manual/en/pdostatement.execute.php
+     * @see http://us3.php.net/manual/en/pdostatement.execute.php
      * @param array $args null
-     *
-     * @return boolean $boolean
+     * @return bool $boolean
+     * @throws Exception
      */
     public function execute($args = null)
     {
@@ -59,7 +59,7 @@ class PdoStatement extends \PDOStatement
         try {
             $result = parent::execute($args);
         } catch (\Exception $e) {
-            throw new \Tk\Exception($e->getMessage(), $e->getCode(), $e, $this->queryString);
+            throw new Exception($e->getMessage(), $e->getCode(), null, $this->queryString);
         }
         $this->pdo->addLog(
             array(
