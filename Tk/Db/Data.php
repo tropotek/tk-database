@@ -294,6 +294,14 @@ SQL;
      */
     protected function dbSet($key, $value)
     {
+        //
+        //  DELETE FROM `company_data` WHERE TRIM(TRIM(BOTH '\n' FROM(TRIM(BOTH '\r' FROM value)))) = '';
+        //  -- 9539 => 6805   -- Again removing null values gives us 1/3 reduction in row data,
+        //
+        // TODO: look into removing null or '' value rows as these can take up needed space...
+//        if ($value === '') {            // TODO: Test if this is what we want, it would save data
+//           return $this->dbDelete($key);
+//        }
         $value = $this->prepareSetValue($value);
 
         if ($this->dbHas($key)) {
@@ -305,6 +313,7 @@ SQL;
                 $this->db->quoteParameter($this->getTable()), $this->db->quoteParameter('key'), (int)$this->fid, $this->db->quote($this->fkey),
                 $this->db->quote($key), $this->db->quote($value));
         }
+
         Pdo::$logLastQuery = false;
         $this->db->exec($sql);
         Pdo::$logLastQuery = true;

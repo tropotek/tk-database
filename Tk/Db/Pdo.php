@@ -529,8 +529,21 @@ class Pdo extends \PDO
      *
      * @param string $dbName
      * @return bool
+     * @deprecated use hasDatabase()
      */
     public function databaseExists($dbName)
+    {
+        return $this->hasDatabase($dbName);
+    }
+
+    /**
+     * Check if a database with the supplied name exists
+     *
+     * @param string $dbName
+     * @return bool
+     * @version
+     */
+    public function hasDatabase($dbName)
     {
         $list = $this->getDatabaseList();
         return in_array($dbName, $list);
@@ -541,8 +554,20 @@ class Pdo extends \PDO
      *
      * @param string $table
      * @return bool
+     * @deprecated use hasTable()
      */
     public function tableExists($table)
+    {
+        return $this->hasTable($table);
+    }
+
+    /**
+     * Check if a table exists in the current database
+     *
+     * @param string $table
+     * @return bool
+     */
+    public function hasTable($table)
     {
         $list = $this->getTableList();
         return in_array($table, $list);
