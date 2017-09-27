@@ -529,7 +529,7 @@ class Pdo extends \PDO
      *
      * @param string $dbName
      * @return bool
-     * @deprecated use hasDatabase()
+     * @deprecated [2.0.15] use hasDatabase()
      */
     public function databaseExists($dbName)
     {
@@ -541,7 +541,7 @@ class Pdo extends \PDO
      *
      * @param string $dbName
      * @return bool
-     * @version
+     * @version 2.0.15
      */
     public function hasDatabase($dbName)
     {
@@ -554,7 +554,7 @@ class Pdo extends \PDO
      *
      * @param string $table
      * @return bool
-     * @deprecated use hasTable()
+     * @deprecated [2.0.15] use hasTable()
      */
     public function tableExists($table)
     {
@@ -566,6 +566,7 @@ class Pdo extends \PDO
      *
      * @param string $table
      * @return bool
+     * @version 2.0.15
      */
     public function hasTable($table)
     {
