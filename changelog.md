@@ -1,5 +1,16 @@
 #CHANGELOG#
 
+Ver 2.0.16 [2017-09-27]:
+-------------------------------
+ - Minor Code Updates
+ - Added student create and confirm placement pages
+ - Php7 ready
+ - 252s-dev.vet.unimelb.edu.au
+ - Finished Dynamic Form Fields
+ - Added Company Categories
+ - Updated Migration script
+
+
 Ver 2.0.15 [2017-06-15]:
 -------------------------------
  - Minor Code Updates
