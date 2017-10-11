@@ -353,10 +353,10 @@ class Tool implements \Tk\InstanceKey
         $arr = array();
         //if ($this->getOrderBy())  // Not needed as '' is a valid order by value
         $arr[$this->makeInstanceKey(self::PARAM_ORDER_BY)] = $this->getOrderBy();
-        
-        if ($this->getLimit())
+
+        //if ($this->getLimit())
             $arr[$this->makeInstanceKey(self::PARAM_LIMIT)] = $this->getLimit();
-        if ($this->getOffset())
+        //if ($this->getOffset())
             $arr[$this->makeInstanceKey(self::PARAM_OFFSET)] = $this->getOffset();
         if ($this->getGroupBy())
             $arr[$this->makeInstanceKey(self::PARAM_GROUP_BY)] = $this->getGroupBy();
@@ -430,7 +430,6 @@ class Tool implements \Tk\InstanceKey
             }
         }
         $sql = sprintf ('%s %s %s %s', $groupBy, $having, $orderBy, $limitStr);
-        //if ($sql) vd($sql);
         return $sql;
     }
     
