@@ -201,7 +201,6 @@ class Tool implements \Tk\InstanceKey
         return ceil($this->offset / $this->limit) + 1;
     }
 
-
     /**
      * Set the order By value
      *
@@ -234,10 +233,9 @@ class Tool implements \Tk\InstanceKey
      */
     public function getOrderProperty()
     {
-        $ob = $this->getOrderBy();
-        if (!$ob) return $this->getOrderBy();
-        if (!preg_match('/^(ASC|DESC|FIELD\(|RAND\(|IF\(|NULL)/i', $ob)){
-            if (preg_match('/^([a-z0-9]+\.)?([a-z0-9_-]+)/i', $ob, $regs)) {
+        if (!$this->getOrderBy()) return $this->getOrderBy();
+        if (!preg_match('/^(ASC|DESC|FIELD\(|RAND\(|IF\(|NULL)/i', $this->getOrderBy())){
+            if (preg_match('/^([a-z0-9]+\.)?([a-z0-9_-]+)/i', $this->getOrderBy(), $regs)) {
                 return trim($regs[2]);
             }
         }
@@ -353,8 +351,9 @@ class Tool implements \Tk\InstanceKey
     public function toArray()
     {
         $arr = array();
-        if ($this->getOrderBy())
-            $arr[$this->makeInstanceKey(self::PARAM_ORDER_BY)] = $this->getOrderBy();
+        //if ($this->getOrderBy())  // Not needed as '' is a valid order by value
+        $arr[$this->makeInstanceKey(self::PARAM_ORDER_BY)] = $this->getOrderBy();
+        
         if ($this->getLimit())
             $arr[$this->makeInstanceKey(self::PARAM_LIMIT)] = $this->getLimit();
         if ($this->getOffset())
