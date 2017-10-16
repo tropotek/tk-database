@@ -164,7 +164,6 @@ abstract class Map
     }
 
 
-
     // TODO: the object helper methods may need to be removed/refactored, test to see
 
     /**
@@ -185,7 +184,8 @@ abstract class Map
      */
     protected function objectPropertyExists($object, $name)
     {
-        return \Tk\Object::objectPropertyExists($object, $name);
+        $v = \Tk\Object::objectPropertyExists($object, $name);
+        return $v;
 //        try {
 //            $reflect = new \ReflectionClass($object);
 //            $prop = $reflect->getProperty($name);
@@ -205,7 +205,8 @@ abstract class Map
      */
     protected function getObjectPropertyValue($object, $name)
     {
-        return \Tk\Object::getObjectPropertyValue($object, $name);
+        $v = \Tk\Object::getObjectPropertyValue($object, $name);
+        return $v;
 //        $reflect = new \ReflectionClass($object);
 //        $property = $reflect->getProperty($name);
 //        if ($property) {

@@ -19,7 +19,6 @@ class DataMap
     private $propertyMaps = array();
 
 
-
     /**
      * Using the datamap load an object with the values from an array
      *
