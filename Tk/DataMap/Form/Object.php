@@ -1,7 +1,6 @@
 <?php
 namespace Tk\DataMap\Form;
 
-use Tk\DataMap\Map;
 
 /**
  * Use this to pass arrays and objects through the orm unchanged.
@@ -12,7 +11,7 @@ use Tk\DataMap\Map;
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
-class Object extends Map
+class Object extends Iface
 {
 
 }

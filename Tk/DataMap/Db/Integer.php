@@ -1,17 +1,13 @@
 <?php
 namespace Tk\DataMap\Db;
 
-use Tk\DataMap\Map;
 
 /**
- * Class Number
- * Handle Integer types
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
-class Integer extends Map
+class Integer extends Iface
 {
 
     /**

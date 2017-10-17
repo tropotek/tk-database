@@ -1,16 +1,13 @@
 <?php
 namespace Tk\DataMap\Db;
 
-use Tk\DataMap\Map;
 
 /**
- * Class String
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
-class JsonArray extends Map
+class JsonArray extends Iface
 {
     /**
      * Map an array column value to an object property value

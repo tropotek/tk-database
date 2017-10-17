@@ -3,34 +3,32 @@ namespace Tk\DataMap\Form;
 
 
 /**
- * Class Boolean
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
-class Boolean extends \Tk\DataMap\Db\Boolean
+class Boolean extends Iface
 {
 
-//    /**
-//     * Map an array column value to an object property value
-//     *
-//     * @param array $row
-//     * @param string $columnName
-//     * @return string|null
-//     */
-//    public function toPropertyValue($row, $columnName)
-//    {
-//        $value = parent::toPropertyValue($row, $columnName);
-//        if ($value !== null) {
-//            if ($value == $columnName || strtolower($value) == 'yes' || strtolower($value) == 'true' || ((int)$value)) {
-//                return true;
-//            } else {
-//                return false;
-//            }
-//        }
-//        return $value;
-//    }
+    /**
+     * Map an array column value to an object property value
+     *
+     * @param array $row
+     * @param string $columnName
+     * @return bool|null
+     */
+    public function toPropertyValue($row, $columnName)
+    {
+        $value = parent::toPropertyValue($row, $columnName);
+        if ($value !== null) {
+            if ($value == $columnName || strtolower($value) == 'yes' || strtolower($value) == 'true' || ((int)$value)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return $value;
+    }
 
     /**
      * Map an object property value to an array column value

@@ -1,16 +1,13 @@
 <?php
 namespace Tk\DataMap\Db;
 
-use Tk\DataMap\Map;
 
 /**
- * Class Date
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
-class Date extends Map
+class Date extends Iface
 {
 
     /**

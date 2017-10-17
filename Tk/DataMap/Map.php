@@ -76,10 +76,11 @@ abstract class Map
      */
     public function toColumnValue($object, $propertyName)
     {
+        $v = null;
         if ($this->objectPropertyExists($object, $propertyName)) {
-            return $this->getObjectPropertyValue($object, $propertyName);
+            $v = $this->getObjectPropertyValue($object, $propertyName);
         }
-        return null;
+        return $v;
     }
 
     /**
@@ -99,11 +100,6 @@ abstract class Map
         }
 
         \Tk\Object::setObjectPropertyValue($object, $name, $value);
-
-//        $reflect = new \ReflectionClass($object);
-//        $prop = $reflect->getProperty($name);
-//        $prop->setAccessible(true);
-//        $prop->setValue($object, $value);
     }
 
     /**
@@ -163,9 +159,6 @@ abstract class Map
         return array_key_exists($this->getColumnName(), $array);
     }
 
-
-    // TODO: the object helper methods may need to be removed/refactored, test to see
-
     /**
      * allows for finding private properties
      *
@@ -186,12 +179,6 @@ abstract class Map
     {
         $v = \Tk\Object::objectPropertyExists($object, $name);
         return $v;
-//        try {
-//            $reflect = new \ReflectionClass($object);
-//            $prop = $reflect->getProperty($name);
-//            if ($prop) return true;
-//        } catch (\Exception $e) {}
-//        return false;
     }
 
     /**
@@ -207,13 +194,6 @@ abstract class Map
     {
         $v = \Tk\Object::getObjectPropertyValue($object, $name);
         return $v;
-//        $reflect = new \ReflectionClass($object);
-//        $property = $reflect->getProperty($name);
-//        if ($property) {
-//            $property->setAccessible(true);
-//            return $property->getValue($object);
-//        }
-//        return null;
     }
 
 

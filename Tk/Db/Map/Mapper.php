@@ -193,7 +193,6 @@ abstract class Mapper implements Mappable
         }
         $where = $this->quoteParameter($pk) . ' = ' . $bind[':'.$pk];
         $sql = 'UPDATE ' . $this->quoteTable($this->table) . ' SET ' . implode(', ', $set) . (($where) ? ' WHERE ' . $where : ' ');
-
         $stmt = $this->getDb()->prepare($sql);
         $stmt->execute($bind);
 
@@ -242,8 +241,6 @@ abstract class Mapper implements Mappable
             $obj->update();
         }
     }
-
-
 
     /**
      * A select query using a prepared statement. Less control
@@ -394,9 +391,6 @@ abstract class Mapper implements Mappable
     {
         return $this->select('', $tool);
     }
-
-
-
 
     /**
      * Generate the default model class from this mapper class

@@ -3,13 +3,11 @@ namespace Tk\DataMap\Form;
 
 
 /**
- * Class Date
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
-class Date extends \Tk\DataMap\Map
+class Date extends Iface
 {
 
     /**
