@@ -59,7 +59,7 @@ class PdoStatement extends \PDOStatement
         try {
             $result = parent::execute($args);
         } catch (\Exception $e) {
-            throw new Exception($e->getMessage(), $e->getCode(), null, $this->queryString);
+            throw new Exception($e->getMessage(), $e->getCode(), null, $this->queryString, $args);
         }
         $this->pdo->addLog(
             array(

@@ -679,7 +679,7 @@ class Pdo extends \PDO
      */
     public function dropTable($tableName)
     {
-        if (!$this->tableExists($tableName)) return false;
+        if (!$this->hasTable($tableName)) return false;
         $sql = '';
         if ($this->getDriver() == 'mysql') {
             $sql .= sprintf('SET FOREIGN_KEY_CHECKS = 0;SET UNIQUE_CHECKS = 0;');
