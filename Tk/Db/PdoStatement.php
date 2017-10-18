@@ -44,7 +44,7 @@ class PdoStatement extends \PDOStatement
      *
      * @see http://us3.php.net/manual/en/pdostatement.execute.php
      * @param array $args null
-     * @return bool $boolean
+     * @return bool $boolean (Hum, shouldn't it return this so we can query the results???)
      * @throws Exception
      */
     public function execute($args = null)
