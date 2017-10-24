@@ -1,8 +1,6 @@
 <?php
 namespace Tk\DataMap\Db;
 
-
-
 /**
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
@@ -10,8 +8,6 @@ namespace Tk\DataMap\Db;
  */
 class Iface extends \Tk\DataMap\Map
 {
-
-
 
     /**
      * Map an object property value to an array column value
@@ -24,9 +20,10 @@ class Iface extends \Tk\DataMap\Map
     public function toColumnValue($object, $propertyName)
     {
         $v = parent::toColumnValue($object, $propertyName);
-        if ($v === null) {
-            $v = 'NULL';
-        }
+        // TODO: We should not need this null values should be converted into NULL in the PDO
+//        if ($v === null) {
+//            $v = 'NULL';
+//        }
         return $v;
     }
 
