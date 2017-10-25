@@ -25,7 +25,6 @@ abstract class Map
      */
     protected $propertyName = '';
 
-
     /**
      * @todo Refactor this tag idea for primary keys in DB maps
      * @var string
