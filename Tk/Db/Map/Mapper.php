@@ -378,6 +378,7 @@ abstract class Mapper implements Mappable
     {
         $where = sprintf('%s = %s', $this->quoteParameter($this->getPrimaryKey()), (int)$id);
         $list = $this->select($where);
+        vd($this->getDb()->getLastQuery());
         return $list->current();
     }
 
