@@ -172,11 +172,19 @@ class SqlMigrate
                 return false;
         } else {    // is sql
             // replace any table prefix
-            try {
-                $sql = file_get_contents($file);
-                $this->db->exec($sql);
-            } catch (\Exception $e) {
-                return false;
+            $sql = file_get_contents($file);
+
+            $stm = $this->db->prepare($sql);
+            $stm->execute();
+
+            // Bugger of a way to get the error:
+            // https://stackoverflow.com/questions/23247553/how-can-i-get-an-error-when-running-multiple-queries-with-pdo
+            $i = 0;
+            do { $i++; } while ($stm->nextRowset());
+            $error = $stm->errorInfo();
+            if ($error[0] != "00000") {
+              throw new \Tk\Db\Exception("Query $i failed: " . $error[2], 0, null, $sql);
+
             }
         }
         $this->insertPath($file);
@@ -238,7 +246,7 @@ class SqlMigrate
      */
     protected function install()
     {
-        if($this->db->tableExists($this->getTable())) {
+        if($this->db->hasTable($this->getTable())) {
             return;
         }
         $tbl = $this->db->quoteParameter($this->getTable());
