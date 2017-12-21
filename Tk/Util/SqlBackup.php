@@ -48,7 +48,7 @@ class SqlBackup
 
         $host = escapeshellarg($this->db->getOption('host'));
         $name = escapeshellarg($this->db->getOption('name'));
-        $user = escapeshellarg($this->db->getOption('UserIface'));
+        $user = escapeshellarg($this->db->getOption('user'));
         $pass = escapeshellarg($this->db->getOption('pass'));
 
         $command = '';
@@ -95,7 +95,7 @@ class SqlBackup
 
         $host = escapeshellarg($this->db->getOption('host'));
         $name = escapeshellarg($this->db->getOption('name'));
-        $user = escapeshellarg($this->db->getOption('UserIface'));
+        $user = escapeshellarg($this->db->getOption('user'));
         $pass = escapeshellarg($this->db->getOption('pass'));
 
         $command = '';
