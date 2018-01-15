@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 2.0.17 [2018-01-15]:
+-------------------------------
+ - Minor Code Updates
+ - Completerd Star Rating Plugin
+
+
 Ver 2.0.16 [2017-09-27]:
 -------------------------------
  - Minor Code Updates
