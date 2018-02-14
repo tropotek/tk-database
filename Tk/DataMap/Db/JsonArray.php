@@ -37,9 +37,12 @@ class JsonArray extends Iface
     public function toColumnValue($object, $propertyName)
     {
         $value = parent::toColumnValue($object, $propertyName);
+        // Fixes bug where json_encode returns an array object instead of a string for empty arrays
+        if (is_array($value) && !count($value)) return '';
         if ($value) {
             $value = json_encode($value);
         }
+        vd($value);
         return $value;
     }
     
