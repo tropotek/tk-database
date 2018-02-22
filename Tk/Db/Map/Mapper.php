@@ -154,6 +154,9 @@ abstract class Mapper implements Mappable
         $cols = implode(', ', $this->getDb()->quoteParameterArray($keys));
         $values = implode(', :', array_keys($bind));
         foreach ($bind as $col => $value) {
+            // TODO: Look into using the following so we no longer have to manage the created and modified fields:
+            // TODO:    `modified` DATETIME ON UPDATE CURRENT_TIMESTAMP,
+            //TODO:     `created` DATETIME DEFAULT CURRENT_TIMESTAMP,
             if ($col == 'modified' || $col == 'created') {
                 //$value = date('Y-m-d H:i:s.u');
                 $value = date('Y-m-d H:i:s');
@@ -212,6 +215,7 @@ abstract class Mapper implements Mappable
         if ($where) {
             $where = 'WHERE ' . $where;
         }
+        //TODO: User prepared statements
         $sql = sprintf('DELETE FROM %s %s LIMIT 1', $this->quoteParameter($this->table), $where);
         if ($this->markDeleted) {
             $sql = sprintf('UPDATE %s SET %s = 1 %s LIMIT 1', $this->quoteTable($this->table), $this->quoteParameter($this->getMarkDeleted()), $where);
