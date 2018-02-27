@@ -81,5 +81,13 @@ class PdoStatement extends \PDOStatement
         return $this->bindParams;
     }
 
+    /**
+     * @return Pdo
+     */
+    public function getPdo()
+    {
+        return $this->pdo;
+    }
+
 
 }

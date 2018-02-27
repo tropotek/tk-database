@@ -254,6 +254,7 @@ abstract class Mapper implements Mappable
      * @param Tool $tool
      * @param string $boolOperator
      * @return ArrayObject
+     * @throws Exception
      * @see http://www.sitepoint.com/integrating-the-data-mappers/
      * @deprecated TODO: See if we need this ?
      */
@@ -309,6 +310,7 @@ abstract class Mapper implements Mappable
      * @param string $where EG: "`column1`=4 AND `column2`='string'"
      * @param Tool $tool
      * @return ArrayObject
+     * @throws Exception
      */
     public function select($where = '', $tool = null)
     {
@@ -322,6 +324,7 @@ abstract class Mapper implements Mappable
      * @param string $where EG: "`column1`=4 AND `column2`='string'"
      * @param Tool $tool
      * @return ArrayObject
+     * @throws Exception
      */
     public function selectFrom($from = '', $where = '', $tool = null)
     {
@@ -365,6 +368,7 @@ abstract class Mapper implements Mappable
         }
 
         $sql = sprintf('SELECT %s %s %s* FROM %s %s %s ', $foundRowsKey, $distinct, $alias, $from, $where, $toolStr);
+        //vd($sql);
         $stmt = $this->getDb()->prepare($sql);
         
         $stmt->execute();
@@ -377,6 +381,7 @@ abstract class Mapper implements Mappable
      *
      * @param int $id
      * @return null|Model|\Tk\Db\ModelInterface
+     * @throws Exception
      */
     public function find($id)
     {
@@ -390,6 +395,7 @@ abstract class Mapper implements Mappable
      *
      * @param Tool $tool
      * @return ArrayObject
+     * @throws Exception
      */
     public function findAll($tool = null)
     {
@@ -532,7 +538,7 @@ abstract class Mapper implements Mappable
         }
 
         $this->table = $table;
-        if ($this->getDb()->tableExists($this->table)) {
+        if ($this->getDb()->hasTable($this->table)) {
             $this->tableInfo = $this->getDb()->getTableInfo($this->table);
         }
         return $this;

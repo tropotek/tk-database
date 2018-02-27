@@ -13,6 +13,7 @@ use Tk\Db\Tool;
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
+ * @todo: Move this to the \Tk\Db namespace so the FQN is \Tk\Db\ArrayObject
  */
 class ArrayObject implements \Iterator, \Countable
 {
@@ -64,11 +65,13 @@ class ArrayObject implements \Iterator, \Countable
     }
 
     /**
+     * Create an array object that uses the DB mappers to load the object
+     *
      * @param Mapper $mapper
      * @param PdoStatement $statement
      * @param Tool $tool
      * @return ArrayObject
-     * @todo: remove the need for the statement and just use the array?????
+     * @throws \Tk\Db\Exception
      */
     static function createFromMapper(Mapper $mapper, PdoStatement $statement, $tool = null)
     {
@@ -80,6 +83,36 @@ class ArrayObject implements \Iterator, \Countable
         $obj = new self($rows);
         $obj->foundRows = $mapper->getDb()->countFoundRows($statement->queryString);
         $obj->mapper = $mapper;
+        $obj->statement = $statement;
+        if (!$tool) {
+            $tool = new Tool();
+        }
+        $obj->tool = $tool;
+        return $obj;
+    }
+
+    /**
+     * Create an array object from an SQL statement when no mappers and objects area used
+     *
+     * @param \Tk\Db\PdoStatement $statement
+     * @param null|\Tk\Db\Tool $tool
+     * @param int $foundRows
+     * @return ArrayObject
+     * @throws \Tk\Db\Exception
+     */
+    static function create(PdoStatement $statement, $tool = null, $foundRows = 0)
+    {
+        // TODO: One day \PDO may be able to do this serially, this is a big memory hog...
+        //       Currently we cannot subclass the PDOStatement::fetch...() methods correctly [php: 5.6.27]
+        // NOTE: For large datasets that could fill the memory, this object should not be used
+        //       instead get statement and manually iterate the data.
+        $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        $obj = new self($rows);
+        $obj->foundRows = count($rows);
+        if (method_exists($statement, 'getPdo') && $statement->getPdo())
+            $obj->foundRows = $statement->getPdo()->countFoundRows($statement->queryString);
+        if ($foundRows)
+            $obj->foundRows = $foundRows;
         $obj->statement = $statement;
         if (!$tool) {
             $tool = new Tool();
@@ -156,15 +189,26 @@ class ArrayObject implements \Iterator, \Countable
     }
 
     /**
-     * Get the total rows available count.
-     *
-     * This value will be the available count without a limit.
+     * Return the total number of rows found.
+     * When using SQL it would be the query with no limit...
      *
      * @return int
      */
-    public function getFoundRows()
+    public function countAll()
     {
         return $this->foundRows;
+    }
+
+    /**
+     * Return the total number of rows found.
+     * When using SQL it would be the query with no limit...
+     *
+     * @return int
+     * @deprecated Use self::getTotalCount()
+     */
+    public function getFoundRows()
+    {
+        return $this->countAll();
     }
 
 
@@ -228,7 +272,7 @@ class ArrayObject implements \Iterator, \Countable
     //   Countable Interface
 
     /**
-     * Count
+     * Count the number of records returned from the SQL query
      *
      * @return int
      */
