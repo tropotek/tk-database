@@ -43,7 +43,6 @@ class JsonArray extends Iface
         if ($value) {
             $value = json_encode($value);
         }
-        vd($value);
         return $value;
     }
     
