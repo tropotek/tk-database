@@ -26,6 +26,7 @@ class DataMap
      * @param null|ModelInterface $object
      * @param string $ignoreTag
      * @return \stdClass|ModelInterface
+     * @throws \ReflectionException
      * @throws \Tk\Db\Exception
      */
     public function loadObject($row, $object = null, $ignoreTag = '')
@@ -51,6 +52,7 @@ class DataMap
      * @param array $array
      * @param string $ignoreTag
      * @return array
+     * @throws \ReflectionException
      */
     public function loadArray($obj, $array = array(), $ignoreTag = '')
     {

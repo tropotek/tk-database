@@ -16,6 +16,7 @@ class Iface extends \Tk\DataMap\Map
      * @param mixed $object
      * @param string $propertyName
      * @return string|null
+     * @throws \ReflectionException
      */
     public function toColumnValue($object, $propertyName)
     {

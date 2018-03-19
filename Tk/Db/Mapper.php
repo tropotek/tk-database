@@ -26,6 +26,8 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
     /**
      * Mapper constructor.
      * @param null|Pdo $db
+     * @throws Exception
+     * @throws \Exception
      */
     public function __construct($db)
     {
@@ -67,6 +69,8 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
      * @param array $row
      * @param null|mixed $obj If null then \stdClass will be returned
      * @return \stdClass|Map\Model
+     * @throws Exception
+     * @throws \ReflectionException
      * @since 2.0.0
      */
     public function map($row, $obj = null)
@@ -91,6 +95,7 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
      * @param Map\Model|\stdClass $obj
      * @param array $array
      * @return array
+     * @throws \ReflectionException
      * @since 2.0.0
      */
     public function unmap($obj, $array = array())
@@ -105,6 +110,8 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
      * @param mixed $obj
      * @param string $ignore
      * @return mixed
+     * @throws Exception
+     * @throws \ReflectionException
      */
     public function mapForm($row, $obj = null, $ignore = 'key')
     {
@@ -121,6 +128,7 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
      * @param mixed $obj
      * @param array $array
      * @return array
+     * @throws \ReflectionException
      */
     public function unmapForm($obj, $array = array())
     {
@@ -135,6 +143,7 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
      * @param string $where
      * @param null|\Tk\Db\Tool $tool
      * @return Map\ArrayObject
+     * @throws Exception
      */
     public function selectFrom($from = '', $where = '', $tool = null)
     {

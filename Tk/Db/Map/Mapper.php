@@ -71,6 +71,8 @@ abstract class Mapper implements Mappable
      * Mapper constructor.
      *
      * @param null|Pdo $db
+     * @throws Exception
+     * @throws \Exception
      */
     public function __construct($db = null)
     {
@@ -528,8 +530,9 @@ abstract class Mapper implements Mappable
 
     /**
      * @param string $table
-     * @param bool $addPrefix   Set this to false to not add the table prefix.
+     * @param bool $addPrefix Set this to false to not add the table prefix.
      * @return $this
+     * @throws Exception
      */
     public function setTable($table, $addPrefix = true)
     {

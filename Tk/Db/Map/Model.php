@@ -121,6 +121,7 @@ abstract class Model implements \Tk\Db\ModelInterface
      * Returns the object id if it is greater than 0 or the nextInsertId if is 0
      *
      * @return int
+     * @throws \Tk\Db\Exception
      */
     public function getVolatileId()
     {

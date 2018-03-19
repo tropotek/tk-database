@@ -107,6 +107,7 @@ class SqlMigrate
      *
      * @param $path
      * @return bool
+     * @throws \Tk\Db\Exception
      */
     public function isPending($path)
     {
@@ -153,9 +154,10 @@ class SqlMigrate
     /**
      * Execute a migration class or sql script...
      * the file is then added to the db and cannot be executed again.
-     * 
+     *
      * @param string $file
      * @return bool
+     * @throws \Tk\Db\Exception
      */
     protected function migrateFile($file)
     {
@@ -265,6 +267,7 @@ SQL;
      *
      * @param string $path
      * @return bool
+     * @throws \Tk\Db\Exception
      */
     protected function hasPath($path)
     {
@@ -282,6 +285,7 @@ SQL;
      *
      * @param string $path
      * @return \PDOStatement
+     * @throws \Tk\Db\Exception
      */
     protected function insertPath($path)
     {
@@ -295,6 +299,7 @@ SQL;
      *
      * @param string $path
      * @return \PDOStatement
+     * @throws \Tk\Db\Exception
      */
     protected function deletePath($path)
     {

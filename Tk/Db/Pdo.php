@@ -168,9 +168,10 @@ class Pdo extends \PDO
      * then the 'default' value is used for the name, therefore:
      *   Pdo::getInstance($options) is a valid call
      *
-     * @param string|array $name  (Optional)
-     * @param array $options 
+     * @param string|array $name (Optional)
+     * @param array $options
      * @return Pdo|null
+     * @throws \Exception
      * @tot Not secure puting the DB login details within the object
      */
     public static function getInstance($name = '', $options = array())
@@ -201,6 +202,7 @@ class Pdo extends \PDO
      * );
      * @param $options
      * @return Pdo
+     * @throws \Exception
      */
     public static function create($options)
     {
@@ -529,6 +531,7 @@ class Pdo extends \PDO
      *
      * @param string $dbName
      * @return bool
+     * @throws \Tk\Db\Exception
      * @deprecated [2.0.15] use hasDatabase()
      */
     public function databaseExists($dbName)
@@ -541,6 +544,7 @@ class Pdo extends \PDO
      *
      * @param string $dbName
      * @return bool
+     * @throws \Tk\Db\Exception
      * @version 2.0.15
      */
     public function hasDatabase($dbName)
@@ -554,6 +558,7 @@ class Pdo extends \PDO
      *
      * @param string $table
      * @return bool
+     * @throws \Tk\Db\Exception
      * @deprecated [2.0.15] use hasTable()
      */
     public function tableExists($table)
@@ -566,6 +571,7 @@ class Pdo extends \PDO
      *
      * @param string $table
      * @return bool
+     * @throws \Tk\Db\Exception
      * @version 2.0.15
      */
     public function hasTable($table)
@@ -578,6 +584,7 @@ class Pdo extends \PDO
      * Get an array containing all the available databases to the user
      *
      * @return array
+     * @throws \Tk\Db\Exception
      */
     public function getDatabaseList()
     {
@@ -604,6 +611,7 @@ class Pdo extends \PDO
      * Get an array containing all the table names for this DB
      *
      * @return array
+     * @throws \Tk\Db\Exception
      */
     public function getTableList()
     {
@@ -631,7 +639,9 @@ class Pdo extends \PDO
     /**
      * Get an array containing all the table names for this DB
      *
+     * @param $table
      * @return array
+     * @throws \Tk\Db\Exception
      */
     public function getTableInfo($table)
     {
@@ -676,6 +686,7 @@ class Pdo extends \PDO
      *
      * @param $tableName
      * @return bool
+     * @throws \Tk\Db\Exception
      */
     public function dropTable($tableName)
     {
@@ -698,6 +709,7 @@ class Pdo extends \PDO
      *
      * @param bool $confirm
      * @return bool
+     * @throws \Tk\Db\Exception
      * @todo Check this is compatible with MySQL???? Also may want to also drop procedures, view, etc. ????
      */
     public function dropAllTables($confirm = false)
@@ -724,6 +736,7 @@ class Pdo extends \PDO
      * @param string $table
      * @param string $pKey
      * @return int The next assigned integer to the primary key
+     * @throws \Tk\Db\Exception
      */
     public function getNextInsertId($table, $pKey = 'id')
     {

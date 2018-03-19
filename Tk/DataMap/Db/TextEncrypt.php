@@ -57,6 +57,7 @@ class TextEncrypt extends Iface
      * @param mixed $object
      * @param string $propertyName
      * @return string|null
+     * @throws \ReflectionException
      */
     public function toColumnValue($object, $propertyName)
     {

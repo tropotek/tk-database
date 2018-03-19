@@ -17,6 +17,7 @@ class Exception extends \Tk\Exception
      * @param int $code
      * @param \Throwable|null $previous
      * @param string $dump
+     * @param null $args
      */
     public function __construct($message = "", $code = 0, \Throwable $previous = null, $dump = '', $args = null)
     {

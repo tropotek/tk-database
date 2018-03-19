@@ -90,6 +90,7 @@ class Data extends \Tk\Collection
      * @param string $table
      * @param Pdo|null $db
      * @return static
+     * @throws Exception
      */
     public static function create($fkey = 'system', $fid = 0, $table = '', $db = null)
     {
@@ -111,6 +112,7 @@ class Data extends \Tk\Collection
     /**
      * @param Pdo $db
      * @return $this
+     * @throws Exception
      */
     public function setDb($db)
     {
@@ -223,8 +225,9 @@ SQL;
 
     /**
      * Load this object with available data from the DB
-     * 
+     *
      * @return $this
+     * @throws Exception
      */
     public function load()
     {
@@ -242,8 +245,9 @@ SQL;
 
     /**
      * Save modified Data to the DB
-     * 
+     *
      * @return $this
+     * @throws Exception
      */
     public function save()
     {
@@ -286,11 +290,12 @@ SQL;
     }
 
     /**
-     * Set a single data value in the Database 
-     * 
+     * Set a single data value in the Database
+     *
      * @param $key
      * @param $value
      * @return Data
+     * @throws Exception
      */
     protected function dbSet($key, $value)
     {
@@ -322,9 +327,10 @@ SQL;
 
     /**
      * Get a value from the database
-     * 
+     *
      * @param $key
      * @return string
+     * @throws Exception
      */
     protected function dbGet($key)
     {
@@ -341,9 +347,10 @@ SQL;
 
     /**
      * Check if a value exists in the DB
-     * 
+     *
      * @param $key
      * @return bool
+     * @throws Exception
      */
     protected function dbHas($key)
     {
@@ -358,9 +365,10 @@ SQL;
 
     /**
      * Remove a value from the DB
-     * 
+     *
      * @param $key
      * @return $this
+     * @throws Exception
      */
     protected function dbDelete($key)
     {
