@@ -28,7 +28,7 @@ namespace Tk\Util;
  * 
  * @todo Should this be moved to the installers lib?
  * @author Michael Mifsud <info@tropotek.com>
- * @link http://www.tropotek.com/
+ * @see http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
 class SqlMigrate

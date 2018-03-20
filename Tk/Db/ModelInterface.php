@@ -10,7 +10,7 @@ namespace Tk\Db;
  * 
  * 
  * @author Michael Mifsud <info@tropotek.com>
- * @link http://www.tropotek.com/
+ * @see http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  * @todo: May not be needed yet? I have not implemented it anywhere mut the map...
  */

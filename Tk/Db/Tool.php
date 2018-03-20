@@ -4,10 +4,8 @@ namespace Tk\Db;
 
 
 /**
- * Class Tool
- *
  * @author Michael Mifsud <info@tropotek.com>
- * @link http://www.tropotek.com/
+ * @see http://www.tropotek.com/
  * @license Copyright 2007 Michael Mifsud
  */
 class Tool implements \Tk\InstanceKey
@@ -65,8 +63,6 @@ class Tool implements \Tk\InstanceKey
 
 
     /**
-     * __construct
-     *
      * @param string $orderBy
      * @param int $limit
      * @param int $offset
@@ -83,8 +79,6 @@ class Tool implements \Tk\InstanceKey
     }
 
     /**
-     * Create a listParams object from a request object
-     *
      * @param string $orderBy
      * @param int $limit
      * @param int $offset
@@ -98,15 +92,13 @@ class Tool implements \Tk\InstanceKey
     }
 
     /**
-     * Good to use for creating from a request or session array
-     *
+     * Good to use when creating from a request or session array
      *
      * @param $array
      * @param string $defaultOrderBy
      * @param int $defaultLimit
      * @param string $instanceId
      * @return Tool
-     * @todo: check the setting the offset to 0 is correct???
      */
     static function createFromArray($array, $defaultOrderBy = '', $defaultLimit = 0, $instanceId= '')
     {

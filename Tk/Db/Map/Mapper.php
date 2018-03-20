@@ -6,8 +6,6 @@ use Tk\Db\Exception;
 use Tk\Db\Tool;
 
 /**
- * Class Mapper
- *
  * Some reserved column names and assumed meanings:
  *  - `id`       => An integer that is assumed to be the records primary key
  *                  foreign keys are assumed to be named `<foreign_table>_id`
@@ -19,7 +17,7 @@ use Tk\Db\Tool;
  *
  *
  * @author Michael Mifsud <info@tropotek.com>
- * @link http://www.tropotek.com/
+ * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
 abstract class Mapper implements Mappable
@@ -68,8 +66,6 @@ abstract class Mapper implements Mappable
 
 
     /**
-     * Mapper constructor.
-     *
      * @param null|Pdo $db
      * @throws Exception
      * @throws \Exception
@@ -142,8 +138,6 @@ abstract class Mapper implements Mappable
 
 
     /**
-     * Insert
-     *
      * @param Model $obj
      * @return int Returns the new insert id
      */
@@ -157,8 +151,8 @@ abstract class Mapper implements Mappable
         $values = implode(', :', array_keys($bind));
         foreach ($bind as $col => $value) {
             // TODO: Look into using the following so we no longer have to manage the created and modified fields:
-            // TODO:    `modified` DATETIME ON UPDATE CURRENT_TIMESTAMP,
-            //TODO:     `created` DATETIME DEFAULT CURRENT_TIMESTAMP,
+            // TODO:   `modified` DATETIME ON UPDATE CURRENT_TIMESTAMP,
+            // TODO:   `created` DATETIME DEFAULT CURRENT_TIMESTAMP,
             if ($col == 'modified' || $col == 'created') {
                 //$value = date('Y-m-d H:i:s.u');
                 $value = date('Y-m-d H:i:s');
@@ -179,7 +173,6 @@ abstract class Mapper implements Mappable
     }
 
     /**
-     *
      * @param Model $obj
      * @return int
      */
@@ -205,8 +198,6 @@ abstract class Mapper implements Mappable
     }
 
     /**
-     * Delete object
-     *
      * @param Model $obj
      * @return int
      */
@@ -250,7 +241,6 @@ abstract class Mapper implements Mappable
 
     /**
      * A select query using a prepared statement. Less control
-     *
      *
      * @param array $bind
      * @param Tool $tool
@@ -370,7 +360,6 @@ abstract class Mapper implements Mappable
         }
 
         $sql = sprintf('SELECT %s %s %s* FROM %s %s %s ', $foundRowsKey, $distinct, $alias, $from, $where, $toolStr);
-        //vd($sql);
         $stmt = $this->getDb()->prepare($sql);
         
         $stmt->execute();
@@ -406,7 +395,7 @@ abstract class Mapper implements Mappable
 
     /**
      * Generate the default model class from this mapper class
-     * if a specific model class is required then use ::setModelClass()
+     * if a specific model class is required then use $this->setModelClass()
      *
      * @return string
      */
@@ -421,7 +410,7 @@ abstract class Mapper implements Mappable
 
     /**
      * Generate the default table class.
-     * If a specific table name is required then use ::setTable()
+     * If a specific table name is required then use $this->setTable()
      *
      * @return mixed|string
      */

@@ -8,7 +8,7 @@ use Tk\Db\Exception;
  * Class SqlDump
  *
  * @author Michael Mifsud <info@tropotek.com>
- * @link http://www.tropotek.com/
+ * @see http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  * @see https://raw.githubusercontent.com/kakhavk/database-dump-utility/master/SqlDump.php
  */

@@ -3,10 +3,8 @@ namespace Tk\Db;
 
 
 /**
- * Class Mapper
- *
  * @author Michael Mifsud <info@tropotek.com>
- * @link http://www.tropotek.com/
+ * @see http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
 abstract class Mapper extends \Tk\Db\Map\Mapper
@@ -24,7 +22,6 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
 
 
     /**
-     * Mapper constructor.
      * @param null|Pdo $db
      * @throws Exception
      * @throws \Exception
@@ -86,7 +83,7 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
      * Un-map an object to an array ready for DB insertion.
      * All fields and types must match the required DB types.
      *
-     * Input: This requires a \Tk\Model or \stdClass object as input
+     * Input: This requires a Tk.Model or stdClass object as input
      *
      * Output: array (
      *   'tblColumn' => 'columnValue'

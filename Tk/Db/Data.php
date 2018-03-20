@@ -10,7 +10,7 @@ namespace Tk\Db;
  * 
  *
  * @author Michael Mifsud <info@tropotek.com>
- * @link http://www.tropotek.com/
+ * @see http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
 class Data extends \Tk\Collection
@@ -83,7 +83,7 @@ class Data extends \Tk\Collection
 
     /**
      * Creates an instance of the Data object and loads that data from the DB
-     * By Default this method uses the Tk\Config::getDb() to get the database.
+     * By Default this method uses the Config::getDb() to get the database.
      *
      * @param string $fkey
      * @param int $fid

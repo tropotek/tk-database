@@ -1,7 +1,7 @@
 <?php
 /*
  * @author Michael Mifsud <info@tropotek.com>
- * @link http://www.tropotek.com/
+ * @see http://www.tropotek.com/
  * @license Copyright 2007 Michael Mifsud
  */
 namespace Tk\Db\Map;
@@ -10,7 +10,7 @@ namespace Tk\Db\Map;
  * Validator superclass for form validation
  *
  * @author Michael Mifsud <info@tropotek.com>
- * @link http://www.tropotek.com/
+ * @see http://www.tropotek.com/
  * @license Copyright 2007 Michael Mifsud
  * @deprecated implement \Tk\ValidInterface
  */

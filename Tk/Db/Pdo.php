@@ -7,9 +7,9 @@ use Tk\Db\Exception;
  * PDO Database driver
  *
  * @author Tropotek <info@tropotek.com>
- * @link http://www.tropotek.com/
+ * @see http://www.tropotek.com/
  * @author Patrick S Scott<lazeras@kaoses.com>
- * @link http://www.kaoses.com
+ * @see http://www.kaoses.com
  * @license Copyright 2007 Tropotek
  */
 class Pdo extends \PDO

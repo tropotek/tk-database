@@ -8,7 +8,7 @@ namespace Tk\DataMap\Form;
  * object or array tpo a string there
  *
  * @author Michael Mifsud <info@tropotek.com>
- * @link http://www.tropotek.com/
+ * @see http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
 class Object extends Iface

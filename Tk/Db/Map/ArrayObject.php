@@ -6,14 +6,14 @@ use Tk\Db\Tool;
 
 /**
  * This objected is essentially a wrapper around the PdoStatement object with added features
- * such as holding the Model Mapper, and Db\Tool objects.
+ * such as holding the Model Mapper, and Tool objects.
  *
  * It automatically maps an objects data if the Model has the magic methods available
  *
  * @author Michael Mifsud <info@tropotek.com>
- * @link http://www.tropotek.com/
+ * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
- * @todo: Move this to the \Tk\Db namespace so the FQN is \Tk\Db\ArrayObject
+ * @todo: Move this to the Tk::Db namespace so the FQN is Tk::Db::ArrayObject
  */
 class ArrayObject implements \Iterator, \Countable
 {
@@ -75,7 +75,7 @@ class ArrayObject implements \Iterator, \Countable
      */
     static function createFromMapper(Mapper $mapper, PdoStatement $statement, $tool = null)
     {
-        // TODO: One day \PDO may be able to do this serially, this is a big memory hog...
+        // TODO: One day PDO may be able to do this serially, this is a big memory hog...
         //       Currently we cannot subclass the PDOStatement::fetch...() methods correctly [php: 5.6.27]
         // NOTE: For large datasets that could fill the memory, this object should not be used
         //       instead get statement and manually iterate the data.
@@ -102,7 +102,7 @@ class ArrayObject implements \Iterator, \Countable
      */
     static function create(PdoStatement $statement, $tool = null, $foundRows = 0)
     {
-        // TODO: One day \PDO may be able to do this serially, this is a big memory hog...
+        // TODO: One day PDO may be able to do this serially, this is a big memory hog...
         //       Currently we cannot subclass the PDOStatement::fetch...() methods correctly [php: 5.6.27]
         // NOTE: For large datasets that could fill the memory, this object should not be used
         //       instead get statement and manually iterate the data.
@@ -282,7 +282,7 @@ class ArrayObject implements \Iterator, \Countable
     }
 
     /**
-     * If the keyField and/or value field are set then the this will
+     * If the keyField and-or value field are set then the this will
      * return the the array with a key and the required value.
      *
      * @param null $valueField
