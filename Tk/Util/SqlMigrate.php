@@ -53,10 +53,11 @@ class SqlMigrate
 
 
     /**
-     * Migrate constructor.
+     * SqlMigrate constructor.
      *
      * @param \Tk\Db\Pdo $db
      * @param string $tempPath
+     * @throws \Tk\Db\Exception
      */
     public function __construct($db, $tempPath = '/tmp')
     {
@@ -168,14 +169,14 @@ class SqlMigrate
         if (substr(basename($file), 0, 1) == '_') return false;
 
         if (preg_match('/\.php$/i', basename($file))) {   // Include .php files
-            if (is_file($file))
+            if (is_file($file)) {
                 include($file);
-            else 
+            } else {
                 return false;
+            }
         } else {    // is sql
             // replace any table prefix
             $sql = file_get_contents($file);
-
             $stm = $this->db->prepare($sql);
             $stm->execute();
 
@@ -232,6 +233,7 @@ class SqlMigrate
     /**
      * @param \Tk\Db\Pdo $db
      * @return $this
+     * @throws \Tk\Db\Exception
      */
     public function setDb($db)
     {
@@ -245,6 +247,7 @@ class SqlMigrate
      *
      * @todo This must be tested against mysql, pgsql and sqlite....
      * So far query works with mysql and pgsql drvs sqlite still to test
+     * @throws \Tk\Db\Exception
      */
     protected function install()
     {
