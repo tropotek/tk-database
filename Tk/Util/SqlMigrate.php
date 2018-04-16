@@ -187,7 +187,6 @@ class SqlMigrate
             $error = $stm->errorInfo();
             if ($error[0] != "00000") {
               throw new \Tk\Db\Exception("Query $i failed: " . $error[2], 0, null, $sql);
-
             }
         }
         $this->insertPath($file);
