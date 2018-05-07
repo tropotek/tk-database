@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 2.0.18 [2018-05-08]:
+-------------------------------
+ - Added Company Groups
+ - Fixed minor bugs
+
+
 Ver 2.0.17 [2018-01-15]:
 -------------------------------
  - Minor Code Updates
