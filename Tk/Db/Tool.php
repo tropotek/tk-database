@@ -226,7 +226,7 @@ class Tool implements \Tk\InstanceKey
     public function getOrderProperty()
     {
         if (!$this->getOrderBy()) return $this->getOrderBy();
-        if (!preg_match('/^(ASC|DESC|FIELD\(|RAND\(|IF\(|NULL)/i', $this->getOrderBy())){
+        if (!preg_match('/^(ASC|DESC|FIELD\(|IFNULL\(|RAND\(|IF\(|NULL)/i', $this->getOrderBy())){
             if (preg_match('/^([a-z0-9]+\.)?([a-z0-9_-]+)/i', $this->getOrderBy(), $regs)) {
                 return trim($regs[2]);
             }
