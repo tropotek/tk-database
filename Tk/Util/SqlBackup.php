@@ -26,10 +26,21 @@ class SqlBackup
      *
      * @param Pdo $db
      */
-    function __construct(Pdo $db)
+    public function __construct(Pdo $db)
     {
         $this->db = $db;
     }
+
+    /**
+     * @param Pdo $db
+     * @return static
+     */
+    public static function create(Pdo $db)
+    {
+        $obj = new static($db);
+        return $obj;
+    }
+
 
     /**
      * Restore an sql file
