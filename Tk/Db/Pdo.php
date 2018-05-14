@@ -404,7 +404,7 @@ class Pdo extends \PDO
      * @param int $mode The fetch mode must be one of the PDO::FETCH_* constants.
      * @param mixed $arg3 The second and following parameters are the same as the parameters for PDOStatement::setFetchMode.
      * @param array $ctorargs
-     * @return PDOStatement PDO::query returns a PDOStatement object, or FALSE on failure.
+     * @return PDOStatement \PDO::query() returns a PDOStatement object, or FALSE on failure.
      * @throws \Tk\Db\Exception
      */
     public function query($statement, $mode = PDO::ATTR_DEFAULT_FETCH_MODE, $arg3 = null, array $ctorargs = array())
@@ -413,13 +413,13 @@ class Pdo extends \PDO
         $start = microtime(true);
         try {
             $result = call_user_func_array(array('parent', 'query'), func_get_args());
+            if ($result === false) {
+                $info = $this->errorInfo();
+                throw new Exception(end($info), $this->errorCode(), null, $statement);
+            }
         } catch (\Exception $e) {
             $info = $this->errorInfo();
             throw new Exception(end($info), $e->getCode(), $e, $statement);
-        }
-        if ($result === false) {
-            $info = $this->errorInfo();
-            throw new Exception(end($info), $this->errorCode(), null, $statement);
         }
         $this->addLog(
             array(
