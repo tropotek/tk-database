@@ -143,7 +143,7 @@ class SqlMigrate
      * @param string $path
      * @return array
      */
-    protected function getFileList($path)
+    public function getFileList($path)
     {
         $list = array();
         $list = array_merge($list, $this->search($path));
@@ -199,7 +199,7 @@ class SqlMigrate
      * @param $path
      * @return array
      */
-    protected function search($path)
+    public function search($path)
     {
         $list = array();
         if (!is_dir($path)) return $list;
