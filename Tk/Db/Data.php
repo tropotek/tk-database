@@ -94,7 +94,11 @@ class Data extends \Tk\Collection
      */
     public static function create($fkey = 'system', $fid = 0, $table = '', $db = null)
     {
-        $obj = new static($fkey, $fid, $table);
+        if ($fkey instanceof \Tk\Db\ModelInterface) {
+            $obj = new static(get_class($fkey), $fkey->getId(), $table);
+        } else {
+            $obj = new static($fkey, $fid, $table);
+        }
         if (!$db) $db = \Tk\Config::getInstance()->getDb();
         $obj->setDb($db);
         $obj->load();
