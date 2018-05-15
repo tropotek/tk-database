@@ -129,7 +129,7 @@ class Data extends \Tk\Collection
      */
     private function install()
     {
-        if (!$this->getDb() || $this->getDb()->tableExists($this->getTable())) return $this;
+        if (!$this->getDb() || $this->getDb()->hasTable($this->getTable())) return $this;
         $tbl = $this->getDb()->quoteParameter($this->getTable());
         // mysql
         $sql = '';
