@@ -352,7 +352,7 @@ class Pdo extends \PDO
      * @return  PDOStatement|\PDOStatement
      * @throws \PDOException
      */
-    public function prepare($statement, $driver_options = array())
+    public function prepare($statement, array $driver_options = array())
     {
         $result = parent::prepare($statement, $driver_options);
         return $result;
