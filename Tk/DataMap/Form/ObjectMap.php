@@ -11,7 +11,7 @@ namespace Tk\DataMap\Form;
  * @see http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
-class Object extends Iface
+class ObjectMap extends Iface
 {
 
 }

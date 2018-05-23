@@ -100,7 +100,7 @@ abstract class Map
             return;
         }
 
-        \Tk\Object::setObjectPropertyValue($object, $name, $value);
+        \Tk\ObjectUtil::setObjectPropertyValue($object, $name, $value);
     }
 
     /**
@@ -179,7 +179,7 @@ abstract class Map
      */
     protected function objectPropertyExists($object, $name)
     {
-        $v = \Tk\Object::objectPropertyExists($object, $name);
+        $v = \Tk\ObjectUtil::objectPropertyExists($object, $name);
         return $v;
     }
 
@@ -195,7 +195,7 @@ abstract class Map
      */
     protected function getObjectPropertyValue($object, $name)
     {
-        $v = \Tk\Object::getObjectPropertyValue($object, $name);
+        $v = \Tk\ObjectUtil::getObjectPropertyValue($object, $name);
         return $v;
     }
 
