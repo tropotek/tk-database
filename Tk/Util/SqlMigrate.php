@@ -73,33 +73,55 @@ class SqlMigrate
      * @return array
      * @throws \Exception
      * @throws \Tk\Db\Exception
+     * @todo: considder removeing the backup/restore from this method and maybe have a new mothod like safeMigrate()
+     * @todo:   This would allow the programmer to migrate and take care of the backup themself
      */
     public function migrate($path)
     {
         $list = $this->getFileList($path);
         $dump = new SqlBackup($this->db);
-        $backupFile = $dump->save($this->tempPath);
+        $backupFile = '';
         $mlist = array();
         try {
+            $sqlFiles = array();
             $phpFiles = array();
+
+            // Find any migration files
             foreach ($list as $file) {
                 if (preg_match('/\.php$/i', basename($file))) {   // Include .php files
                     $phpFiles[] = $file;
-                } else if ($this->migrateFile($file)) {
-                    $mlist[] = $this->toRelative($file);
+                } else {
+                    $sqlFiles[] = $file;
                 }
             }
-            foreach ($phpFiles as $file) {
-                if ($this->migrateFile($file)) {
-                    $mlist[] = $this->toRelative($file);
+
+            if (count($sqlFiles) || count($phpFiles)) {
+                $backupFile = $dump->save($this->tempPath);     // Just in case
+                foreach ($sqlFiles as $file) {
+                    if ($this->migrateFile($file)) {
+                        $mlist[] = $this->toRelative($file);
+                    }
+                }
+                foreach ($phpFiles as $file) {
+                    if ($this->migrateFile($file)) {
+                        $mlist[] = $this->toRelative($file);
+                    }
                 }
             }
+
         } catch (\Exception $e) {
-            $dump->restore($backupFile);
-            unlink($backupFile);
+            if ($backupFile) {
+                $dump->restore($backupFile);
+                unlink($backupFile);
+                $backupFile = '';
+            }
             throw $e;
         }
-        unlink($backupFile);
+
+        if ($backupFile) {
+            unlink($backupFile);
+            $backupFile = '';
+        }
         return $mlist;
     }
 
