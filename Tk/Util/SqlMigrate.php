@@ -79,7 +79,6 @@ class SqlMigrate
     public function migrate($path)
     {
         $list = $this->getFileList($path);
-        $dump = new SqlBackup($this->db);
         $backupFile = '';
         $mlist = array();
         try {
@@ -96,6 +95,7 @@ class SqlMigrate
             }
 
             if (count($sqlFiles) || count($phpFiles)) {
+                $dump = new SqlBackup($this->db);
                 $backupFile = $dump->save($this->tempPath);     // Just in case
                 foreach ($sqlFiles as $file) {
                     if ($this->migrateFile($file)) {
