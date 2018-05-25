@@ -83,8 +83,8 @@ class SqlMigrate
         $mlist = array();
         $sqlFiles = array();
         $phpFiles = array();
-        
-        try {
+
+        try { 
             // Find any migration files
             foreach ($list as $file) {
                 if (preg_match('/\.php$/i', basename($file))) {   // Include .php files
