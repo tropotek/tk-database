@@ -73,18 +73,19 @@ class SqlMigrate
      * @return array
      * @throws \Exception
      * @throws \Tk\Db\Exception
-     * @todo: considder removeing the backup/restore from this method and maybe have a new mothod like safeMigrate()
+     * @todo: consider removing the backup/restore from this method and maybe have a new mothod like safeMigrate()
      * @todo:   This would allow the programmer to migrate and take care of the backup themself
      */
     public function migrate($path)
     {
+
         $list = $this->getFileList($path);
         $backupFile = '';
         $mlist = array();
         $sqlFiles = array();
         $phpFiles = array();
 
-        try { 
+        try {
             // Find any migration files
             foreach ($list as $file) {
                 if (preg_match('/\.php$/i', basename($file))) {   // Include .php files
