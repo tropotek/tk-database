@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 2.0.26 [2018-05-28]:
+-------------------------------
+ - Merge branch 'master' of https://github.com/tropotek/tk-database
+ - Dev.ttek.org
+
+
 Ver 2.0.25 [2018-05-24]:
 -------------------------------
 
