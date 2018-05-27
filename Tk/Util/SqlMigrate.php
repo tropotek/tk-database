@@ -51,6 +51,12 @@ class SqlMigrate
      */
     protected $tempPath = '/tmp';
 
+    /**
+     * if empty a backup does not exist yet.
+     * @var string
+     */
+    protected $backupFile = '';
+
 
     /**
      * SqlMigrate constructor.
@@ -67,20 +73,25 @@ class SqlMigrate
     }
 
     /**
+     * Do any object cleanup
+     */
+    public function __destruct()
+    {
+        $this->deleteBackup();
+    }
+
+    /**
      * Run the migration script and find all non executed sql files
      *
      * @param $path
      * @return array
      * @throws \Exception
      * @throws \Tk\Db\Exception
-     * @todo: consider removing the backup/restore from this method and maybe have a new mothod like safeMigrate()
-     * @todo:   This would allow the programmer to migrate and take care of the backup themself
      */
     public function migrate($path)
     {
 
         $list = $this->getFileList($path);
-        $backupFile = '';
         $mlist = array();
         $sqlFiles = array();
         $phpFiles = array();
@@ -96,8 +107,6 @@ class SqlMigrate
             }
 
             if (count($sqlFiles) || count($phpFiles)) {
-                $dump = new SqlBackup($this->db);
-                $backupFile = $dump->save($this->tempPath);     // Just in case
                 foreach ($sqlFiles as $file) {
                     if ($this->migrateFile($file)) {
                         $mlist[] = $this->toRelative($file);
@@ -111,18 +120,10 @@ class SqlMigrate
             }
 
         } catch (\Exception $e) {
-            if ($backupFile) {
-                $dump->restore($backupFile);
-                unlink($backupFile);
-                $backupFile = '';
-            }
+            $this->restoreBackup();
             throw $e;
         }
-
-        if ($backupFile) {
-            unlink($backupFile);
-            $backupFile = '';
-        }
+        $this->deleteBackup();
         return $mlist;
     }
 
@@ -189,6 +190,11 @@ class SqlMigrate
         if ($this->hasPath($file)) return false;
         if (!is_readable($file)) return false;
 
+        if (!$this->backupFile) {   // only run once per session.
+            $dump = new SqlBackup($this->db);
+            $this->backupFile = $dump->save($this->tempPath);     // Just in case
+        }
+
         if (substr(basename($file), 0, 1) == '_') return false;
 
         if (preg_match('/\.php$/i', basename($file))) {   // Include .php files
@@ -214,6 +220,33 @@ class SqlMigrate
         }
         $this->insertPath($file);
         return true;
+    }
+
+    /**
+     * @param bool $deleteFile
+     * @throws \Tk\Db\Exception
+     * @throws \Tk\Exception
+     */
+    protected function restoreBackup($deleteFile = true)
+    {
+        if ($this->backupFile) {
+            $dump = new SqlBackup($this->db);
+            $dump->restore($this->backupFile);
+            if ($deleteFile) {
+                $this->deleteBackup();
+            }
+        }
+    }
+
+    /**
+     * Delete the internally generated backup file if it exists
+     */
+    protected function deleteBackup()
+    {
+        if (is_writable($this->backupFile)) {
+            unlink($this->backupFile);
+            $this->backupFile = '';
+        }
     }
 
     /**
