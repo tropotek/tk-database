@@ -20,7 +20,7 @@ class JsonArray extends Iface
     {
         $value = parent::toPropertyValue($row, $columnName);
         if ($value) {
-            $value = json_decode($value);
+            $value = (array)json_decode($value);
         }
         if (!$value) $value = array();  // Ensure an empty array is returned
         if ($value === null) $value = null;
