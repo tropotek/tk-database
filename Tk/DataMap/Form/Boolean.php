@@ -41,8 +41,10 @@ class Boolean extends Iface
     public function toColumnValue($object, $propertyName)
     {
         $value = parent::toColumnValue($object, $propertyName);
+        vd($value);
         if ($value !== null) {
             $value = ((int)$value != 0) ? $propertyName : '';
+            //$value = (int)$value;
         }
         return $value;
     }
