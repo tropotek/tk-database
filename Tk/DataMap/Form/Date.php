@@ -36,8 +36,7 @@ class Date extends Iface
     {
         $value = parent::toPropertyValue($row, $columnName);
         if ($value !== null && !$value instanceof \DateTime) {
-            // TODO: parse from the $format
-            $value = \Tk\Date::createFormDate($value);
+            $value = \Tk\Date::createFormDate($value, null, $this->format);
         }
         return $value;
     }
