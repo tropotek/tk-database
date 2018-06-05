@@ -9,11 +9,21 @@ namespace Tk\DataMap\Form;
  */
 class Date extends Iface
 {
+    /**
+     * Valid date format `31/12/2000`
+     */
+    const FORMAT_DATE = 'd/m/Y';
+
+    /**
+     * Valid date format `31/12/2000 23:59`
+     */
+    const FORMAT_DATETIME = 'd/m/Y H:i';
+
 
     /**
      * @var string
      */
-    protected  $format = 'd/m/Y';
+    protected  $format = self::FORMAT_DATE;
 
     /**
      * @param $format

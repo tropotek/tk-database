@@ -145,6 +145,7 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
     public function selectFrom($from = '', $where = '', $tool = null)
     {
         if ($tool && $tool->getOrderProperty()) {   // Do nothing if a property cannot be found in the tool
+            $tool = clone $tool; // Clone this so the orderBy properties are not changed in the original tool object.
             $mapProperty = $this->getDbMap()->getPropertyMap($tool->getOrderProperty());
             if ($mapProperty) {
                 $orderBy = $tool->getOrderBy();

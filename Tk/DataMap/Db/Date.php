@@ -9,11 +9,22 @@ namespace Tk\DataMap\Db;
  */
 class Date extends Iface
 {
+    /**
+     * Valid date format `2000-12-31`
+     */
+    const FORMAT_DATE = 'Y-m-d';
+
+    /**
+     * Valid date format `2000-12-31 23:59:59`
+     */
+    const FORMAT_DATETIME = 'Y-m-d H:i:s';
 
     /**
      * @var string
      */
-    protected  $format = 'Y-m-d H:i:s';
+    protected  $format = self::FORMAT_DATETIME;
+
+
 
     /**
      * @param $format
@@ -36,7 +47,6 @@ class Date extends Iface
     {
         $value = parent::toPropertyValue($row, $columnName);
         if ($value !== null) {
-            // TODO: parse from the $format
             $value = \Tk\Date::create($value);
         }
         return $value;
