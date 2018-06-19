@@ -43,6 +43,7 @@ class ArrayObject implements \Iterator, \Countable
     /**
      * The total number of rows found without LIMIT clause
      * @var int
+     * @deprecated This has been moofed to \Tk\Db\Tool
      */
     protected $foundRows = 0;
 
@@ -81,13 +82,15 @@ class ArrayObject implements \Iterator, \Countable
         //       instead get statement and manually iterate the data.
         $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
         $obj = new self($rows);
-        $obj->foundRows = $mapper->getDb()->countFoundRows($statement->queryString);
+        //$obj->foundRows = $mapper->getDb()->countFoundRows($statement->queryString);
         $obj->mapper = $mapper;
         $obj->statement = $statement;
         if (!$tool) {
             $tool = new Tool();
         }
         $obj->tool = $tool;
+        $tool->setFoundRows($mapper->getDb()->countFoundRows($statement->queryString));
+        $obj->foundRows = $tool->getFoundRows();
         return $obj;
     }
 
@@ -100,7 +103,7 @@ class ArrayObject implements \Iterator, \Countable
      * @return ArrayObject
      * @throws \Tk\Db\Exception
      */
-    static function create(PdoStatement $statement, $tool = null, $foundRows = 0)
+    static function create(PdoStatement $statement, $tool = null, $foundRows = null)
     {
         // TODO: One day PDO may be able to do this serially, this is a big memory hog...
         //       Currently we cannot subclass the PDOStatement::fetch...() methods correctly [php: 5.6.27]
@@ -108,16 +111,25 @@ class ArrayObject implements \Iterator, \Countable
         //       instead get statement and manually iterate the data.
         $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
         $obj = new self($rows);
+        if ($foundRows === null) {
+            $foundRows = count($rows);
+            if (method_exists($statement, 'getPdo') && $statement->getPdo())
+                $foundRows = $statement->getPdo()->countFoundRows($statement->queryString);
+        }
+        /*
         $obj->foundRows = count($rows);
         if (method_exists($statement, 'getPdo') && $statement->getPdo())
             $obj->foundRows = $statement->getPdo()->countFoundRows($statement->queryString);
         if ($foundRows)
             $obj->foundRows = $foundRows;
+        */
         $obj->statement = $statement;
         if (!$tool) {
             $tool = new Tool();
         }
         $obj->tool = $tool;
+        $tool->setFoundRows($foundRows);
+        $obj->foundRows = $tool->getFoundRows();
         return $obj;
     }
 
@@ -188,6 +200,10 @@ class ArrayObject implements \Iterator, \Countable
         return null;
     }
 
+
+
+
+
     /**
      * Return the total number of rows found.
      * When using SQL it would be the query with no limit...
@@ -196,6 +212,9 @@ class ArrayObject implements \Iterator, \Countable
      */
     public function countAll()
     {
+        if ($this->getTool()) {
+            return $this->getTool()->getFoundRows();
+        }
         return $this->foundRows;
     }
 
@@ -204,11 +223,23 @@ class ArrayObject implements \Iterator, \Countable
      * When using SQL it would be the query with no limit...
      *
      * @return int
-     * @deprecated Use self::getTotalCount()
+     * @deprecated Use self::countAll()
      */
     public function getFoundRows()
     {
         return $this->countAll();
+    }
+
+    //   Countable Interface
+
+    /**
+     * Count the number of records returned from the SQL query
+     *
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->rows);
     }
 
 
@@ -267,18 +298,6 @@ class ArrayObject implements \Iterator, \Countable
             return true;
         }
         return false;
-    }
-
-    //   Countable Interface
-
-    /**
-     * Count the number of records returned from the SQL query
-     *
-     * @return int
-     */
-    public function count()
-    {
-        return count($this->rows);
     }
 
     /**

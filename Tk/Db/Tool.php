@@ -61,6 +61,12 @@ class Tool implements \Tk\InstanceKey
      */
     protected $instanceId = '';
 
+    /**
+     * The total number of rows found without LIMIT clause
+     * @var int
+     */
+    protected $foundRows = 0;
+
 
     /**
      * @param string $orderBy
@@ -191,6 +197,24 @@ class Tool implements \Tk\InstanceKey
     public function getPageNo()
     {
         return ceil($this->offset / $this->limit) + 1;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFoundRows()
+    {
+        return $this->foundRows;
+    }
+
+    /**
+     * @param int $foundRows
+     * @return Tool
+     */
+    public function setFoundRows($foundRows)
+    {
+        $this->foundRows = $foundRows;
+        return $this;
     }
 
     /**
