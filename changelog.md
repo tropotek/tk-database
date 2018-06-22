@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 2.0.36 [2018-06-23]:
+-------------------------------
+Minor Code Updates
+Dev.ttek.org
+
+
 Ver 2.0.34 [2018-06-19]:
 -------------------------------
 Added a new company-supervisor manager page as per Ted request.
