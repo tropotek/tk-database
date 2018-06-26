@@ -121,7 +121,7 @@ class SqlBackup
         if ('mysql' == $this->db->getDriver()) {
             $excludeStr = '';
             foreach ($exclude as $exTable) {
-                $excludeStr .= '--ignore-table=' . $exTable . ' ';
+                $excludeStr .= '--ignore-table=' . $this->db->getDatabaseName() . '.' . $exTable . ' ';
             }
             $command = sprintf('mysqldump %s --opt -h %s -u %s -p%s %s > %s', $excludeStr, $host, $user, $pass, $name, escapeshellarg($sqlFile));
         } else if ('pgsql' == $this->db->getDriver()) {
@@ -167,7 +167,7 @@ class SqlBackup
         if ('mysql' == $this->db->getDriver()) {
             $excludeStr = '';
             foreach ($exclude as $exTable) {
-                $excludeStr .= '--ignore-table=' . $exTable . ' ';
+                $excludeStr .= '--ignore-table=' . $this->db->getDatabaseName() . '.' . $exTable . ' ';
             }
             $command = sprintf('mysqldump %s --opt -h %s -u %s -p%s %s', $excludeStr, $host, $user, $pass, $name);
         } else if ('pgsql' == $this->db->getDriver()) {
