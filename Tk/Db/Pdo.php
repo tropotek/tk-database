@@ -712,7 +712,7 @@ class Pdo extends \PDO
      * @throws \Tk\Db\Exception
      * @todo Check this is compatible with MySQL???? Also may want to also drop procedures, view, etc. ????
      */
-    public function dropAllTables($confirm = false)
+    public function dropAllTables($confirm = false, $exceptions = array())
     {
         if (!$confirm) return false;
         $sql = '';
@@ -720,6 +720,7 @@ class Pdo extends \PDO
             $sql .= sprintf('SET FOREIGN_KEY_CHECKS = 0;SET UNIQUE_CHECKS = 0;');
         }
         foreach ($this->getTableList() as $i => $v) {
+            if (in_array($v, $exceptions)) continue;
             $sql .= sprintf('DROP TABLE IF EXISTS %s CASCADE;', $this->quoteParameter($v));
         }
         if ($this->getDriver() == 'mysql') {
