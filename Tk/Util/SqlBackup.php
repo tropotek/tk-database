@@ -110,11 +110,20 @@ class SqlBackup
         $name = escapeshellarg($this->db->getOption('name'));
         $user = escapeshellarg($this->db->getOption('user'));
         $pass = escapeshellarg($this->db->getOption('pass'));
+        $exclude = array();
+        if (!empty($options['exclude'])) {
+            $exclude = $options['exclude'];
+            if (!is_array($exclude)) $exclude = array($exclude);
+        }
 
         $command = '';
         // TODO: create a windows valid commands ????
         if ('mysql' == $this->db->getDriver()) {
-            $command = sprintf('mysqldump --opt -h %s -u %s -p%s %s > %s', $host, $user, $pass, $name, escapeshellarg($sqlFile));
+            $excludeStr = '';
+            foreach ($exclude as $exTable) {
+                $excludeStr .= '--ignore-table=' . $exTable . ' ';
+            }
+            $command = sprintf('mysqldump %s --opt -h %s -u %s -p%s %s > %s', $excludeStr, $host, $user, $pass, $name, escapeshellarg($sqlFile));
         } else if ('pgsql' == $this->db->getDriver()) {
             $command = sprintf('export PGPASSWORD=%s && pg_dump --inserts -O -h %s -U %s %s > %s', $pass, $host, $user, $name, escapeshellarg($sqlFile));
         }
@@ -147,11 +156,20 @@ class SqlBackup
         $name = escapeshellarg($this->db->getOption('name'));
         $user = escapeshellarg($this->db->getOption('user'));
         $pass = escapeshellarg($this->db->getOption('pass'));
+        $exclude = array();
+        if (!empty($options['exclude'])) {
+            $exclude = $options['exclude'];
+            if (!is_array($exclude)) $exclude = array($exclude);
+        }
 
         $command = '';
         // TODO: create a windows valid commands ????
         if ('mysql' == $this->db->getDriver()) {
-            $command = sprintf('mysqldump --opt -h %s -u %s -p%s %s', $host, $user, $pass, $name);
+            $excludeStr = '';
+            foreach ($exclude as $exTable) {
+                $excludeStr .= '--ignore-table=' . $exTable . ' ';
+            }
+            $command = sprintf('mysqldump %s --opt -h %s -u %s -p%s %s', $excludeStr, $host, $user, $pass, $name);
         } else if ('pgsql' == $this->db->getDriver()) {
             $command = sprintf('export PGPASSWORD=%s && pg_dump --inserts -O -h %s -U %s %s', $pass, $host, $user, $name);
         }
