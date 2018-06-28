@@ -158,7 +158,9 @@ abstract class Map
      */
     public function hasColumn($array)
     {
-        return array_key_exists($this->getColumnName(), $array);
+        if (is_array($array))
+            return array_key_exists($this->getColumnName(), $array);
+        return false;
     }
 
     /**
