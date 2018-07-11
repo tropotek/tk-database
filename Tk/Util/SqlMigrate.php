@@ -118,7 +118,6 @@ class SqlMigrate
                     }
                 }
             }
-
         } catch (\Exception $e) {
             $this->restoreBackup();
             throw $e;
@@ -187,8 +186,8 @@ class SqlMigrate
     protected function migrateFile($file)
     {
         $file = $this->sitePath . $this->toRelative($file);
-        if ($this->hasPath($file)) return false;
         if (!is_readable($file)) return false;
+        if ($this->hasPath($file)) return false;
 
         if (!$this->backupFile) {   // only run once per session.
             $dump = new SqlBackup($this->db);
