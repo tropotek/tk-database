@@ -99,6 +99,7 @@ abstract class Model implements \Tk\Db\ModelInterface
      * A Utility method that checks the id and does and insert
      * or an update  based on the objects current state
      *
+     * @throws \Exception
      */
     public function save()
     {
@@ -136,4 +137,13 @@ abstract class Model implements \Tk\Db\ModelInterface
      * @toto See if this is really needed. Maybe create an interface....
      */
     public function validate() { return array(); }
+
+    /**
+     * @return \Tk\Config
+     */
+    public function getConfig()
+    {
+        return \Tk\Config::getInstance();
+    }
+
 }
