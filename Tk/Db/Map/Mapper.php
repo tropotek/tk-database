@@ -230,7 +230,7 @@ abstract class Mapper implements Mappable
     {
         $pk = $this->getPrimaryKey();
         if (!property_exists($obj, $pk)) {
-            throw new \Exception('No valid primary key found');
+            throw new \Tk\Exception('No valid primary key found');
         }
         if (!$obj->$pk) {
             $obj->insert();
