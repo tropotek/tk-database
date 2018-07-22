@@ -67,7 +67,6 @@ abstract class Mapper implements Mappable
 
     /**
      * @param null|Pdo $db
-     * @throws Exception
      * @throws \Exception
      */
     public function __construct($db = null)
@@ -246,7 +245,7 @@ abstract class Mapper implements Mappable
      * @param Tool $tool
      * @param string $boolOperator
      * @return ArrayObject
-     * @throws Exception
+     * @throws \Exception
      * @see http://www.sitepoint.com/integrating-the-data-mappers/
      * @deprecated TODO: See if we need this ?
      */
@@ -302,7 +301,7 @@ abstract class Mapper implements Mappable
      * @param string $where EG: "`column1`=4 AND `column2`='string'"
      * @param Tool $tool
      * @return ArrayObject
-     * @throws Exception
+     * @throws \Exception
      */
     public function select($where = '', $tool = null)
     {
@@ -316,7 +315,7 @@ abstract class Mapper implements Mappable
      * @param string $where EG: "`column1`=4 AND `column2`='string'"
      * @param Tool $tool
      * @return ArrayObject
-     * @throws Exception
+     * @throws \Exception
      */
     public function selectFrom($from = '', $where = '', $tool = null)
     {
@@ -372,7 +371,7 @@ abstract class Mapper implements Mappable
      *
      * @param int $id
      * @return null|Model|\Tk\Db\ModelInterface
-     * @throws Exception
+     * @throws \Exception
      */
     public function find($id)
     {
@@ -386,7 +385,7 @@ abstract class Mapper implements Mappable
      *
      * @param Tool $tool
      * @return ArrayObject
-     * @throws Exception
+     * @throws \Exception
      */
     public function findAll($tool = null)
     {
@@ -498,7 +497,7 @@ abstract class Mapper implements Mappable
      *
      * @param string $alias
      * @return $this
-     * @throws Exception
+     * @throws \Exception
      */
     public function setAlias($alias)
     {
@@ -521,7 +520,7 @@ abstract class Mapper implements Mappable
      * @param string $table
      * @param bool $addPrefix Set this to false to not add the table prefix.
      * @return $this
-     * @throws Exception
+     * @throws \Exception
      */
     public function setTable($table, $addPrefix = true)
     {
