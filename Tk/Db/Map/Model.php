@@ -31,7 +31,7 @@ abstract class Model implements \Tk\Db\ModelInterface
      * @param Pdo $db 
      * @return Mapper
      */
-    static function getMapper($mapperClass = '', $db = null)
+    static function createMapper($mapperClass = '', $db = null)
     {
         if (!$mapperClass) {
             $mapperClass = get_called_class() . self::$MAPPER_APPEND;
@@ -39,7 +39,6 @@ abstract class Model implements \Tk\Db\ModelInterface
 //                $mapperClass = static::class . self::$MAPPER_APPEND;
 //            }
         }
-
         //return new $mapperClass($db);
         return $mapperClass::create($db);
     }
@@ -51,7 +50,7 @@ abstract class Model implements \Tk\Db\ModelInterface
      */
     public function getId()
     {
-        $pk = self::getMapper()->getPrimaryKey();
+        $pk = self::createMapper()->getPrimaryKey();
         if (property_exists($this, $pk)) {
             return $this->$pk;
         }
@@ -64,7 +63,7 @@ abstract class Model implements \Tk\Db\ModelInterface
      */
     private function setId($id)
     {
-        $pk = self::getMapper()->getPrimaryKey();
+        $pk = self::createMapper()->getPrimaryKey();
         if (property_exists($this, $pk)) {
             $this->$pk = $id;
         }
@@ -79,7 +78,7 @@ abstract class Model implements \Tk\Db\ModelInterface
      */
     public function insert()
     {
-        $id = self::getMapper()->insert($this);
+        $id = self::createMapper()->insert($this);
         $this->setId($id);  // Has to be here cause of private property
         return $id;
     }
@@ -91,7 +90,7 @@ abstract class Model implements \Tk\Db\ModelInterface
      */
     public function update()
     {
-        $r = self::getMapper()->update($this);
+        $r = self::createMapper()->update($this);
         return $r;
     }
 
@@ -103,7 +102,7 @@ abstract class Model implements \Tk\Db\ModelInterface
      */
     public function save()
     {
-        self::getMapper()->save($this);
+        self::createMapper()->save($this);
     }
 
     /**
@@ -113,7 +112,7 @@ abstract class Model implements \Tk\Db\ModelInterface
      */
     public function delete()
     {
-        return self::getMapper()->delete($this);
+        return self::createMapper()->delete($this);
     }
 
     /**
@@ -125,7 +124,7 @@ abstract class Model implements \Tk\Db\ModelInterface
     public function getVolatileId()
     {
         if (!$this->getId()) {
-            return self::getMapper()->getDb()->getNextInsertId(self::getMapper()->getTable());
+            return self::createMapper()->getDb()->getNextInsertId(self::createMapper()->getTable());
         }
         return $this->getId();
     }
