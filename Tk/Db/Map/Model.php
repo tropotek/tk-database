@@ -1,6 +1,7 @@
 <?php
 namespace Tk\Db\Map;
 
+use Tk\Db\Exception;
 use \Tk\Db\Pdo;
 
 /**
@@ -119,12 +120,16 @@ abstract class Model implements \Tk\Db\ModelInterface
      * Returns the object id if it is greater than 0 or the nextInsertId if is 0
      *
      * @return int
-     * @throws \Tk\Db\Exception
      */
     public function getVolatileId()
     {
         if (!$this->getId()) {
-            return self::createMapper()->getDb()->getNextInsertId(self::createMapper()->getTable());
+            try {
+                return self::createMapper()->getDb()->getNextInsertId(self::createMapper()->getTable());
+            } catch (Exception $e) {
+                \Tk\Log::warning('Cannot get Model::getVolatileId() value, returning 0');
+                return 0;
+            }
         }
         return $this->getId();
     }
