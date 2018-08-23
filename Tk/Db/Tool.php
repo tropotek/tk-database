@@ -462,7 +462,7 @@ class Tool implements \Tk\InstanceKey
     public function makeInstanceKey($key)
     {
         if ($this->instanceId)
-            return $this->instanceId . '_' . $key;
+            return $this->instanceId . '-' . $key;
         return $key;
     }
 
