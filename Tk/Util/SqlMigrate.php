@@ -224,7 +224,6 @@ class SqlMigrate
             }
             $this->insertPath($file);
         } catch (\Exception $e){
-            vd($file);
             throw new \Tk\Exception('File: ' . $file, $e->getCode(), $e);
         }
         return true;
