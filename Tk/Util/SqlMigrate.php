@@ -83,12 +83,12 @@ class SqlMigrate
     /**
      * Run the migration script and find all non executed sql files
      *
-     * @param $path
+     * @param string $path
+     * @param null|callable $onFileMigrate
      * @return array
-     * @throws \Exception
-     * @throws \Tk\Db\Exception
+     * @throws \\Exception
      */
-    public function migrate($path)
+    public function migrate($path, $onFileMigrate = null)
     {
 
         $list = $this->getFileList($path);
@@ -108,19 +108,21 @@ class SqlMigrate
 
             if (count($sqlFiles) || count($phpFiles)) {
                 foreach ($sqlFiles as $file) {
+                    if ($onFileMigrate) call_user_func_array($onFileMigrate, array($path, $this));
                     if ($this->migrateFile($file)) {
                         $mlist[] = $this->toRelative($file);
                     }
                 }
                 foreach ($phpFiles as $file) {
                     if ($this->migrateFile($file)) {
+                        if ($onFileMigrate) call_user_func_array($onFileMigrate, array($path, $this));
                         $mlist[] = $this->toRelative($file);
                     }
                 }
             }
         } catch (\Exception $e) {
             $this->restoreBackup();
-            throw $e;
+            throw new \Tk\Exception('Path: ' . $path, $e->getCode(), $e);
         }
         $this->deleteBackup();
         return $mlist;
@@ -181,43 +183,50 @@ class SqlMigrate
      *
      * @param string $file
      * @return bool
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     protected function migrateFile($file)
     {
-        $file = $this->sitePath . $this->toRelative($file);
-        if (!is_readable($file)) return false;
-        if ($this->hasPath($file)) return false;
+        try {
+            $file = $this->sitePath . $this->toRelative($file);
+            if (!is_readable($file)) return false;
+            if ($this->hasPath($file)) return false;
 
-        if (!$this->backupFile) {   // only run once per session.
-            $dump = new SqlBackup($this->db);
-            $this->backupFile = $dump->save($this->tempPath);     // Just in case
-        }
-
-        if (substr(basename($file), 0, 1) == '_') return false;
-
-        if (preg_match('/\.php$/i', basename($file))) {   // Include .php files
-            if (is_file($file)) {
-                include($file);
-            } else {
-                return false;
+            if (!$this->backupFile) {   // only run once per session.
+                $dump = new SqlBackup($this->db);
+                $this->backupFile = $dump->save($this->tempPath);     // Just in case
             }
-        } else {    // is sql
-            // replace any table prefix
-            $sql = file_get_contents($file);
-            $stm = $this->db->prepare($sql);
-            $stm->execute();
 
-            // Bugger of a way to get the error:
-            // https://stackoverflow.com/questions/23247553/how-can-i-get-an-error-when-running-multiple-queries-with-pdo
-            $i = 0;
-            do { $i++; } while ($stm->nextRowset());
-            $error = $stm->errorInfo();
-            if ($error[0] != "00000") {
-              throw new \Tk\Db\Exception("Query $i failed: " . $error[2], 0, null, $sql);
+            if (substr(basename($file), 0, 1) == '_') return false;
+
+            if (preg_match('/\.php$/i', basename($file))) {   // Include .php files
+                if (is_file($file)) {
+                    include($file);
+                } else {
+                    return false;
+                }
+            } else {    // is sql
+                // replace any table prefix
+                $sql = file_get_contents($file);
+                $stm = $this->db->prepare($sql);
+                $stm->execute();
+
+                // Bugger of a way to get the error:
+                // https://stackoverflow.com/questions/23247553/how-can-i-get-an-error-when-running-multiple-queries-with-pdo
+                $i = 0;
+                do {
+                    $i++;
+                } while ($stm->nextRowset());
+                $error = $stm->errorInfo();
+                if ($error[0] != "00000") {
+                    throw new \Tk\Db\Exception("Query $i failed: " . $error[2], 0, null, $sql);
+                }
             }
+            $this->insertPath($file);
+        } catch (\Exception $e){
+            vd($file);
+            throw new \Tk\Exception('File: ' . $file, $e->getCode(), $e);
         }
-        $this->insertPath($file);
         return true;
     }
 
