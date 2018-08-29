@@ -45,6 +45,14 @@ abstract class Model implements \Tk\Db\ModelInterface
     }
 
     /**
+     * @return Mapper
+     */
+    public function getMapper()
+    {
+        return self::createMapper(get_class($this));
+    }
+
+    /**
      * Get the model primary DB key, usually ID
      *
      * @return mixed
