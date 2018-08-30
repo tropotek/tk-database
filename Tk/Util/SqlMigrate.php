@@ -108,8 +108,8 @@ class SqlMigrate
 
             if (count($sqlFiles) || count($phpFiles)) {
                 foreach ($sqlFiles as $file) {
-                    if ($onFileMigrate) call_user_func_array($onFileMigrate, array($this->toRelative($file), $this));
                     if ($this->migrateFile($file)) {
+                        if ($onFileMigrate) call_user_func_array($onFileMigrate, array($this->toRelative($file), $this));
                         $mlist[] = $this->toRelative($file);
                     }
                 }
