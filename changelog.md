@@ -1,5 +1,13 @@
 #CHANGELOG#
 
+Ver 2.0.56 [2018-08-31]:
+-------------------------------
+  - Fixed cron job
+  - Merge branch 'master' of https://github.com/tropotek/tk-database
+  - Upgraded to handle new form updates
+  - Upgraded and updated wiki
+
+
 Ver 2.0.54 [2018-08-23]:
 -------------------------------
 
