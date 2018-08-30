@@ -22,7 +22,16 @@ use Tk\Db\Tool;
  */
 abstract class Mapper implements Mappable
 {
-    static $DB_PREFIX = '';
+    /**
+     * @var string
+     */
+    public static $DB_PREFIX = '';
+
+    /**
+     * Set this to false to allow records that have been deleted to be retrieved
+     * @var bool
+     */
+    public static $HIDE_DELETED = true;
     
     /**
      * @var Mapper[]
@@ -263,7 +272,7 @@ abstract class Mapper implements Mappable
             $alias = $alias . '.';
         }
 
-        if ($this->getMarkDeleted() && !array_key_exists($this->getMarkDeleted(), $bind)) {
+        if (self::$HIDE_DELETED && $this->getMarkDeleted() && !array_key_exists($this->getMarkDeleted(), $bind)) {
             $bind[$this->getMarkDeleted()] = '0';
         }
 
@@ -301,28 +310,13 @@ abstract class Mapper implements Mappable
     /**
      * Select a number of elements from a database
      *
-     * @param string $where EG: "`column1`=4 AND `column2`='string'"
-     * @param Tool $tool
-     * @param bool $hideDeleted
-     * @return ArrayObject
-     * @throws \Exception
-     */
-    public function select($where = '', $tool = null, $hideDeleted = true)
-    {
-        return $this->selectFrom('', $where, $tool, $hideDeleted);
-    }
-
-    /**
-     * Select a number of elements from a database
-     *
      * @param string $from
      * @param string $where EG: "`column1` = 4 AND `column2`='string'"
      * @param Tool $tool
-     * @param bool $hideDeleted
      * @return ArrayObject
      * @throws \Exception
      */
-    public function selectFrom($from = '', $where = '', $tool = null, $hideDeleted = true)
+    public function selectFrom($from = '', $where = '', $tool = null)
     {
         if (!$tool instanceof Tool) {
             $tool = new Tool();
@@ -336,7 +330,7 @@ abstract class Mapper implements Mappable
             $from = sprintf('%s %s', $this->quoteTable($this->getTable()), $this->getAlias());
         }
 
-        if ($hideDeleted && $this->getMarkDeleted() && strstr($where, $this->quoteParameter($this->getMarkDeleted())) === false) {
+        if (self::$HIDE_DELETED && $this->getMarkDeleted() && strstr($where, $this->quoteParameter($this->getMarkDeleted())) === false) {
             if ($where) {
                 $where = sprintf('%s%s = 0 AND %s ', $alias, $this->quoteParameter($this->getMarkDeleted()), $where);
             } else {
@@ -373,6 +367,19 @@ abstract class Mapper implements Mappable
     }
 
     /**
+     * Select a number of elements from a database
+     *
+     * @param string $where EG: "`column1`=4 AND `column2`='string'"
+     * @param Tool $tool
+     * @return ArrayObject
+     * @throws \Exception
+     */
+    public function select($where = '', $tool = null)
+    {
+        return $this->selectFrom('', $where, $tool);
+    }
+
+    /**
      *
      * @param int $id
      * @return null|Model|\Tk\Db\ModelInterface
@@ -381,7 +388,7 @@ abstract class Mapper implements Mappable
     public function find($id)
     {
         $where = sprintf('%s = %s', $this->quoteParameter($this->getPrimaryKey()), (int)$id);
-        $list = $this->select($where, null, false);
+        $list = $this->select($where, null);
         //vd($this->getDb()->getLastQuery());
         return $list->current();
     }

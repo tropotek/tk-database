@@ -136,11 +136,10 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
      * @param string $from
      * @param string $where
      * @param null|\Tk\Db\Tool $tool
-     * @param bool $hideDeleted
      * @return Map\ArrayObject
      * @throws \Exception
      */
-    public function selectFrom($from = '', $where = '', $tool = null, $hideDeleted = true)
+    public function selectFrom($from = '', $where = '', $tool = null)
     {
         if ($tool && $tool->getOrderProperty()) {   // Do nothing if a property cannot be found in the tool
             $tool = clone $tool; // Clone this so the orderBy properties are not changed in the original tool object.
@@ -151,7 +150,7 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
                 $tool->setOrderBy($orderBy);
             }
         }
-        return parent::selectFrom($from, $where, $tool, $hideDeleted);
+        return parent::selectFrom($from, $where, $tool);
     }
 
     /**
