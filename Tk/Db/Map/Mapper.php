@@ -87,7 +87,7 @@ abstract class Mapper implements Mappable
     static function create($db = null)
     {
         $mapperClass = get_called_class(); // PHP >= v5.5 use: $mapperClass = static::class;
-        if (version_compare(PHP_VERSION, '5.0.0', '>=')) {
+        if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
             $mapperClass = static::class;
         }
         if (!isset(self::$instance[$mapperClass])) {
@@ -139,6 +139,7 @@ abstract class Mapper implements Mappable
     /**
      * @param Model $obj
      * @return int Returns the new insert id
+     * @throws Exception
      */
     public function insert($obj)
     {
@@ -174,6 +175,7 @@ abstract class Mapper implements Mappable
     /**
      * @param Model $obj
      * @return int
+     * @throws Exception
      */
     public function update($obj)
     {
@@ -199,6 +201,7 @@ abstract class Mapper implements Mappable
     /**
      * @param Model $obj
      * @return int
+     * @throws Exception
      */
     public function delete($obj)
     {
@@ -300,24 +303,26 @@ abstract class Mapper implements Mappable
      *
      * @param string $where EG: "`column1`=4 AND `column2`='string'"
      * @param Tool $tool
+     * @param bool $hideDeleted
      * @return ArrayObject
      * @throws \Exception
      */
-    public function select($where = '', $tool = null)
+    public function select($where = '', $tool = null, $hideDeleted = true)
     {
-        return $this->selectFrom('', $where, $tool);
+        return $this->selectFrom('', $where, $tool, $hideDeleted);
     }
 
     /**
      * Select a number of elements from a database
      *
      * @param string $from
-     * @param string $where EG: "`column1`=4 AND `column2`='string'"
+     * @param string $where EG: "`column1` = 4 AND `column2`='string'"
      * @param Tool $tool
+     * @param bool $hideDeleted
      * @return ArrayObject
      * @throws \Exception
      */
-    public function selectFrom($from = '', $where = '', $tool = null)
+    public function selectFrom($from = '', $where = '', $tool = null, $hideDeleted = true)
     {
         if (!$tool instanceof Tool) {
             $tool = new Tool();
@@ -331,7 +336,7 @@ abstract class Mapper implements Mappable
             $from = sprintf('%s %s', $this->quoteTable($this->getTable()), $this->getAlias());
         }
 
-        if ($this->getMarkDeleted() && strstr($where, $this->quoteParameter($this->getMarkDeleted())) === false) {
+        if ($hideDeleted && $this->getMarkDeleted() && strstr($where, $this->quoteParameter($this->getMarkDeleted())) === false) {
             if ($where) {
                 $where = sprintf('%s%s = 0 AND %s ', $alias, $this->quoteParameter($this->getMarkDeleted()), $where);
             } else {
@@ -376,7 +381,8 @@ abstract class Mapper implements Mappable
     public function find($id)
     {
         $where = sprintf('%s = %s', $this->quoteParameter($this->getPrimaryKey()), (int)$id);
-        $list = $this->select($where);
+        $list = $this->select($where, null, false);
+        //vd($this->getDb()->getLastQuery());
         return $list->current();
     }
 
