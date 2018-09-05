@@ -54,9 +54,9 @@ class Data extends \Tk\Collection
 
     /**
      * Data constructor.
-     * 
-     * @param int $fid
+     *
      * @param string $fkey
+     * @param int $fid
      * @param string $table
      */
     public function __construct($fkey = 'system', $fid = 0, $table = '')
@@ -90,7 +90,6 @@ class Data extends \Tk\Collection
      * @param string $table
      * @param Pdo|null $db
      * @return static
-     * @throws Exception
      */
     public static function create($fkey = 'system', $fid = 0, $table = '', $db = null)
     {
