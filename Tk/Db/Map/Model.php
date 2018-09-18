@@ -107,7 +107,6 @@ abstract class Model implements \Tk\Db\ModelInterface
      * A Utility method that checks the id and does and insert
      * or an update  based on the objects current state
      *
-     * @throws \Exception
      */
     public function save()
     {

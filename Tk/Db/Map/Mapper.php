@@ -533,7 +533,6 @@ abstract class Mapper implements Mappable
      * @param string $table
      * @param bool $addPrefix Set this to false to not add the table prefix.
      * @return $this
-     * @throws \Exception
      */
     public function setTable($table, $addPrefix = true)
     {
@@ -542,9 +541,11 @@ abstract class Mapper implements Mappable
         }
 
         $this->table = $table;
-        if ($this->getDb()->hasTable($this->table)) {
-            $this->tableInfo = $this->getDb()->getTableInfo($this->table);
-        }
+        try {
+            if ($this->getDb()->hasTable($this->table)) {
+                $this->tableInfo = $this->getDb()->getTableInfo($this->table);
+            }
+        } catch(\Exception $e) { $this->tableInfo = array(); }
         return $this;
     }
 
