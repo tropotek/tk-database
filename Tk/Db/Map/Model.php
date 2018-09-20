@@ -52,6 +52,39 @@ abstract class Model implements \Tk\Db\ModelInterface
         return self::createMapper(get_class($this));
     }
 
+
+
+    public function __clone()
+    {
+        $this->setId(0);
+        if (property_exists($this, 'modified'))
+            $this->modified = \Tk\Date::create();
+        if (property_exists($this, 'created'))
+            $this->modified = \Tk\Date::create();
+
+        // This base class automatically clones attributes of type object or
+        // array values of type object recursively.
+        // Just inherit your own classes from this base class.
+        $object_vars = get_object_vars($this);
+        foreach ($object_vars as $attr_name => $attr_value) {
+            if (is_object($this->$attr_name)) {
+                $this->$attr_name = clone $this->$attr_name;
+            } else if (is_array($this->$attr_name)) {
+                // Note: This copies only one dimension arrays
+                foreach ($this->$attr_name as &$attr_array_value) {
+                    if (is_object($attr_array_value)) {
+                        $attr_array_value = clone $attr_array_value;
+                    }
+                    unset($attr_array_value);
+                }
+            }
+        }
+
+    }
+
+
+
+
     /**
      * Get the model primary DB key, usually ID
      *
