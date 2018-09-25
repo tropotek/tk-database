@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 2.0.66 [2018-09-25]:
+-------------------------------
+
+
 Ver 2.0.64 [2018-09-24]:
 -------------------------------
   - Merge branch 'master' of https://github.com/tropotek/tk-database
