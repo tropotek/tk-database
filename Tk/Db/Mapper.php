@@ -170,7 +170,7 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
         if (!is_array($value)) $value = array($value);
         $w = '';
         foreach ($value as $r) {
-            if (!$r) continue;
+            if ($r === null || $r === '') continue;
             $w .= sprintf('%s %s %s %s ', $columnName, $compare, $this->getDb()->quote($r), $logic);
         }
         if ($w)

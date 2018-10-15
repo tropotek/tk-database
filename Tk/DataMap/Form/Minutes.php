@@ -7,38 +7,9 @@ namespace Tk\DataMap\Form;
  * @see http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
-class Date extends Iface
+class Minutes extends Iface
 {
-    /**
-     * Valid date format `31/12/2000`
-     */
-    const FORMAT_DATE = 'd/m/Y';
 
-    /**
-     * Valid date format `31/12/2000 23:59`
-     */
-    const FORMAT_DATETIME = 'd/m/Y H:i';
-
-    /**
-     * Valid date format `23:59`
-     */
-    const FORMAT_TIME = 'H:i';
-
-
-    /**
-     * @var string
-     */
-    protected  $format = self::FORMAT_DATE;
-
-    /**
-     * @param $format
-     * @return $this
-     */
-    public function setDateFormat($format)
-    {
-        $this->format = $format;
-        return $this;
-    }
 
     /**
      * Map an array column value to an object property value
@@ -50,8 +21,8 @@ class Date extends Iface
     public function toPropertyValue($row, $columnName)
     {
         $value = parent::toPropertyValue($row, $columnName);
-        if ($value !== null && !$value instanceof \DateTime) {
-            $value = \Tk\Date::createFormDate($value, null, $this->format);
+        if ($value !== null && preg_match('/^([0-9]+):([0-9]+)$/', $value, $regs)) {
+            $value = (int)($regs[1] * 60) + (int)$regs[2];
         }
         return $value;
     }
@@ -67,8 +38,11 @@ class Date extends Iface
     public function toColumnValue($object, $propertyName)
     {
         $value = parent::toColumnValue($object, $propertyName);
-        if ($value !== null && $value instanceof \DateTime) {
-            return $value->format($this->format);
+        if ($value !== null) {
+            $h = $value/60;
+            $m = $value%60;
+            $str = sprintf('%d:%02d', $h, $m);
+            return $str;
         }
         return $value;
     }
