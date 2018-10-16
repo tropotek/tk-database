@@ -32,6 +32,12 @@ abstract class Mapper implements Mappable
      * @var bool
      */
     public static $HIDE_DELETED = true;
+
+    /**
+     * Set this to false to allow created and modified dates to be set from the model
+     * @var bool
+     */
+    public static $AUTO_DATES = true;
     
     /**
      * @var Mapper[]
@@ -162,9 +168,11 @@ abstract class Mapper implements Mappable
             // TODO: Look into using the following so we no longer have to manage the created and modified fields:
             // TODO:   `modified` DATETIME ON UPDATE CURRENT_TIMESTAMP,
             // TODO:   `created` DATETIME DEFAULT CURRENT_TIMESTAMP,
-            if ($col == 'modified' || $col == 'created') {
-                //$value = date('Y-m-d H:i:s.u');
-                $value = date('Y-m-d H:i:s');
+            if (self::$AUTO_DATES) {
+                if ($col == 'modified' || $col == 'created') {
+                    //$value = date('Y-m-d H:i:s.u');
+                    $value = date('Y-m-d H:i:s');
+                }
             }
             unset($bind[$col]);
             $bind[':' . $col] = $value;
@@ -192,8 +200,10 @@ abstract class Mapper implements Mappable
         $bind = $this->unmap($obj);
         $set = array();
         foreach ($bind as $col => $value) {
-            if ($col == 'modified') {
-                $value = date('Y-m-d H:i:s');
+            if (self::$AUTO_DATES) {
+                if ($col == 'modified') {
+                    $value = date('Y-m-d H:i:s');
+                }
             }
             unset($bind[$col]);
             $bind[':' . $col] = $value;
