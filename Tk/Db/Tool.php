@@ -250,7 +250,7 @@ class Tool implements \Tk\InstanceKey
     {
         $order = $this->getOrderBy();
         if ($order && !preg_match('/^(ASC|DESC|FIELD\(|IFNULL\(|RAND\(|IF\(|NULL)/i', $order)) {
-            if (preg_match('/^([a-z0-9]+\.)?([a-z0-9_-]+)/i', $order, $regs)) {
+            if (preg_match('/^([a-z0-9]+\.)?([a-z0-9_\-]+)/i', $order, $regs)) {
                 $order = trim($regs[2]);
             }
         }
@@ -368,7 +368,6 @@ class Tool implements \Tk\InstanceKey
         $arr = array();
         //if ($this->getOrderBy())  // Not needed as '' is a valid order by value
         $arr[$this->makeInstanceKey(self::PARAM_ORDER_BY)] = $this->getOrderBy();
-
         //if ($this->getLimit())
             $arr[$this->makeInstanceKey(self::PARAM_LIMIT)] = $this->getLimit();
         //if ($this->getOffset())
