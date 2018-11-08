@@ -31,6 +31,11 @@ class Pdo extends \PDO
     public static $logLastQuery = true;
 
     /**
+     * @var bool
+     */
+    public static $PDO_TIMEOUT = 30;
+
+    /**
      * @var string
      */
     protected $parameterQuote = '';
@@ -112,7 +117,7 @@ class Pdo extends \PDO
         $this->dbName = $regs[4];
 
         $this->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-
+        $this->setAttribute(PDO::ATTR_TIMEOUT, self::$PDO_TIMEOUT);
         // Get mysql to emulate standard DB's
 
         self::$logLastQuery = false;
