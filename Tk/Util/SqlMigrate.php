@@ -194,20 +194,25 @@ class SqlMigrate
 
             if (!$this->backupFile) {   // only run once per session.
                 $dump = new SqlBackup($this->db);
-                $this->backupFile = $dump->save($this->tempPath);     // Just in case
+                $this->backupFile = $dump->save($this->tempPath);   // Just in case
             }
 
             if (substr(basename($file), 0, 1) == '_') return false;
 
-            if (preg_match('/\.php$/i', basename($file))) {   // Include .php files
+            if (preg_match('/\.php$/i', basename($file))) {         // Include .php files
+                if (!trim(file_get_contents($file)) return false;
+
                 if (is_file($file)) {
                     include($file);
                 } else {
                     return false;
                 }
-            } else {    // is sql
+                $this->insertPath($file);
+            } else {                                                // is sql
                 // replace any table prefix
                 $sql = file_get_contents($file);
+                if (!strlen(trim($sql))) return false;
+                
                 $stm = $this->db->prepare($sql);
                 $stm->execute();
 
@@ -221,8 +226,9 @@ class SqlMigrate
                 if ($error[0] != "00000") {
                     throw new \Tk\Db\Exception("Query $i failed: " . $error[2], 0, null, $sql);
                 }
+                $this->insertPath($file);
             }
-            $this->insertPath($file);
+
         } catch (\Exception $e){
             throw new \Tk\Exception('File: ' . $file, $e->getCode(), $e);
         }
