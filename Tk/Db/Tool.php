@@ -184,6 +184,7 @@ class Tool implements \Tk\InstanceKey
             }
             $updated = true;
         }
+
         return $updated;
     }
 
