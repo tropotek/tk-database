@@ -200,7 +200,7 @@ class SqlMigrate
             if (substr(basename($file), 0, 1) == '_') return false;
 
             if (preg_match('/\.php$/i', basename($file))) {         // Include .php files
-                if (!trim(file_get_contents($file)) return false;
+                if (!trim(file_get_contents($file))) return false;
 
                 if (is_file($file)) {
                     include($file);
@@ -212,7 +212,7 @@ class SqlMigrate
                 // replace any table prefix
                 $sql = file_get_contents($file);
                 if (!strlen(trim($sql))) return false;
-                
+
                 $stm = $this->db->prepare($sql);
                 $stm->execute();
 
