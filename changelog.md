@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 2.0.78 [2018-11-15]:
+-------------------------------
+  - Fixed table results and limit renderers
+  - Added Uri.js to the tk-base lib
+
+
 Ver 2.0.76 [2018-11-09]:
 -------------------------------
 
