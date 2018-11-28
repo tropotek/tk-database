@@ -378,9 +378,6 @@ abstract class Mapper implements Mappable
         
         $stmt->execute();
 
-        $fr = $this->getDb()->countFoundRows($stmt->queryString);
-        $tool->setFoundRows($fr);
-
         if ($select == $alias.'*') {
             $arr = ArrayObject::createFromMapper($this, $stmt, $tool);
             return $arr;
