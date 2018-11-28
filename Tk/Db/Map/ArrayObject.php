@@ -82,7 +82,6 @@ class ArrayObject implements \Iterator, \Countable
         //       instead get statement and manually iterate the data.
         $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
         $obj = new self($rows);
-        //$obj->foundRows = $mapper->getDb()->countFoundRows($statement->queryString);
         $obj->mapper = $mapper;
         $obj->statement = $statement;
         if (!$tool) {
@@ -112,9 +111,13 @@ class ArrayObject implements \Iterator, \Countable
         $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
         $obj = new self($rows);
         if ($foundRows === null) {
-            $foundRows = count($rows);
-            if (method_exists($statement, 'getPdo') && $statement->getPdo())
-                $foundRows = $statement->getPdo()->countFoundRows($statement->queryString);
+            if ($tool && $tool->getFoundRows()) {
+                $foundRows = $tool->getFoundRows();
+            } else {
+                $foundRows = count($rows);
+                if (method_exists($statement, 'getPdo') && $statement->getPdo())
+                    $foundRows = $statement->getPdo()->countFoundRows($statement->queryString);
+            }
         }
         /*
         $obj->foundRows = count($rows);

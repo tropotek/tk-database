@@ -12,8 +12,6 @@ namespace Tk\Db;
  *
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
- * @author Patrick S Scott<lazeras@kaoses.com>
- * @see http://www.kaoses.com
  * @license Copyright 2007 Michael Mifsud
  */
 class PdoStatement extends \PDOStatement

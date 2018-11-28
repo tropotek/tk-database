@@ -136,13 +136,32 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
      * @param string $from
      * @param string $where
      * @param null|\Tk\Db\Tool $tool
-     * @return Map\ArrayObject
+     * @param string $select
+     * @return Map\ArrayObject|\Tk\Db\PdoStatement
      * @throws \Exception
      */
-    public function selectFrom($from = '', $where = '', $tool = null)
+    public function selectFrom($from = '', $where = '', $tool = null, $select = '')
     {
         if ($tool && $tool->getOrderProperty()) {   // Do nothing if a property cannot be found in the tool
-            $tool = clone $tool; // Clone this so the orderBy properties are not changed in the original tool object.
+            $tool = $this->cleanTool($tool);
+        }
+        return parent::selectFrom($from, $where, $tool, $select);
+    }
+
+    /**
+     * Override this to modify the tool's orderBy in-case the Model property has been used instead of the
+     * mapped DB column name
+     *
+     * @param null|\Tk\Db\Tool $tool
+     * @return null|\Tk\Db\Tool
+     * @throws \Exception
+     */
+    public function cleanTool($tool)
+    {
+        if ($tool) {
+            // TODO: this does not work well, we need to keep the instance somehow.... CHECK IT AND FIX IF NEED BE
+            //$tool = clone $tool; // Clone this so the orderBy properties are not changed in the original tool object.
+
             $mapProperty = $this->getDbMap()->getPropertyMap($tool->getOrderProperty());
             if ($mapProperty) {
                 $orderBy = $tool->getOrderBy();
@@ -150,7 +169,7 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
                 $tool->setOrderBy($orderBy);
             }
         }
-        return parent::selectFrom($from, $where, $tool);
+        return $tool;
     }
 
     /**

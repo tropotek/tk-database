@@ -3,6 +3,7 @@ namespace Tk\Db\Map;
 
 use Tk\Db\Pdo;
 use Tk\Db\Exception;
+use Tk\Db\PdoStatement;
 use Tk\Db\Tool;
 
 /**
@@ -323,10 +324,11 @@ abstract class Mapper implements Mappable
      * @param string $from
      * @param string $where EG: "`column1` = 4 AND `column2`='string'"
      * @param Tool $tool
-     * @return ArrayObject
+     * @param string $select
+     * @return \Tk\Db\PdoStatement|ArrayObject
      * @throws \Exception
      */
-    public function selectFrom($from = '', $where = '', $tool = null)
+    public function selectFrom($from = '', $where = '', $tool = null, $select = '')
     {
         if (!$tool instanceof Tool) {
             $tool = new Tool();
@@ -367,13 +369,24 @@ abstract class Mapper implements Mappable
             $foundRowsKey = 'SQL_CALC_FOUND_ROWS';
         }
 
-        $sql = sprintf('SELECT %s %s %s* FROM %s %s %s ', $foundRowsKey, $distinct, $alias, $from, $where, $toolStr);
+        if (!$select) {
+            $select = $alias.'*';
+        }
+
+        $sql = sprintf('SELECT %s %s %s FROM %s %s %s ', $foundRowsKey, $distinct, $select, $from, $where, $toolStr);
         $stmt = $this->getDb()->prepare($sql);
         
         $stmt->execute();
-        
-        $arr = ArrayObject::createFromMapper($this, $stmt, $tool);
-        return $arr;
+
+        $fr = $this->getDb()->countFoundRows($stmt->queryString);
+        $tool->setFoundRows($fr);
+
+        if ($select == $alias.'*') {
+            $arr = ArrayObject::createFromMapper($this, $stmt, $tool);
+            return $arr;
+        }
+
+        return $stmt;
     }
 
     /**

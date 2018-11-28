@@ -448,10 +448,6 @@ class Tool implements \Tk\InstanceKey
         $sql = sprintf ('%s %s %s %s', $groupBy, $having, $orderBy, $limitStr);
         return $sql;
     }
-    
-    
-    
-
 
     /**
      * Create request keys with prepended string
