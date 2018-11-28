@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 2.0.80 [2018-11-28]:
+-------------------------------
+  - Added COA plugin
+  - Fixed table orderby with SQL Functions
+
+
 Ver 2.0.78 [2018-11-15]:
 -------------------------------
   - Fixed table results and limit renderers
