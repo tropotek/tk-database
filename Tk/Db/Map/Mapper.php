@@ -3,7 +3,6 @@ namespace Tk\Db\Map;
 
 use Tk\Db\Pdo;
 use Tk\Db\Exception;
-use Tk\Db\PdoStatement;
 use Tk\Db\Tool;
 
 /**
@@ -378,12 +377,11 @@ abstract class Mapper implements Mappable
         
         $stmt->execute();
 
-        if ($select == $alias.'*') {
+        //if ($select == $alias.'*') {
             $arr = ArrayObject::createFromMapper($this, $stmt, $tool);
             return $arr;
-        }
-
-        return $stmt;
+        //}
+        //return $stmt;
     }
 
     /**

@@ -177,7 +177,6 @@ class ArrayObject implements \Iterator, \Countable
         return $this->statement;
     }
 
-
     /**
      * Get the result rows as a standard array.
      * @return array
@@ -201,10 +200,6 @@ class ArrayObject implements \Iterator, \Countable
         }
         return null;
     }
-
-
-
-
 
     /**
      * Return the total number of rows found.

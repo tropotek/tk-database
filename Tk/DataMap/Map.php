@@ -4,8 +4,6 @@ namespace Tk\DataMap;
 use Tk\Db\ModelInterface;
 
 /**
- * Class Iface
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
@@ -88,14 +86,15 @@ abstract class Map
      *
      * @param $row
      * @param ModelInterface|\stdClass $object
-     * @throws \ReflectionException
      */
     public function loadObject($row, $object)
     {
         $name = $this->getPropertyName();
         $value = $this->toPropertyValue($row, $this->getColumnName());
 
+        // TODO: This may no longer be needed???
         if ($object instanceof \stdClass) {
+            \Tk\Log::warning('This code is used, remove comments to delete...');
             $object->$name = $value;
             return;
         }
