@@ -45,8 +45,8 @@ class DataMap
         if ($object === null) $object = new \stdClass();
         foreach ($row as $k => $v) {
             $map = $this->getPropertyMapByColumnName($k);
-            if ($ignoreTag && $map->getTag() == $ignoreTag) continue;
             if ($map) {
+                if ($ignoreTag && $map->getTag() == $ignoreTag) continue;
                 $map->loadObject($row, $object);
             } else {
                 $object->$k = $v;

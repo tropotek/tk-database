@@ -377,11 +377,8 @@ abstract class Mapper implements Mappable
         
         $stmt->execute();
 
-        //if ($select == $alias.'*') {
-            $arr = ArrayObject::createFromMapper($this, $stmt, $tool);
-            return $arr;
-        //}
-        //return $stmt;
+        $arr = ArrayObject::createFromMapper($this, $stmt, $tool);
+        return $arr;
     }
 
     /**
