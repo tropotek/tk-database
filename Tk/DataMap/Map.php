@@ -32,8 +32,6 @@ abstract class Map
 
 
     /**
-     * __construct
-     *
      * @param string $propertyName The object property to map the column to.
      * @param string $columnName (optional)The Db column name to map this property to. uses $propertyName if null
      */
@@ -45,8 +43,6 @@ abstract class Map
         }
         $this->columnName = $columnName;
     }
-
-
 
     /**
      * Map an array column value to an object property value
@@ -70,7 +66,6 @@ abstract class Map
      * @param mixed $object
      * @param string $propertyName
      * @return string|null
-     * @throws \ReflectionException
      */
     public function toColumnValue($object, $propertyName)
     {
@@ -108,7 +103,6 @@ abstract class Map
      * @param ModelInterface|\stdClass $object
      * @param array $array
      * @return array
-     * @throws \ReflectionException
      */
     public function loadArray($object, $array)
     {
@@ -192,7 +186,6 @@ abstract class Map
      * @param ModelInterface|\stdClass $object
      * @param string $name The property name
      * @return mixed|null
-     * @throws \ReflectionException
      */
     protected function getObjectPropertyValue($object, $name)
     {

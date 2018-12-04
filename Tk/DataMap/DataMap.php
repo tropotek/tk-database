@@ -4,14 +4,13 @@ namespace Tk\DataMap;
 use Tk\Db\ModelInterface;
 
 /**
- * Class DataMap
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
 class DataMap
 {
+    static $EXCLUDED_PROPERTIES = array('del');
 
     /**
      * @var Map[]|array
@@ -26,7 +25,7 @@ class DataMap
 
 
     /**
-     * Using the datamap load an object with the values from an array
+     * Using the DataMap load an object with the values from an array
      * If the property does not exist as a map the value is added to
      * the object as a dynamic property.
      *
@@ -34,49 +33,41 @@ class DataMap
      * @param array $row
      * @param null|ModelInterface $object
      * @param string $ignoreTag
-     * @return \stdClass|ModelInterface
-     * @throws \Tk\Db\Exception
+     * @return \stdClass|ModelInterface|object
      */
     public function loadObject($row, $object = null, $ignoreTag = '')
     {
-        if ($object && !$object instanceof ModelInterface) {
-            throw new \Tk\Db\Exception('Cannot load a non Model object.');
-        }
         if ($object === null) $object = new \stdClass();
         foreach ($row as $k => $v) {
             $map = $this->getPropertyMapByColumnName($k);
             if ($map) {
                 if ($ignoreTag && $map->getTag() == $ignoreTag) continue;
                 $map->loadObject($row, $object);
-            } else {
-                $object->$k = $v;
+            } else {        // ONLY ADD DYNAMIC FIELDS IF THE OBJECT DOWN NOT HAVE THIS PROPERTY ALREADY!!
+                try {
+                    $reflect = new \ReflectionClass($object);
+                    if (!$reflect->hasProperty($k) && !in_array($k, self::$EXCLUDED_PROPERTIES)) {
+                        $object->$k = $v;
+                    }
+                } catch (\ReflectionException $e) { }
             }
         }
-
-//        /* @var Map $map */
-//        foreach ($this->getPropertyMaps() as $map) {
-//            if ($ignoreTag && $map->getTag() == $ignoreTag) continue;
-//            if (!$map->hasColumn($row)) continue;
-//            $map->loadObject($row, $object);
-//        }
         return $object;
     }
 
     /**
-     * Using the datamap load an array with the values from an object
+     * Using the DataMap load an array with the values from an object
      *
      * @param ModelInterface|\stdClass $obj
      * @param array $array
      * @param string $ignoreTag
      * @return array
-     * @throws \ReflectionException
      */
     public function loadArray($obj, $array = array(), $ignoreTag = '')
     {
         /* @var $map Map */
         foreach ($this->getPropertyMaps() as $map) {
             if ($ignoreTag && $map->getTag() == $ignoreTag) continue;
-            //if (!$map->hasProperty($obj)) continue;       // TODO: not sure this is needed here, keep an eye on it
             $array = $map->loadArray($obj, $array);
         }
         return $array;
@@ -105,7 +96,7 @@ class DataMap
      * Gets a property map by its property name
      *
      * @param string $name
-     * @return Map
+     * @return Map|null
      */
     public function getPropertyMap($name)
     {
@@ -118,7 +109,7 @@ class DataMap
      * Gets a property map by its column name
      *
      * @param string $columnName
-     * @return Map
+     * @return Map|null
      */
     public function getPropertyMapByColumnName($columnName)
     {
@@ -132,7 +123,7 @@ class DataMap
      *
      * @param Map $propertyMap
      * @param string $tag
-     * @return Map
+     * @return Map|null
      */
     public function addPropertyMap($propertyMap, $tag = null)
     {
