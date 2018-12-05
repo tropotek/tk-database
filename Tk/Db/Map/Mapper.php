@@ -402,9 +402,13 @@ abstract class Mapper implements Mappable
      */
     public function find($id)
     {
+
+//        $b = self::$HIDE_DELETED;
+//        self::$HIDE_DELETED = false;
         $where = sprintf('%s = %s', $this->quoteParameter($this->getPrimaryKey()), (int)$id);
         $list = $this->select($where, null);
-        //vd($this->getDb()->getLastQuery());
+        //self::$HIDE_DELETED = $b;
+
         return $list->current();
     }
 
