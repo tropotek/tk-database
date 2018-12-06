@@ -142,9 +142,9 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
      */
     public function selectFrom($from = '', $where = '', $tool = null, $select = '')
     {
-        if ($tool && $tool->getOrderProperty()) {   // Do nothing if a property cannot be found in the tool
-            $tool = $this->cleanTool($tool);
-        }
+//        if ($tool && $tool->getOrderProperty()) {   // Do nothing if a property cannot be found in the tool
+//            $tool = $this->cleanTool($tool);
+//        }
         return parent::selectFrom($from, $where, $tool, $select);
     }
 
@@ -170,7 +170,8 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
         // TODO: map any properties to columns
         if ($tool->getOrderProperty()) {
             $mapProperty = $this->getDbMap()->getPropertyMap($tool->getOrderProperty());
-            if ($mapProperty) {
+            // TODO: also check for whitespace or reserved chars as that can indicate it is not mappable
+            if ($mapProperty && $tool->getOrderProperty() != $mapProperty->getColumnName()) {
                 $orderBy = $tool->getOrderBy();
                 $orderBy = str_replace($tool->getOrderProperty(), $mapProperty->getColumnName(), $orderBy);
                 $tool->setOrderBy($orderBy);

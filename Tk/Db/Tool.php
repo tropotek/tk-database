@@ -449,6 +449,7 @@ class Tool implements \Tk\InstanceKey
             }
         }
         $sql = sprintf ('%s %s %s %s', $groupBy, $having, $orderBy, $limitStr);
+        \Tk\Log::warning('Using a deprecated function \Tk\Db\Tool::toSql()');
         return $sql;
     }
 
