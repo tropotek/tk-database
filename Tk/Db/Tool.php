@@ -392,6 +392,9 @@ class Tool implements \Tk\InstanceKey
      * @param string $tblAlias
      * @param Pdo $db
      * @return string
+     *
+     *
+     * @deprecated Use \Tk\Db\Map\Mapper::getToolSql($tool)
      */
     public function toSql($tblAlias = '', $db = null)
     {
@@ -448,6 +451,17 @@ class Tool implements \Tk\InstanceKey
         $sql = sprintf ('%s %s %s %s', $groupBy, $having, $orderBy, $limitStr);
         return $sql;
     }
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Create request keys with prepended string

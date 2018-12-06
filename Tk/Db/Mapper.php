@@ -149,18 +149,53 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
     }
 
     /**
+     * Return a string for the SQL query
+     *
+     * ORDER BY `cell`
+     * LIMIT 10 OFFSET 30
+     *
+     * @param \Tk\Db\Tool $tool
+     * @return string
+     */
+    public function getToolSql($tool)
+    {
+        $tool = clone $tool; // Clone this so the orderBy properties are not changed in the original tool object for table sort order links.
+        // GROUP BY
+        // TODO: Map any properties to columns
+
+        // HAVING
+        // TODO: map any properties to columns
+
+        // ORDER BY
+        // TODO: map any properties to columns
+        if ($tool->getOrderProperty()) {
+            $mapProperty = $this->getDbMap()->getPropertyMap($tool->getOrderProperty());
+            if ($mapProperty) {
+                $orderBy = $tool->getOrderBy();
+                $orderBy = str_replace($tool->getOrderProperty(), $mapProperty->getColumnName(), $orderBy);
+                $tool->setOrderBy($orderBy);
+            }
+
+        }
+        $sql = parent::getToolSql($tool);
+        return $sql;
+    }
+
+    /**
      * Override this to modify the tool's orderBy in-case the Model property has been used instead of the
      * mapped DB column name
      *
      * @param null|\Tk\Db\Tool $tool
      * @return null|\Tk\Db\Tool
      * @throws \Exception
+     * @deprecated
      */
     public function cleanTool($tool)
     {
         if ($tool) {
-            // TODO: this does not work well, we need to keep the instance somehow.... CHECK IT AND FIX IF NEED BE
-            //$tool = clone $tool; // Clone this so the orderBy properties are not changed in the original tool object.
+            // TODO: I would prefer not to create a new instance here if possible
+            // TODO:  It is here so we can map the orderBy properties to columns from the table sort order links.
+            //$tool = clone $tool; // Clone this so the orderBy properties are not changed in the original tool object for table sort order links.
 
             $mapProperty = $this->getDbMap()->getPropertyMap($tool->getOrderProperty());
             if ($mapProperty) {

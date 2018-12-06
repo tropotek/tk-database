@@ -308,7 +308,8 @@ abstract class Mapper implements Mappable
             $from,
             ($bind) ? ' WHERE ' . $where : ' '
         );
-        $sql .= $tool->toSql();
+        //$sql .= $tool->toSql();
+        $sql .= $this->getToolSql($tool);
 
         $stmt = $this->getDb()->prepare($sql);
         $stmt->execute($bind);
@@ -360,7 +361,8 @@ abstract class Mapper implements Mappable
         // OrderBy, GroupBy, Limit, etc
         $toolStr = '';
         if ($tool) {
-            $toolStr = $tool->toSql($alias, $this->getDb());
+            //$toolStr = $tool->toSql($alias, $this->getDb());
+            $toolStr = $this->getToolSql($tool);
         }
 
         $foundRowsKey = '';
@@ -393,6 +395,72 @@ abstract class Mapper implements Mappable
     {
         return $this->selectFrom('', $where, $tool);
     }
+
+    /**
+     * Return a string for the SQL query
+     *
+     * ORDER BY `cell`
+     * LIMIT 10 OFFSET 30
+     *
+     * @param \Tk\Db\Tool $tool
+     * @return string
+     */
+    public function getToolSql($tool)
+    {
+        // GROUP BY
+        // TODO: Map any properties to columns
+        $groupBy = '';
+        if ($tool->getGroupBy()) {
+            $groupBy = 'GROUP BY ' . str_replace(array(';', '-- ', '/*'), ' ', $tool->getGroupBy());
+        }
+
+        // HAVING
+        // TODO: map any properties to columns
+        $having = '';
+        if ($tool->getHaving()) {
+            $having = 'HAVING ' . str_replace(array(';', '-- ', '/*'), ' ', $tool->getHaving());
+        }
+
+        // ORDER BY
+        // TODO: map any properties to columns
+        $orderBy = '';
+        if ($tool->getOrderBy()) {
+            $ordFieldsStr = trim(str_replace(array(';', '-- ', '/*'), ' ', $tool->getOrderBy()));
+            $alias = $this->getAlias();
+            if ($alias) {
+                $alias = $alias . '.';
+                if (!preg_match('/^(ASC|DESC|FIELD\(|\'|RAND\(|IF\(|NULL)/i', $ordFieldsStr)) {
+                    $ordFields = explode(',', $ordFieldsStr);
+                    foreach ($ordFields as $i => $str) {
+                        $str = trim($str);
+                        if (preg_match('/^(ASC|DESC|FIELD\(|\'|RAND\(|IF\(|NULL)/i', $str)) continue;
+                        if (strpos($str, '.') === false) {
+                            $a = explode(' ', $str);
+                            $str = $alias . $this->quoteParameter($a[0]);
+                            if (isset($a[1])) {
+                                $str = $str . ' ' . $a[1];
+                            }
+                        }
+                        $ordFields[$i] = $str;
+                    }
+                    $ordFieldsStr = implode(',', $ordFields);
+                }
+            }
+            $orderBy = 'ORDER BY ' . $ordFieldsStr;
+        }
+
+        // LIMIT
+        $limitStr = '';
+        if ($tool->getLimit() > 0) {
+            $limitStr = 'LIMIT ' . (int)$tool->getLimit();
+            if ($tool->getOffset()) {
+                $limitStr .= ' OFFSET ' . (int)$tool->getOffset();
+            }
+        }
+        $sql = sprintf ('%s %s %s %s', $groupBy, $having, $orderBy, $limitStr);
+        return $sql;
+    }
+
 
     /**
      *
