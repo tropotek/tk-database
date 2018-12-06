@@ -159,7 +159,7 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
      */
     public function getToolSql($tool)
     {
-        $tool = clone $tool; // Clone this so the orderBy properties are not changed in the original tool object for table sort order links.
+        $cTool = clone $tool; // Clone this so the orderBy properties are not changed in the original Tool object for table sort order links.
         // GROUP BY
         // TODO: Map any properties to columns
 
@@ -168,17 +168,17 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
 
         // ORDER BY
         // TODO: map any properties to columns
-        if ($tool->getOrderProperty()) {
-            $mapProperty = $this->getDbMap()->getPropertyMap($tool->getOrderProperty());
+        if ($cTool->getOrderProperty()) {
+            $mapProperty = $this->getDbMap()->getPropertyMap($cTool->getOrderProperty());
             // TODO: also check for whitespace or reserved chars as that can indicate it is not mappable
-            if ($mapProperty && $tool->getOrderProperty() != $mapProperty->getColumnName()) {
-                $orderBy = $tool->getOrderBy();
-                $orderBy = str_replace($tool->getOrderProperty(), $mapProperty->getColumnName(), $orderBy);
-                $tool->setOrderBy($orderBy);
+            if ($mapProperty && $cTool->getOrderProperty() != $mapProperty->getColumnName()) {
+                $orderBy = $cTool->getOrderBy();
+                $orderBy = str_replace($cTool->getOrderProperty(), $mapProperty->getColumnName(), $orderBy);
+                $cTool->setOrderBy($orderBy);
             }
 
         }
-        $sql = parent::getToolSql($tool);
+        $sql = parent::getToolSql($cTool);
         return $sql;
     }
 
