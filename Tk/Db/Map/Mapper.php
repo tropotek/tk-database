@@ -602,9 +602,8 @@ abstract class Mapper implements Mappable
     public function setAlias($alias)
     {
         $alias = trim($alias, '.');
-        if (!preg_match('/[a-z0-9_]+/i', $alias))
-            throw new Exception('Invalid Table alias value');
-        $this->alias = $alias;
+        if (!$alias || preg_match('/[a-z0-9_]+/i', $alias))
+            $this->alias = $alias;
         return $this;
     }
 

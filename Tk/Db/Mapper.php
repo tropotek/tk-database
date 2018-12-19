@@ -29,7 +29,7 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
     {
         parent::__construct($db);
         $map = $this->getDbMap();
-        if (count($map->getPropertyMaps('key'))) {
+        if ($map && count($map->getPropertyMaps('key'))) {
             $this->setPrimaryKey(current($map->getPropertyMaps('key'))->getColumnName());
         }
         $this->getFormMap();
@@ -72,9 +72,12 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
     {
         if (!$obj) {
             $class = $this->getModelClass();
-            $obj = new $class();
+            if (class_exists($class))
+                $obj = new $class();
         }
-        return $this->getDbMap()->loadObject($row, $obj);
+        if ($this->getDbMap())
+            return $this->getDbMap()->loadObject($row, $obj);
+        return (object)$row;
     }
 
     /**
@@ -167,7 +170,7 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
 
         // ORDER BY
         // TODO: map any properties to columns
-        if ($tool->getOrderProperty()) {
+        if ($this->getDbMap() && $tool->getOrderProperty()) {
             $mapProperty = $this->getDbMap()->getPropertyMap($tool->getOrderProperty());
             // TODO: also check for whitespace or reserved chars as that can indicate it is not mappable
             if ($mapProperty && $tool->getOrderProperty() != $mapProperty->getColumnName()) {
