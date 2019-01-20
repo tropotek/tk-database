@@ -14,6 +14,12 @@ Ver 1.3.0 [2019-01-21]:
 
 Ver 1.3.0 [2019-01-21]:
 -------------------------------
+  - Tagging branch master for release 1.3.0
+  - Added a default TaskLog billable value to the site settings
+
+
+Ver 1.3.0 [2019-01-21]:
+-------------------------------
   - Added a default TaskLog billable value to the site settings
 
 
