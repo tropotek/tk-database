@@ -20,7 +20,7 @@ class Boolean extends Iface
     public function toPropertyValue($row, $columnName)
     {
         $value = parent::toPropertyValue($row, $columnName);
-        if ($value !== null) {
+        if ($value !== null && !is_bool($value)) {
             if ($value == $columnName || strtolower($value) == 'yes' || strtolower($value) == 'true' || ((int)$value)) {
                 return true;
             } else {
@@ -36,14 +36,12 @@ class Boolean extends Iface
      * @param mixed $object
      * @param string $propertyName
      * @return string|null
-     * @throws \ReflectionException
      */
     public function toColumnValue($object, $propertyName)
     {
         $value = parent::toColumnValue($object, $propertyName);
         if ($value !== null) {
             $value = ((int)$value != 0) ? $propertyName : '';
-            //$value = (int)$value;
         }
         return $value;
     }
