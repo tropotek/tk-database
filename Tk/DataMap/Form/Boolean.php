@@ -46,5 +46,6 @@ class Boolean extends Iface
         return $value;
     }
     
+    
 }
 
