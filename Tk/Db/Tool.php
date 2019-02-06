@@ -226,7 +226,8 @@ class Tool implements \Tk\InstanceKey
     public function setOrderBy($str)
     {
         if (strstr(strtolower($str), 'field') === false) {
-            $str = str_replace("'", "''", $str);
+            // TODO: HUMM!!!! Why are we doing this again????
+            //$str = str_replace("'", "''", $str);
         }
         $this->orderBy = $str;
         return $this;
