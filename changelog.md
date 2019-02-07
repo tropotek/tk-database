@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.0.98 [2019-02-07]:
+-------------------------------
+  - Added placement count to company and supervoisor tables
+
+
 Ver 2.0.96 [2019-02-07]:
 -------------------------------
 
