@@ -335,9 +335,8 @@ abstract class Mapper implements Mappable
         }
 
         $alias = $this->getAlias();
-        if ($alias) {
-            $alias = $alias . '.';
-        }
+        if ($alias) $alias = $alias . '.';
+
         if (!$from) {
             $from = sprintf('%s %s', $this->quoteTable($this->getTable()), $this->getAlias());
         }
@@ -589,7 +588,7 @@ abstract class Mapper implements Mappable
      */
     public function getAlias()
     {
-        return $this->alias;
+        return rtrim($this->alias, '.');
     }
 
     /**
