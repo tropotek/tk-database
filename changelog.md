@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.0.100 [2019-02-11]:
+-------------------------------
+  - Fixed the animals report for DVM 1
+
+
 Ver 2.0.98 [2019-02-07]:
 -------------------------------
   - Added placement count to company and supervoisor tables
