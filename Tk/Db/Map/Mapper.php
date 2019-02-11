@@ -401,6 +401,8 @@ abstract class Mapper implements Mappable
      * ORDER BY `cell`
      * LIMIT 10 OFFSET 30
      *
+     * TODO: We have an issue if we want to get the SQL and there is no mapper, maybe we should retain the tool toSql() function???
+     *
      * @param \Tk\Db\Tool $tool
      * @return string
      */
