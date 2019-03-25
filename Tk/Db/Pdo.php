@@ -106,6 +106,7 @@ class Pdo extends \PDO
      */
     public function __construct($dsn, $username, $password, $options = array())
     {
+        $options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION; // TODO: keep an eye on this one. Check if it causes any major issues.
         parent::__construct($dsn, $username, $password, $options);
         $this->options = $options;
 
@@ -177,7 +178,7 @@ class Pdo extends \PDO
      * @param array $options
      * @return Pdo|null
      * @throws \Exception
-     * @tot Not secure puting the DB login details within the object
+     * @tot Not secure putting the DB login details within the object
      */
     public static function getInstance($name = '', $options = array())
     {
