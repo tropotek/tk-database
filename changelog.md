@@ -1,5 +1,82 @@
 #CHANGELOG#
 
+Ver 2.0.100 [2019-02-11]:
+-------------------------------
+  - Fixed the animals report for DVM 1
+
+
+Ver 2.0.98 [2019-02-07]:
+-------------------------------
+  - Added placement count to company and supervoisor tables
+
+
+Ver 2.0.96 [2019-02-07]:
+-------------------------------
+
+
+Ver 2.0.94 [2019-02-01]:
+-------------------------------
+
+
+Ver 2.0.92 [2019-01-21]:
+-------------------------------
+  - Tagging branch master for release 1.3.0
+  - Added a default TaskLog billable value to the site settings
+
+
+Ver 1.3.0 [2019-01-21]:
+-------------------------------
+  - Tagging branch master for release 1.3.0
+  - Added a default TaskLog billable value to the site settings
+
+
+Ver 1.3.0 [2019-01-21]:
+-------------------------------
+  - Tagging branch master for release 1.3.0
+  - Added a default TaskLog billable value to the site settings
+
+
+Ver 1.3.0 [2019-01-21]:
+-------------------------------
+  - Tagging branch master for release 1.3.0
+  - Added a default TaskLog billable value to the site settings
+
+
+Ver 1.3.0 [2019-01-21]:
+-------------------------------
+  - Tagging branch master for release 1.3.0
+  - Added a default TaskLog billable value to the site settings
+
+
+Ver 1.3.0 [2019-01-21]:
+-------------------------------
+  - Tagging branch master for release 1.3.0
+  - Added a default TaskLog billable value to the site settings
+
+
+Ver 1.3.0 [2019-01-21]:
+-------------------------------
+  - Tagging branch master for release 1.3.0
+  - Added a default TaskLog billable value to the site settings
+
+
+Ver 1.3.0 [2019-01-21]:
+-------------------------------
+  - Tagging branch master for release 1.3.0
+  - Added a default TaskLog billable value to the site settings
+
+
+Ver 1.3.0 [2019-01-21]:
+-------------------------------
+  - Tagging branch master for release 1.3.0
+  - Added a default TaskLog billable value to the site settings
+
+
+Ver 1.3.0 [2019-01-21]:
+-------------------------------
+  - Added a default TaskLog billable value to the site settings
+
+
 Ver 2.0.90 [2018-12-19]:
 -------------------------------
 

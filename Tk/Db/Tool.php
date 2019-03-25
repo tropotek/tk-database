@@ -226,7 +226,8 @@ class Tool implements \Tk\InstanceKey
     public function setOrderBy($str)
     {
         if (strstr(strtolower($str), 'field') === false) {
-            $str = str_replace("'", "''", $str);
+            // TODO: HUMM!!!! Why are we doing this again????
+            //$str = str_replace("'", "''", $str);
         }
         $this->orderBy = $str;
         return $this;
@@ -394,10 +395,13 @@ class Tool implements \Tk\InstanceKey
      * @return string
      *
      *
-     * @deprecated Use \Tk\Db\Map\Mapper::getToolSql($tool)
+     * TODO: We have an issue if we want to get the SQL and there is no mapper, maybe we should retain the tool toSql() function???
+     * @deprecated Use \Tk\Db\Map\Mapper->getToolSql($tool)
      */
     public function toSql($tblAlias = '', $db = null)
     {
+        //\Tk\Log::warning('Using a deprecated function \Tk\Db\Tool::toSql()');
+
         // GROUP BY
         $groupBy = '';
         if ($this->getGroupBy()) {
@@ -449,17 +453,8 @@ class Tool implements \Tk\InstanceKey
             }
         }
         $sql = sprintf ('%s %s %s %s', $groupBy, $having, $orderBy, $limitStr);
-        \Tk\Log::warning('Using a deprecated function \Tk\Db\Tool::toSql()');
         return $sql;
     }
-
-
-
-
-
-
-
-
 
 
 
