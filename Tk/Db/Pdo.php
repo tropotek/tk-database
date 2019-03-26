@@ -109,6 +109,8 @@ class Pdo extends \PDO
         $options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION; // TODO: keep an eye on this one. Check if it causes any major issues.
         parent::__construct($dsn, $username, $password, $options);
         $this->options = $options;
+        $this->options['user'] = $username;
+        $this->options['pass'] = $password;
 
         //$this->setAttribute(\PDO::ATTR_STATEMENT_CLASS, array(\Tk\Db\PdoStatement::class, array($this))); // Not compat with PHP 5.3
         $this->setAttribute(\PDO::ATTR_STATEMENT_CLASS, array('\Tk\Db\PdoStatement', array($this)));

@@ -83,11 +83,11 @@ class SqlBackup
     /**
      * Save the sql to a path.
      *
-     * The file name will be in the format of: {DbName}_2016-01-01-12-00-00.sql
+     * If no file is supplied then the default file name is used: {DbName}_2016-01-01-12-00-00.sql
      * if the path does not already contain a .sql file extension
      *
      * @param string $path
-     * @param array $options  TODO:
+     * @param array $options TODO:
      * @return bool|string Return the sql filename on success false on fail
      * @throws Exception
      */
