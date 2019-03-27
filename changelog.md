@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.0.102 [2019-03-28]:
+-------------------------------
+  - Merge branch 'master' of https://github.com/tropotek/tk-database
+
+
 Ver 2.0.100 [2019-02-11]:
 -------------------------------
   - Fixed the animals report for DVM 1
