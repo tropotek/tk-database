@@ -1,7 +1,6 @@
 # tk-database 
 
 __Project:__ tk-database  
-__Published:__ 11 May 2016  
 __Web:__ <http://www.database.com/>  
 __Authors:__ Michael Mifsud <http://www.tropotek.com/>  
   
@@ -25,7 +24,7 @@ composer require ttek/tk-database
 Or add the following to your composer.json file:
 
 ```json
-"ttek/tk-database": "~2.0"
+"ttek/tk-database": "~3.0"
 ```
 
 
