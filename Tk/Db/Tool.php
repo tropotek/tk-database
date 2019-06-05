@@ -385,6 +385,7 @@ class Tool implements \Tk\InstanceKey
 
 
     /**
+     * NOTE: If your object uses the Model uses \Tk\Db\Mapper it is best to use that ...Mapper::getToolSql($tool)
      * Return a string for the SQL query
      *
      * ORDER BY `cell`
@@ -396,7 +397,6 @@ class Tool implements \Tk\InstanceKey
      *
      *
      * TODO: We have an issue if we want to get the SQL and there is no mapper, maybe we should retain the tool toSql() function???
-     * @deprecated Use \Tk\Db\Map\Mapper->getToolSql($tool)
      */
     public function toSql($tblAlias = '', $db = null)
     {

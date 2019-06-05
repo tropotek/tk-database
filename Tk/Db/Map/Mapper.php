@@ -702,7 +702,7 @@ abstract class Mapper implements Mappable
      * Use this function to quote and escape a table name and add a prefix if it is set
      *
      * @param string $table
-     * @param string $prefix (optional) Override default prefix
+     * @param string|null $prefix (optional) Override default prefix
      * @return string
      */
     public function quoteTable($table, $prefix = null)
