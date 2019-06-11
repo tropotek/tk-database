@@ -6,18 +6,12 @@ namespace Tk\Db;
 /**
  * Use this object to enhance your Mapper filtered queries
  *
- *
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2019 Michael Mifsud
  */
 class Filter extends \Tk\Collection
 {
-    /**
-     * @var null|Tool
-     */
-    protected $tool = null;
 
     /**
      * @var string
@@ -32,43 +26,15 @@ class Filter extends \Tk\Collection
 
 
     /**
-     * Filter constructor.
-     */
-    public function __construct()
-    {
-
-    }
-
-    /**
      * @param null|array $params
-     * @param Tool|null $tool
      * @return Filter
      */
-    public static function create(?array $params, ?Tool $tool)
+    public static function create(?array $params)
     {
         if ($params instanceof Filter) return $params;
         $obj = new self();
         $obj->replace($params);
-        $obj->setTool($tool);
         return $obj;
-    }
-
-    /**
-     * @return Tool|null
-     */
-    public function getTool(): ?Tool
-    {
-        return $this->tool;
-    }
-
-    /**
-     * @param Tool|null $tool
-     * @return Filter
-     */
-    public function setTool(?Tool $tool): Filter
-    {
-        $this->tool = $tool;
-        return $this;
     }
 
     /**
