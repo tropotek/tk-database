@@ -16,6 +16,11 @@ class Filter extends \Tk\Collection
     /**
      * @var string
      */
+    protected $select = '';
+
+    /**
+     * @var string
+     */
     protected $from = '';
 
     /**
@@ -40,9 +45,61 @@ class Filter extends \Tk\Collection
     /**
      * @return string
      */
+    public function getSelect(): string
+    {
+        $str = $this->select;
+        $str = trim($str);
+        $str = rtrim($str, ',');
+        return $str;
+    }
+
+    /**
+     * @param string $select
+     * @return Filter
+     */
+    public function setSelect(string $select): Filter
+    {
+        $this->select = $select;
+        return $this;
+    }
+
+    /**
+     * @param string $select
+     * @param array $args
+     * @return Filter
+     */
+    public function prependSelect(string $select, ...$args): Filter
+    {
+        if ($args)
+            $this->select = vsprintf($select, $args) . $this->select;
+        else
+            $this->select = $select . $this->select;
+        return $this;
+    }
+
+    /**
+     * @param string $select
+     * @param array $args
+     * @return Filter
+     */
+    public function appendSelect(string $select, ...$args): Filter
+    {
+        if ($args)
+            $this->select .= vsprintf($select, $args);
+        else
+            $this->select .= $select;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
     public function getFrom(): string
     {
-        return $this->from;
+        $str = $this->from;
+        $str = trim($str);
+        $str = rtrim($str, ',');
+        return $str;
     }
 
     /**
@@ -54,7 +111,6 @@ class Filter extends \Tk\Collection
         $this->from = $from;
         return $this;
     }
-
 
     /**
      * @param string $from
@@ -70,7 +126,6 @@ class Filter extends \Tk\Collection
         return $this;
     }
 
-
     /**
      * @param string $from
      * @param array $args
@@ -85,12 +140,17 @@ class Filter extends \Tk\Collection
         return $this;
     }
 
+
     /**
      * @return string
      */
     public function getWhere(): string
     {
-        return $this->where;
+        $str = $this->where;
+        $str = trim($str);
+        $str = rtrim($str, 'AND');
+        $str = rtrim($str, 'OR');
+        return $str;
     }
 
     /**

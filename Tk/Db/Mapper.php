@@ -152,6 +152,17 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
     }
 
     /**
+     * @param \Tk\Db\Filter $filter
+     * @param null|\Tk\Db\Tool $tool
+     * @return Map\ArrayObject|\Tk\Db\PdoStatement
+     * @throws \Exception
+     */
+    public function selectFromFilter($filter, $tool = null)
+    {
+        return $this->selectFrom($filter->getFrom(), $filter->getWhere(), $tool, $filter->getSelect());
+    }
+
+    /**
      * Return a string for the SQL query
      *
      * ORDER BY `cell`
