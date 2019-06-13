@@ -43,14 +43,16 @@ class Filter extends \Tk\Collection
     }
 
     /**
+     * @param string $default
      * @return string
      */
-    public function getSelect(): string
+    public function getSelect($default = ''): string
     {
-        $str = $this->select;
-        $str = trim($str);
-        $str = rtrim($str, ',');
-        return $str;
+        if ($this->select)
+            $default = $this->select;
+        $default = trim($default);
+        $default = rtrim($default, ',');
+        return $default;
     }
 
     /**
@@ -92,14 +94,16 @@ class Filter extends \Tk\Collection
     }
 
     /**
+     * @param string $default
      * @return string
      */
-    public function getFrom(): string
+    public function getFrom($default = ''): string
     {
-        $str = $this->from;
-        $str = trim($str);
-        $str = rtrim($str, ',');
-        return $str;
+        if ($this->from)
+            $default = $this->from;
+        $default = trim($default);
+        $default = rtrim($default, ',');
+        return $default;
     }
 
     /**
@@ -142,15 +146,17 @@ class Filter extends \Tk\Collection
 
 
     /**
+     * @param string $default
      * @return string
      */
-    public function getWhere(): string
+    public function getWhere($default = ''): string
     {
-        $str = $this->where;
-        $str = trim($str);
-        $str = rtrim($str, 'AND');
-        $str = rtrim($str, 'OR');
-        return $str;
+        if ($this->where)
+            $default = $this->where;
+        $default = trim($default);
+        $default = rtrim($default, 'AND');
+        $default = rtrim($default, 'OR');
+        return $default;
     }
 
     /**
