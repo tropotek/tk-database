@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.0.6 [2019-06-17]:
+-------------------------------
+  - Upgraded all DB model mapper filter queries to use new Filter object
+
+
 Ver 3.0.4 [2019-05-15]:
 -------------------------------
 
