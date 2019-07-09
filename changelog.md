@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.0.8 [2019-07-10]:
+-------------------------------
+  - Added config for mail_log DB table name plg.mail_log.table
+
+
 Ver 3.0.6 [2019-06-17]:
 -------------------------------
   - Upgraded all DB model mapper filter queries to use new Filter object

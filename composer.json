@@ -2,10 +2,14 @@
     "name": "ttek/tk-database",
     "type": "library",
     "description": "The Tropotek Framework database libs",
-    "keywords":  ["tk", "tropotek", "database"],
-    "time": "2019-04-09",
+    "keywords":  [
+        "tk",
+        "tropotek",
+        "database"
+    ],
+    "time": "2019-07-10",
     "license": "MIT",
-    "version": "3.0.0",
+    "version": "3.0.8",
     "authors":  [
          {
             "name": "Michael Mifsud",
