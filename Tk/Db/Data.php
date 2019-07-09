@@ -23,6 +23,9 @@ class Data extends \Tk\Collection
      */
     public static $DB_TABLE = 'data';
 
+    // TODO: This should be made the default, we need to update child sites first
+    //public static $DB_TABLE = '_data';
+
     /**
      * The delete identifier for internal delete operation.
      * Can be changed in the config if needed Data::$DB_DEL = '';
