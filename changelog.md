@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 3.0.10 [2019-07-10]:
+-------------------------------
+
+
 Ver 3.0.8 [2019-07-10]:
 -------------------------------
   - Added config for mail_log DB table name plg.mail_log.table
