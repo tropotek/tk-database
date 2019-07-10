@@ -70,7 +70,6 @@ class SqlMigrate
      */
     public function __construct($db, $tempPath = '/tmp')
     {
-        var_dump(self::$DB_TABLE);
         $this->sitePath = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
         $this->tempPath = $tempPath;
         $this->setDb($db);
@@ -94,7 +93,6 @@ class SqlMigrate
      */
     public function migrate($path, $onFileMigrate = null)
     {
-        var_dump(self::$DB_TABLE);
         $list = $this->getFileList($path);
         $mlist = array();
         $sqlFiles = array();
