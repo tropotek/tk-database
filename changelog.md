@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 3.0.14 [2019-07-11]:
+-------------------------------
+  - Merge branch 'master' of ssh://github.com/tropotek/tk-database
+  - Added sessions and session types
+
+
 Ver 3.0.12 [2019-07-10]:
 -------------------------------
 
