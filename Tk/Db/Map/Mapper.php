@@ -60,6 +60,11 @@ abstract class Mapper implements Mappable
     protected $primaryKey = 'id';
 
     /**
+     * @var string
+     */
+    protected $primaryKeyProperty = 'id';
+
+    /**
      * @var Pdo
      */
     protected $db = null;
@@ -249,7 +254,7 @@ abstract class Mapper implements Mappable
      */
     public function save($obj)
     {
-        $pk = $this->getPrimaryKey();
+        $pk = $this->getPrimaryKeyProperty();
         if (!property_exists($obj, $pk)) {
             throw new \Tk\Exception('No valid primary key found');
         }
@@ -676,6 +681,24 @@ abstract class Mapper implements Mappable
     public function setPrimaryKey($primaryKey)
     {
         $this->primaryKey = $primaryKey;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrimaryKeyProperty()
+    {
+        return $this->primaryKeyProperty;
+    }
+
+    /**
+     * @param string $primaryKeyProperty
+     * @return $this
+     */
+    public function setPrimaryKeyProperty($primaryKeyProperty)
+    {
+        $this->primaryKeyProperty = $primaryKeyProperty;
         return $this;
     }
 
