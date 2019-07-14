@@ -92,7 +92,7 @@ abstract class Model implements \Tk\Db\ModelInterface
      */
     public function getId()
     {
-        $pk = self::createMapper()->getPrimaryKey();
+        $pk = self::createMapper()->getPrimaryKeyProperty();
         if (property_exists($this, $pk)) {
             return $this->$pk;
         }
@@ -105,7 +105,7 @@ abstract class Model implements \Tk\Db\ModelInterface
      */
     private function setId($id)
     {
-        $pk = self::createMapper()->getPrimaryKey();
+        $pk = self::createMapper()->getPrimaryKeyProperty();
         if (property_exists($this, $pk)) {
             $this->$pk = $id;
         }

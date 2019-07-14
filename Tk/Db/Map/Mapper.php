@@ -183,7 +183,6 @@ abstract class Mapper implements Mappable
             $bind[':' . $col] = $value;
         }
         $sql = 'INSERT INTO ' . $this->quoteTable($this->table) . ' (' . $cols . ')  VALUES (:' . $values . ')';
-
         $this->getDb()->prepare($sql)->execute($bind);
 
         $seq = '';
