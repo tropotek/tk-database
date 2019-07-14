@@ -229,7 +229,8 @@ abstract class Mapper implements Mappable
     public function delete($obj)
     {
         $pk = $this->getPrimaryKey();
-        $where = $this->quoteParameter($pk) . ' = ' . $obj->$pk;
+        $pkp = $this->getPrimaryKeyProperty();
+        $where = $this->quoteParameter($pk) . ' = ' . $obj->$pkp;
         if ($where) {
             $where = 'WHERE ' . $where;
         }
@@ -253,11 +254,11 @@ abstract class Mapper implements Mappable
      */
     public function save($obj)
     {
-        $pk = $this->getPrimaryKeyProperty();
-        if (!property_exists($obj, $pk)) {
+        $pkp = $this->getPrimaryKeyProperty();
+        if (!property_exists($obj, $pkp)) {
             throw new \Tk\Exception('No valid primary key found');
         }
-        if (!$obj->$pk) {
+        if (!$obj->$pkp) {
             $obj->insert();
         } else {
             $obj->update();
