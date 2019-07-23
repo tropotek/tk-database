@@ -56,7 +56,6 @@ abstract class Model implements \Tk\Db\ModelInterface
 
     public function __clone()
     {
-        $this->setId(0);
         if (property_exists($this, 'modified'))
             $this->modified = \Tk\Date::create();
         if (property_exists($this, 'created'))
@@ -79,7 +78,7 @@ abstract class Model implements \Tk\Db\ModelInterface
                 }
             }
         }
-
+        $this->setId(0);
     }
 
 
