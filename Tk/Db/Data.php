@@ -277,8 +277,10 @@ SQL;
      */
     public function remove($key)
     {
-        $this->data[self::$DB_DEL.$key] = $this->data[$key];
-        unset($this->data[$key]);
+        if ($this->has($key)) {
+            $this->data[self::$DB_DEL . $key] = $this->data[$key];
+            unset($this->data[$key]);
+        }
         return $this;
     }
 
