@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.0.20 [2019-09-10]:
+-------------------------------
+  - Added Min/Max unit value overrides to subjects
+
+
 Ver 3.0.18 [2019-07-24]:
 -------------------------------
 
