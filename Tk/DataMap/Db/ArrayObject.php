@@ -35,7 +35,10 @@ class ArrayObject extends Iface
     public function toColumnValue($object, $propertyName)
     {
         $value = parent::toColumnValue($object, $propertyName);
-        $value = implode(',', $value);
+        if ($value !== null) {
+            vd($value);
+            $value = implode(',', $value);
+        }
         return $value;
     }
     
