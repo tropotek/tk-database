@@ -36,7 +36,6 @@ class ArrayObject extends Iface
     {
         $value = parent::toColumnValue($object, $propertyName);
         if ($value !== null) {
-            vd($value);
             $value = implode(',', $value);
         }
         return $value;
