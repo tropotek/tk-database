@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.0.22 [2019-11-18]:
+-------------------------------
+  - Added reportEdit listeners
+
+
 Ver 3.0.20 [2019-09-10]:
 -------------------------------
   - Added Min/Max unit value overrides to subjects
