@@ -182,7 +182,7 @@ abstract class Model implements \Tk\Db\ModelInterface
     public function validate() { return array(); }
 
     /**
-     * @return \Tk\Config
+     * @return \Tk\Config|\Bs\Config|\Uni\Config|\App\Config
      */
     public function getConfig()
     {
