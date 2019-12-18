@@ -2,6 +2,8 @@
 namespace Tk\Db;
 
 
+use Tk\ConfigTrait;
+
 /**
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
@@ -9,6 +11,7 @@ namespace Tk\Db;
  */
 abstract class Mapper extends \Tk\Db\Map\Mapper
 {
+    use ConfigTrait;
 
     /**
      * @var \Tk\DataMap\DataMap

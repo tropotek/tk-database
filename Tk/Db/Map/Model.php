@@ -1,6 +1,7 @@
 <?php
 namespace Tk\Db\Map;
 
+use Tk\ConfigTrait;
 use Tk\Db\Exception;
 use \Tk\Db\Pdo;
 
@@ -11,6 +12,8 @@ use \Tk\Db\Pdo;
  */
 abstract class Model implements \Tk\Db\ModelInterface
 {
+    use ConfigTrait;
+
 
     /**
      * @var string
@@ -181,12 +184,5 @@ abstract class Model implements \Tk\Db\ModelInterface
      */
     public function validate() { return array(); }
 
-    /**
-     * @return \Tk\Config|\Bs\Config|\Uni\Config|\App\Config
-     */
-    public function getConfig()
-    {
-        return \Tk\Config::getInstance();
-    }
 
 }
