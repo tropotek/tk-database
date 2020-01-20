@@ -41,12 +41,14 @@ class Date extends Iface
      *
      * @param array $row
      * @param string $columnName
-     * @return float|null
+     * @return \DateTime|null
      */
     public function toPropertyValue($row, $columnName)
     {
         $value = parent::toPropertyValue($row, $columnName);
-        if ($value !== null) {
+        // This date is assumed as null
+        if ($value == '0000-00-00 00:00:00') $value = null;
+        if ($value != null) {
             $value = \Tk\Date::create($value);
         }
         return $value;
@@ -63,7 +65,7 @@ class Date extends Iface
     public function toColumnValue($object, $propertyName)
     {
         $value = parent::toColumnValue($object, $propertyName);
-        if ($value !== null) {
+        if ($value != null) {
             if ($value instanceof \DateTime) {
                 return $value->format($this->format);
             }

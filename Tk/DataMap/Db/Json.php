@@ -38,6 +38,8 @@ class Json extends Iface
         $value = parent::toColumnValue($object, $propertyName);
         if ($value) {
             $value = json_encode($value);
+        } else {
+            $value = '';
         }
         return $value;
     }

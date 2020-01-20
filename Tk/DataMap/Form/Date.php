@@ -45,12 +45,13 @@ class Date extends Iface
      *
      * @param array $row
      * @param string $columnName
-     * @return float|null
+     * @return \DateTime|null
      */
     public function toPropertyValue($row, $columnName)
     {
         $value = parent::toPropertyValue($row, $columnName);
-        if ($value !== null && !$value instanceof \DateTime) {
+        if (!$value) $value = null;
+        if ($value != null && !$value instanceof \DateTime) {
             $value = \Tk\Date::createFormDate($value, null, $this->format);
         }
         return $value;
@@ -62,12 +63,12 @@ class Date extends Iface
      * @param mixed $object
      * @param string $propertyName
      * @return string|null
-     * @throws \ReflectionException
      */
     public function toColumnValue($object, $propertyName)
     {
         $value = parent::toColumnValue($object, $propertyName);
-        if ($value !== null && $value instanceof \DateTime) {
+        if (!$value) $value = null;
+        if ($value != null && $value instanceof \DateTime) {
             return $value->format($this->format);
         }
         return $value;
