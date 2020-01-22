@@ -16,6 +16,12 @@ namespace Tk\Db;
 class Data extends \Tk\Collection
 {
     /**
+     * This fkey is reserved for system values and fid can be 0
+     */
+    const SYSTEM_KEY = 'system';
+
+
+    /**
      * The default table name to use
      * Can be changed in the config if needed Data::$DB_TABLE = '';
      *
@@ -48,11 +54,16 @@ class Data extends \Tk\Collection
      * @var int
      */
     protected $fid = 0;
-    
+
     /**
      * @var string
      */
-    protected $fkey = 'system';
+    protected $fkey = self::SYSTEM_KEY;
+
+    /**
+     * @var string
+     */
+    protected $requreFid = true;
 
 
     /**
@@ -62,14 +73,13 @@ class Data extends \Tk\Collection
      * @param int $fid
      * @param string $table
      */
-    public function __construct($fkey = 'system', $fid = 0, $table = '')
+    public function __construct($fkey = self::SYSTEM_KEY, $fid = 0, $table = '')
     {
         parent::__construct();
         if (!$table) $table = self::$DB_TABLE;
         $this->table = $table;
-        $this->fkey = $fkey;
-        $this->fid = $fid;
-
+        $this->setFid($fid);
+        $this->setFkey($fkey);
     }
 
 
@@ -94,13 +104,14 @@ class Data extends \Tk\Collection
      * @param Pdo|null $db
      * @return static
      */
-    public static function create($fkey = 'system', $fid = 0, $table = '', $db = null)
+    public static function create($fkey = self::SYSTEM_KEY, $fid = 0, $table = '', $db = null)
     {
         if ($fkey instanceof \Tk\Db\ModelInterface) {
-            $obj = new static(get_class($fkey), $fkey->getId(), $table);
-        } else {
-            $obj = new static($fkey, $fid, $table);
+            if (!$fid) $fid = $fkey->getVolatileId();
+            $fkey = get_class($fkey);
         }
+
+        $obj = new static($fkey, $fid, $table);
         if (!$db) $db = \Tk\Config::getInstance()->getDb();
         $obj->setDb($db);
         $obj->load();
@@ -118,7 +129,6 @@ class Data extends \Tk\Collection
     /**
      * @param Pdo $db
      * @return $this
-     * @throws Exception
      */
     public function setDb($db)
     {
@@ -130,56 +140,57 @@ class Data extends \Tk\Collection
     /**
      * This sql should be DB generic (tested on: mysql, pgsql)
      *
-     * @throws Exception
      * @return $this
      */
     private function install()
     {
-        if (!$this->getDb() || $this->getDb()->hasTable($this->getTable())) return $this;
-        $tbl = $this->getDb()->quoteParameter($this->getTable());
-        // mysql
-        $sql = '';
-        if ($this->getDb()->getDriver() == 'mysql') {
-            $sql = <<<SQL
-CREATE TABLE IF NOT EXISTS $tbl (
-  `id` INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  `fid` INT(10) NOT NULL DEFAULT 0,
-  `fkey` VARCHAR(64) NOT NULL DEFAULT '',
-  `key` VARCHAR(128) NOT NULL DEFAULT '',
-  `value` TEXT,
-  UNIQUE `data_foreign_fields` (`fid`, `fkey`, `key`),
-  KEY `fid` (`fid`)
-) ENGINE=InnoDB;
+        try {
+            if (!$this->getDb() || $this->getDb()->hasTable($this->getTable())) return $this;
+            $tbl = $this->getDb()->quoteParameter($this->getTable());
+            // mysql
+            $sql = '';
+            if ($this->getDb()->getDriver() == 'mysql') {
+                $sql = <<<SQL
+    CREATE TABLE IF NOT EXISTS $tbl (
+      `id` INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+      `fid` INT(10) NOT NULL DEFAULT 0,
+      `fkey` VARCHAR(64) NOT NULL DEFAULT '',
+      `key` VARCHAR(128) NOT NULL DEFAULT '',
+      `value` TEXT,
+      UNIQUE `data_foreign_fields` (`fid`, `fkey`, `key`),
+      KEY `fid` (`fid`)
+    ) ENGINE=InnoDB;
 SQL;
-        } else if ($this->getDb()->getDriver() == 'pgsql') {
-            $sql = <<<SQL
-CREATE TABLE IF NOT EXISTS $tbl (
-  id SERIAL PRIMARY KEY,
-  fid INTEGER NOT NULL DEFAULT 0,
-  fkey VARCHAR(64) NOT NULL DEFAULT '',
-  "key" VARCHAR(128),
-  "value" TEXT,
-  UNIQUE (fid, fkey, "key"),
-  KEY fid (fid)
-);
+            } else if ($this->getDb()->getDriver() == 'pgsql') {
+                $sql = <<<SQL
+    CREATE TABLE IF NOT EXISTS $tbl (
+      id SERIAL PRIMARY KEY,
+      fid INTEGER NOT NULL DEFAULT 0,
+      fkey VARCHAR(64) NOT NULL DEFAULT '',
+      "key" VARCHAR(128),
+      "value" TEXT,
+      UNIQUE (fid, fkey, "key"),
+      KEY fid (fid)
+    );
 SQL;
-        } else if ($this->getDb()->getDriver() == 'sqlite') {
-            $sql = <<<SQL
-CREATE TABLE IF NOT EXISTS $tbl (
-  id SERIAL PRIMARY KEY,
-  fid INTEGER NOT NULL DEFAULT 0,
-  fkey VARCHAR(64) NOT NULL DEFAULT '',
-  "key" VARCHAR(128),
-  "value" TEXT,
-  UNIQUE (fid, fkey, "key"),
-  KEY fid (fid)
-);
+            } else if ($this->getDb()->getDriver() == 'sqlite') {
+                $sql = <<<SQL
+    CREATE TABLE IF NOT EXISTS $tbl (
+      id SERIAL PRIMARY KEY,
+      fid INTEGER NOT NULL DEFAULT 0,
+      fkey VARCHAR(64) NOT NULL DEFAULT '',
+      "key" VARCHAR(128),
+      "value" TEXT,
+      UNIQUE (fid, fkey, "key"),
+      KEY fid (fid)
+    );
 SQL;
-        }
+            }
 
-        if ($sql) {
-            $this->getDb()->exec($sql);
-        }
+            if ($sql) {
+                $this->getDb()->exec($sql);
+            }
+        } catch (\Exception $e) { \Tk\Log::error($e->getMessage());}
         return $this;
     }
 
@@ -216,6 +227,7 @@ SQL;
     public function setFkey($fkey)
     {
         $this->fkey = $fkey;
+        $this->requreFid = ($fkey != self::SYSTEM_KEY);     // Only require a key for non system fields
         return $this;
     }
 
@@ -233,19 +245,20 @@ SQL;
      * Load this object with available data from the DB
      *
      * @return $this
-     * @throws Exception
      */
     public function load()
     {
-        $sql = sprintf('SELECT * FROM %s WHERE fid = %d AND fkey = %s ', $this->db->quoteParameter($this->getTable()),
-            (int)$this->fid, $this->db->quote($this->fkey));
-        Pdo::$logLastQuery = false;
-        $stmt = $this->db->query($sql);
-        $stmt->setFetchMode(\PDO::FETCH_OBJ);
-        foreach ($stmt as $row) {
-            $this->set($row->key, $this->prepareGetValue($row->value));
-        }
-        Pdo::$logLastQuery = true;
+        try {
+            $sql = sprintf('SELECT * FROM %s WHERE fid = %d AND fkey = %s ', $this->db->quoteParameter($this->getTable()),
+                (int)$this->fid, $this->db->quote($this->fkey));
+            Pdo::$logLastQuery = false;
+            $stmt = $this->db->query($sql);
+            $stmt->setFetchMode(\PDO::FETCH_OBJ);
+            foreach ($stmt as $row) {
+                $this->set($row->key, $this->prepareGetValue($row->value));
+            }
+            Pdo::$logLastQuery = true;
+        } catch (\Exception $e) { \Tk\Log::error($e->getMessage());}
         return $this;
     }
 
@@ -253,19 +266,20 @@ SQL;
      * Save modified Data to the DB
      *
      * @return $this
-     * @throws Exception
      */
     public function save()
     {
-        Pdo::$logLastQuery = false;
-        foreach($this as $k => $v) {
-            if (preg_match('/^'.self::$DB_DEL.'(.+)/', $k, $reg)) {   // Marked for delete
-                $this->dbDelete($reg[1]);
-            } else {
-                $this->dbSet($k, $v);
+        try {
+            Pdo::$logLastQuery = false;
+            foreach($this as $k => $v) {
+                if (preg_match('/^'.self::$DB_DEL.'(.+)/', $k, $reg)) {   // Marked for delete
+                    $this->dbDelete($reg[1]);
+                } else {
+                    $this->dbSet($k, $v);
+                }
             }
-        }
-        Pdo::$logLastQuery = true;
+            Pdo::$logLastQuery = true;
+        } catch (\Exception $e) { \Tk\Log::error($e->getMessage());}
         return $this;
     }
 
@@ -315,6 +329,12 @@ SQL;
 //        if ($value === '') {            // TODO: Test if this is what we want, it would save data
 //           return $this->dbDelete($key);
 //        }
+
+        // TODO: make sure this does not affect any functionality
+        if ($this->requreFid && !$this->getFid()) {
+            vd('000000', $this->getFid());
+            return $this;
+        }
         $value = $this->prepareSetValue($value);
 
         if ($this->dbHas($key)) {
