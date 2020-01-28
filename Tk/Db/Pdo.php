@@ -1,6 +1,7 @@
 <?php
 namespace Tk\Db;
 
+use Tk\Callback;
 use Tk\Db\Exception;
 
 /**
@@ -80,7 +81,7 @@ class Pdo extends \PDO
     public $driver = '';
 
     /**
-     * @var \Closure
+     * @var Callback
      */
     private $onLogListener;
 
@@ -106,6 +107,7 @@ class Pdo extends \PDO
      */
     public function __construct($dsn, $username, $password, $options = array())
     {
+        $this->onLogListener = Callback::create();
         $options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION; // TODO: keep an eye on this one. Check if it causes any major issues.
         parent::__construct($dsn, $username, $password, $options);
         $this->options = $options;
@@ -276,6 +278,34 @@ class Pdo extends \PDO
     }
 
     /**
+     * @return Callback
+     */
+    public function getOnLogListener()
+    {
+        return $this->onLogListener;
+    }
+
+    /**
+     * @param callable $observer The observer.
+     * @deprecated use addOnLogListener
+     */
+    public function setOnLogListener($observer)
+    {
+        $this->onLogListener = $observer;
+    }
+
+    /**
+     * Eg: function (array $entry) {}
+     *
+     * @param callable $callable
+     * @param int $priority
+     */
+    public function addOnLogListener($callable, $priority = Callback::DEFAULT_PRIORITY)
+    {
+        $this->getOnLogListener()->append($callable, $priority);
+    }
+
+    /**
      * Adds an array entry to the log.
      *
      * @param array $entry The log entry.
@@ -283,9 +313,7 @@ class Pdo extends \PDO
     public function addLog(array $entry)
     {
         $this->log[] = $entry;
-        if ($this->onLogListener) {
-            call_user_func($this->onLogListener, $entry);
-        }
+        $this->getOnLogListener()->execute($entry);
     }
 
     /**
@@ -314,16 +342,6 @@ class Pdo extends \PDO
     public function getLastLog()
     {
         return end($this->log);
-    }
-
-    /**
-     * Sets an observer on log.
-     *
-     * @param callable $observer The observer.
-     */
-    public function setOnLogListener($observer)
-    {
-        $this->onLogListener = $observer;
     }
 
     /**
