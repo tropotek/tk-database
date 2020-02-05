@@ -109,6 +109,7 @@ class Pdo extends \PDO
     {
         $this->onLogListener = Callback::create();
         $options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
+        vd($dsn, $username, $password, $options);
         parent::__construct($dsn, $username, $password, $options);
         $this->options = $options;
         $this->options['user'] = $username;
@@ -122,9 +123,9 @@ class Pdo extends \PDO
         $this->dbName = $regs[4];
 
         $this->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        $this->setAttribute(PDO::ATTR_TIMEOUT, self::$PDO_TIMEOUT);
-        // Get mysql to emulate standard DB's
+        $this->setAttribute(\PDO::ATTR_TIMEOUT, self::$PDO_TIMEOUT);
 
+        // Get mysql to emulate standard DB's
         self::$logLastQuery = false;
         if ($this->getDriver() == 'mysql') {
             $version = $this->query('select version()')->fetchColumn();
