@@ -109,7 +109,6 @@ class Pdo extends \PDO
     {
         $this->onLogListener = Callback::create();
         $options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
-        vd($dsn);
         parent::__construct($dsn, $username, $password, $options);
         $this->options = $options;
         $this->options['user'] = $username;
