@@ -108,7 +108,8 @@ class Pdo extends \PDO
     public function __construct($dsn, $username, $password, $options = array())
     {
         $this->onLogListener = Callback::create();
-        $options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION; // TODO: keep an eye on this one. Check if it causes any major issues.
+        $options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
+        vd($dsn);
         parent::__construct($dsn, $username, $password, $options);
         $this->options = $options;
         $this->options['user'] = $username;
@@ -129,8 +130,6 @@ class Pdo extends \PDO
         if ($this->getDriver() == 'mysql') {
             $version = $this->query('select version()')->fetchColumn();
             $version = (float)mb_substr($version, 0, 6);
-
-            // TODO: Check this is working as expected???
             if ($version < '5.5.3') {
                 $this->exec('SET CHARACTER SET utf8;');
                 $this->exec('ALTER DATABASE CHARACTER SET utf8 COLLATE utf8_unicode_ci;');
@@ -190,7 +189,6 @@ class Pdo extends \PDO
         if (!$name && !count($options) && count(self::$instance)) {
             return current(self::$instance);
         }
-        
         if (!isset(self::$instance[$name])) {
             self::$instance[$name] = static::create($options);
             return self::$instance[$name];
@@ -216,8 +214,8 @@ class Pdo extends \PDO
      */
     public static function create($options)
     {
-        $dns = $options['type'] . ':dbname=' . $options['name'] . ';host=' . $options['host'];
-        $db = new self($dns, $options['user'], $options['pass'], $options);
+        $dsn = $options['type'] . ':dbname=' . $options['name'] . ';host=' . $options['host'];
+        $db = new self($dsn, $options['user'], $options['pass'], $options);
         return $db;
     }
 
