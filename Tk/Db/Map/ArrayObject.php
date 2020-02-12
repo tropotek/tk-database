@@ -43,7 +43,7 @@ class ArrayObject implements \Iterator, \Countable
     /**
      * The total number of rows found without LIMIT clause
      * @var int
-     * @deprecated This has been moofed to \Tk\Db\Tool
+     * @deprecated This has been mooved to \Tk\Db\Tool
      */
     protected $foundRows = 0;
 
