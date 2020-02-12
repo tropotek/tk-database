@@ -67,6 +67,7 @@ class SqlMigrate
      *
      * @param \Tk\Db\Pdo $db
      * @param string $tempPath
+     * @throws \Exception
      */
     public function __construct($db, $tempPath = '/tmp')
     {
@@ -84,11 +85,11 @@ class SqlMigrate
     }
 
     /**
-     * @param array|string[] $list
+     * @param array|string[] $migrateList
      * @param null|callable $onStrWrite function(string $str, SqlMigrate $migrate) {}
      * @throws \Exception
      */
-    public function migrateList($list, $onStrWrite = null)
+    public function migrateList($migrateList, $onStrWrite = null)
     {
         if (!empty($migrateList[self::MIGRATE_PREPEND])) {
             $pre = $migrateList[self::MIGRATE_PREPEND];
