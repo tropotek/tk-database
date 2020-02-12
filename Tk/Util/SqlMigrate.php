@@ -33,6 +33,7 @@ namespace Tk\Util;
  */
 class SqlMigrate
 {
+    const MIGRATE_PREPEND = 'migrate_prepend';
 
     static $DB_TABLE = 'migration';
 
@@ -66,7 +67,6 @@ class SqlMigrate
      *
      * @param \Tk\Db\Pdo $db
      * @param string $tempPath
-     * @throws \Tk\Db\Exception
      */
     public function __construct($db, $tempPath = '/tmp')
     {
@@ -81,6 +81,45 @@ class SqlMigrate
     public function __destruct()
     {
         $this->deleteBackup();
+    }
+
+    /**
+     * @param array|string[] $list
+     * @param null|callable $onStrWrite function(string $str, SqlMigrate $migrate) {}
+     * @throws \Exception
+     */
+    public function migrateList($list, $onStrWrite = null)
+    {
+        if (!empty($migrateList[self::MIGRATE_PREPEND])) {
+            $pre = $migrateList[self::MIGRATE_PREPEND];
+            if (!is_array($pre)) $pre = array($pre);
+            foreach ($pre as $n => $searchPath) {
+                if (!is_dir($searchPath)) continue;
+                $dirItr = new \RecursiveDirectoryIterator($searchPath, \RecursiveIteratorIterator::CHILD_FIRST);
+                $itr = new \RecursiveIteratorIterator($dirItr);
+                $regItr = new \RegexIterator($itr, '/(\.sql|\.php)$/');
+                foreach ($regItr as $d) {
+                    if ($onStrWrite) call_user_func_array($onStrWrite, array('' . $d->getPath(), $this));
+                    $this->migrate($d->getPath(), function ($f, $m) use ($onStrWrite) {
+                        if ($onStrWrite) call_user_func_array($onStrWrite, array('  .' . $f, $m));
+                    });
+                }
+            }
+            unset($migrateList[self::MIGRATE_PREPEND]);
+        }
+
+        foreach ($migrateList as $n => $searchPath) {
+            if (!is_dir($searchPath)) continue;
+            $dirItr = new \RecursiveDirectoryIterator($searchPath, \RecursiveIteratorIterator::CHILD_FIRST);
+            $itr = new \RecursiveIteratorIterator($dirItr);
+            $regItr = new \RegexIterator($itr, '/(\/sql\/\.)$/');
+            foreach ($regItr as $d) {
+                if ($onStrWrite) call_user_func_array($onStrWrite, array('' . $d->getPath(), $this));
+                $this->migrate($d->getPath(), function ($f, $m) use ($onStrWrite) {
+                    if ($onStrWrite) call_user_func_array($onStrWrite, array('  .' . $f, $m));
+                });
+            }
+        }
     }
 
     /**
