@@ -26,7 +26,6 @@ namespace Tk\Util;
  * The php files are called with the include() command.
  * It will then be up to the developer to include a script to install the required sql.
  * 
- * @todo Should this be moved to the installers lib?
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
