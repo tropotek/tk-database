@@ -133,7 +133,6 @@ class Data extends \Tk\Collection
     public function setDb($db)
     {
         $this->db = $db;
-        $this->install();
         return $this;
     }
 
@@ -187,10 +186,10 @@ SQL;
 SQL;
             }
 
-            if ($sql) {
+            if ($sql)
                 $this->getDb()->exec($sql);
-            }
-        } catch (\Exception $e) { \Tk\Log::error($e->getMessage());}
+
+        } catch (\Exception $e) { \Tk\Log::error($e->__toString());}
         return $this;
     }
 
@@ -249,6 +248,8 @@ SQL;
     public function load()
     {
         try {
+            if (!$this->getDb()->hasTable($this->getTable())) return $this;
+
             $sql = sprintf('SELECT * FROM %s WHERE fid = %d AND fkey = %s ', $this->db->quoteParameter($this->getTable()),
                 (int)$this->fid, $this->db->quote($this->fkey));
             Pdo::$logLastQuery = false;
@@ -258,7 +259,7 @@ SQL;
                 $this->set($row->key, $this->prepareGetValue($row->value));
             }
             Pdo::$logLastQuery = true;
-        } catch (\Exception $e) { \Tk\Log::error($e->getMessage());}
+        } catch (\Exception $e) { \Tk\Log::error($e->__toString());}
         return $this;
     }
 
@@ -279,7 +280,7 @@ SQL;
                 }
             }
             Pdo::$logLastQuery = true;
-        } catch (\Exception $e) { \Tk\Log::error($e->getMessage());}
+        } catch (\Exception $e) { \Tk\Log::error($e->__toString());}
         return $this;
     }
 
@@ -334,6 +335,7 @@ SQL;
         if ($this->requireFid && !$this->getFid()) {
             return $this;
         }
+        $this->install();
         $value = $this->prepareSetValue($value);
 
         if ($this->dbHas($key)) {
@@ -361,6 +363,7 @@ SQL;
      */
     protected function dbGet($key)
     {
+        if (!$this->getDb()->hasTable($this->getTable())) return '';
         $sql = sprintf('SELECT * FROM %s WHERE %s = %s AND fid = %d AND fkey = %s ', $this->db->quoteParameter($this->getTable()),   $this->db->quoteParameter('key'),
             $this->db->quote($key), (int)$this->fid, $this->db->quote($this->fkey));
         Pdo::$logLastQuery = false;
@@ -381,6 +384,7 @@ SQL;
      */
     protected function dbHas($key)
     {
+        if (!$this->getDb()->hasTable($this->getTable())) return false;
         $sql = sprintf('SELECT * FROM %s WHERE %s = %s AND fid = %d AND fkey = %s ', $this->db->quoteParameter($this->getTable()), $this->db->quoteParameter('key'),
             $this->db->quote($key), (int)$this->fid, $this->db->quote($this->fkey));
         Pdo::$logLastQuery = false;
@@ -399,6 +403,7 @@ SQL;
      */
     protected function dbDelete($key)
     {
+        if (!$this->getDb()->hasTable($this->getTable())) return $this;
         $sql = sprintf('DELETE FROM %s WHERE %s = %s AND fid = %d AND fkey = %s ', $this->db->quoteParameter($this->getTable()),  $this->db->quoteParameter('key'),
             $this->db->quote($key), (int)$this->fid, $this->db->quote($this->fkey));
         Pdo::$logLastQuery = false;
@@ -408,8 +413,10 @@ SQL;
     }
 
 
-
-
+    /**
+     * @param $value
+     * @return mixed
+     */
     protected function prepareGetValue($value)
     {
         if (preg_match('/^(___JSON:)/', $value)) {
@@ -418,6 +425,10 @@ SQL;
         return $value;
     }
 
+    /**
+     * @param $value
+     * @return string
+     */
     protected function prepareSetValue($value)
     {
         if (is_array($value) || is_object($value)) {
