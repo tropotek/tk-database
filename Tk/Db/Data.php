@@ -63,7 +63,7 @@ class Data extends \Tk\Collection
     /**
      * @var string
      */
-    protected $requreFid = true;
+    protected $requireFid = true;
 
 
     /**
@@ -90,8 +90,7 @@ class Data extends \Tk\Collection
 
     public function __wakeup()
     {
-        // TODO: hacky
-        $this->db = \Tk\Config::getInstance()->getDb();
+        $this->setDb(\Tk\Config::getInstance()->getDb());
     }
 
     /**
@@ -228,7 +227,7 @@ SQL;
     public function setFkey($fkey)
     {
         $this->fkey = $fkey;
-        $this->requreFid = ($fkey != self::SYSTEM_KEY);     // Only require a key for non system fields
+        $this->requireFid = ($fkey != self::SYSTEM_KEY);     // Only require a key for non system fields
         return $this;
     }
 
@@ -332,8 +331,7 @@ SQL;
 //        }
 
         // TODO: make sure this does not affect any functionality
-        if ($this->requreFid && !$this->getFid()) {
-            vd('000000', $this->getFid());
+        if ($this->requireFid && !$this->getFid()) {
             return $this;
         }
         $value = $this->prepareSetValue($value);
