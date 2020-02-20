@@ -19,11 +19,11 @@
     },
     "require":  {
         "ext-pdo": "*",
-        "ttek/tk-framework": "~3.0"
+        "ttek/tk-framework": "~3.2"
     },
     "extra":  {
         "branch-alias":  {
-            "dev-master": "3.0.x-dev"
+            "dev-master": "3.2.x-dev"
         }
     }
 }

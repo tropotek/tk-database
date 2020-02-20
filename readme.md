@@ -44,6 +44,8 @@ See if you have any table without the underscore and rename them to the followin
 RENAME TABLE migration TO _migration;
 RENAME TABLE data TO _data;
 RENAME TABLE session TO _session;
+RENAME TABLE plugin TO _plugin;
 ```
-
+Also check your src/config/application.php file and ensure that there are no manual
+overrides for this table as you may get unexpected results
 
