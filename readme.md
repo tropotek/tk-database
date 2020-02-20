@@ -11,7 +11,7 @@ A database lib for the Tropotek tk library.
 
 - [Installation](#installation)
 - [Introduction](#introduction)
-
+- [Upgrade](#upgrade)
 
 ## Installation
 
@@ -25,12 +25,25 @@ composer require ttek/tk-database
 Or add the following to your composer.json file:
 
 ```json
-"ttek/tk-database": "~3.0.0"
+"ttek/tk-database": "~3.2.0"
 ```
 
 
 ## Introduction
 
 
+
+
+## Upgrade
+
+If you have DB migration issues you may manually update some system tables. 
+See if you have any table without the underscore and rename them to the following.
+
+```mysql
+-- NOTE: This has to be run manually before upgrading to ver 3.2
+RENAME TABLE migration TO _migration;
+RENAME TABLE data TO _data;
+RENAME TABLE session TO _session;
+```
 
 
