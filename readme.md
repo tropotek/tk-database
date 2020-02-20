@@ -25,7 +25,7 @@ composer require ttek/tk-database
 Or add the following to your composer.json file:
 
 ```json
-"ttek/tk-database": "~3.0"
+"ttek/tk-database": "~3.0.0"
 ```
 
 
