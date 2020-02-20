@@ -221,6 +221,7 @@ class SqlMigrate
     /**
      * Execute a migration class or sql script...
      * the file is then added to the db and cannot be executed again.
+     * Ignore any files starting with an underscore '_'
      *
      * @param string $file
      * @return bool
