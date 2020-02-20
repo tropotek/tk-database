@@ -34,10 +34,10 @@ class SqlMigrate
 {
     const MIGRATE_PREPEND = 'migrate_prepend';
 
-    static $DB_TABLE = 'migration';
-
-    // TODO: This should be made the default, we need to update child sites first
-    //static $DB_TABLE = '_migration';
+    /**
+     * @var string
+     */
+    static $DB_TABLE = '_migration';
 
     /**
      * @var \Tk\Db\Pdo
