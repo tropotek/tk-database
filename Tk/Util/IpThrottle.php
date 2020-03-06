@@ -66,7 +66,7 @@ class IpThrottle
      */
     public static function create($db = null)
     {
-        if (!$db) $db = \Tk\Config::getDb();
+        if (!$db) $db = \Tk\Config::getInstance()->getDb();
         $obj = new static($db);
         return $obj;
     }
@@ -77,19 +77,27 @@ class IpThrottle
      * @param \DateTime $dateFrom
      * @param null|\DateTime $dateTo (optional) Defaults to NOW if not used
      * @param null|string $key
+     * @param null|int $level (optional) Only get records with a higher level than submitted null = get all
      * @return array|bool
-     * @throws \Exception
+     * @throws /Exception
      */
-    public function getIpSubmissions($ip, $dateFrom, $dateTo = null, $key = '')
+    public function getIpSubmissions($ip, $dateFrom, $dateTo = null, $key = '', $level = null)
     {
         if (!$this->hasTable($this->getTable())) return array();
         if (!$dateTo) $dateTo = new \DateTime();
         if ($dateFrom >= $dateTo) return array();
         if ($key) $key = sprintf("AND `key` LIKE '%s'", $key);
-        $sql = sprintf("SELECT * FROM %s WHERE ip LIKE '%s' %s AND timestamp > '%s' AND timestamp <= '%s' ",
+        $lvlSql = '';
+        if ($level !== null) {
+            $lvlSql = sprintf(' AND `level` > %s', $level);
+        }
+
+        //$sql = sprintf("SELECT * FROM %s WHERE ip LIKE '%s' AND timestamp > (DATE_ADD(NOW(), INTERVAL -{$timeToRestrict} HOUR))"
+        $sql = sprintf("SELECT * FROM %s WHERE `ip` LIKE '%s' %s %s AND `timestamp` > '%s' AND `timestamp` <= '%s' ",
             $this->getTable(),
             $ip,
             $key,
+            $lvlSql,
             $dateFrom->format(self::FORMAT_ISO_DATETIME),
             $dateTo->format(self::FORMAT_ISO_DATETIME)
         );
@@ -98,25 +106,31 @@ class IpThrottle
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @param \DateTime $dateFrom
      * @param null|\DateTime $dateTo (optional) Defaults to NOW if not used
      * @param string $ip
+     * @param null|int $level
      * @return array|bool
      * @throws \Exception
      */
-    public function getKeySubmissions($key, $dateFrom, $dateTo = null, $ip = '')
+    public function getKeySubmissions($key, $dateFrom, $dateTo = null, $ip = '', $level = null)
     {
         if (!$this->hasTable($this->getTable())) return array();
         if (!$dateTo) $dateTo = new \DateTime();
         if ($dateFrom >= $dateTo) return array();
         if ($ip) $ip = sprintf("AND `ip` LIKE %s", $ip);
+        $lvlSql = '';
+        if ($level !== null) {
+            $lvlSql = sprintf(' AND `level` > %s', $level);
+        }
 
         //$sql = sprintf("SELECT * FROM %s WHERE ip LIKE '%s' AND timestamp > (DATE_ADD(NOW(), INTERVAL -{$timeToRestrict} HOUR))"
-        $sql = sprintf("SELECT * FROM %s WHERE key LIKE '%s' %s AND timestamp > '%s' AND timestamp <= '%s' ",
+        $sql = sprintf("SELECT * FROM %s WHERE `key` LIKE '%s' %s %s AND `timestamp` > '%s' AND `timestamp` <= '%s' ",
             $this->getTable(),
             $key,
             $ip,
+            $lvlSql,
             $dateFrom->format(self::FORMAT_ISO_DATETIME),
             $dateTo->format(self::FORMAT_ISO_DATETIME)
         );
@@ -127,24 +141,30 @@ class IpThrottle
     /**
      * Log an IP hit to the DB
      *
-     * @param string $ip
-     * @param string $key
+     * @param string $notes (optional)
+     * @param int $level (optional) Threat Level value Higher values mean higher threat
+     * @param string $ip (optional)
+     * @param string $key (optional)
+     * @param string $agent (optional)
      * @return false|\PDOStatement
      * @throws \Exception
      */
-    public function logIp($ip, $key = '')
+    public function logIp($notes = '', $level = 0, $ip = '', $key = '', $agent = '')
     {
-        if (
-            !filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) &&
-            !filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)
+        if ($ip &&
+            (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) &&
+                !filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
         ) {
             return false;
         }
+        if (!$ip) $ip = self::getClientIp();
+        if (!$key) $key = self::getUri();
+        if (!$agent) $agent = $_SERVER['HTTP_USER_AGENT'];
 
         $this->install();
         $now = new \DateTime();
-        $sql = sprintf("INSERT INTO %s (ip, `key`, timestamp) VALUES ('%s', '%s', '%s')",
-            $this->getTable(), $ip, $key, $now->format(self::FORMAT_ISO_DATETIME)
+        $sql = sprintf("INSERT INTO %s (`key`, `ip`, `agent`, `level`, `notes`, `timestamp`) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')",
+            $this->getTable(), $key, $ip, $agent, $level, $notes, $now->format(self::FORMAT_ISO_DATETIME)
         );
         return $this->getDb()->query($sql);
     }
@@ -163,9 +183,12 @@ class IpThrottle
             $sql = <<<SQL
     CREATE TABLE IF NOT EXISTS $tbl (
       `id` INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-      `ip` VARCHAR(32) NOT NULL DEFAULT '',
       `key` VARCHAR(255) NOT NULL DEFAULT '',
+      `ip` VARCHAR(32) NOT NULL DEFAULT '',
+      `agent` VARCHAR(255) NOT NULL DEFAULT '',
+      `level` TINYINT NOT NULL DEFAULT 0,       -- Threat Level: set to >1 when an expired ip tries again after being warned to try later 
       `timestamp` DATETIME NOT NULL,
+      `notes` TEXT,
       KEY `ip` (`ip`),
       KEY `key` (`key`),
       KEY `ip_key` (`ip`, `key`)
