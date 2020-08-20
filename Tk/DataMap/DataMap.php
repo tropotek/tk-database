@@ -43,7 +43,7 @@ class DataMap
             if ($map) {
                 if ($ignoreTag && $map->getTag() == $ignoreTag) continue;
                 $map->loadObject($row, $object);
-            } else {        // ONLY ADD DYNAMIC FIELDS IF THE OBJECT DOWN NOT HAVE THIS PROPERTY ALREADY!!
+            } else {        // ONLY ADD DYNAMIC FIELDS IF THE OBJECT DOES NOT HAVE THIS PROPERTY ALREADY!!
                 try {
                     $reflect = new \ReflectionClass($object);
                     if (!$reflect->hasProperty($k) && !in_array($k, self::$EXCLUDED_PROPERTIES)) {
