@@ -134,6 +134,8 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
      */
     public function unmapForm($obj, $array = array())
     {
+        if (!$this->getFormMap())
+            throw new \Tk\Db\Exception(''.get_class($this).'::getFormMap() method not implemented! Please contact your developer.');
         return $this->getFormMap()->loadArray($obj, $array);
     }
 
