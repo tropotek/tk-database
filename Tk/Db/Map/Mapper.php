@@ -256,12 +256,12 @@ abstract class Mapper implements Mappable
     {
         $pkp = $this->getPrimaryKeyProperty();
         if (!property_exists($obj, $pkp)) {
-            throw new \Tk\Exception('No valid primary key found');
+            throw new \Tk\Exception('No valid primary key found in object: ' . get_class($obj));
         }
-        if (!$obj->$pkp) {
-            $obj->insert();
-        } else {
+        if ($obj->$pkp) {
             $obj->update();
+        } else {
+            $obj->insert();
         }
     }
 

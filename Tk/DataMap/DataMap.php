@@ -35,7 +35,7 @@ class DataMap
     /**
      * Using the DataMap load an object with the values from an array
      * If the property does not exist as a map the value is added to
-     * the object as a dynamic property.
+     * the object as a dynamic property if enableDynamicParameters is true.
      *
      * @link http://krisjordan.com/dynamic-properties-in-php-with-stdclass
      * @param array $row
