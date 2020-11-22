@@ -23,6 +23,14 @@ class DataMap
      */
     private $columnMaps = array();
 
+    /**
+     * If this is true objects without the defined parameters (vars)
+     *    will be created dynamically
+     *
+     * @var bool
+     */
+    protected $enableDynamicParameters = true;
+
 
     /**
      * Using the DataMap load an object with the values from an array
@@ -45,9 +53,11 @@ class DataMap
                 $map->loadObject($row, $object);
             } else {        // ONLY ADD DYNAMIC FIELDS IF THE OBJECT DOES NOT HAVE THIS PROPERTY ALREADY!!
                 try {
-                    $reflect = new \ReflectionClass($object);
-                    if (!$reflect->hasProperty($k) && !in_array($k, self::$EXCLUDED_PROPERTIES)) {
-                        $object->$k = $v;
+                    if ($this->isEnableDynamicParameters()) {
+                        $reflect = new \ReflectionClass($object);
+                        if (!$reflect->hasProperty($k) && !in_array($k, self::$EXCLUDED_PROPERTIES)) {
+                            $object->$k = $v;
+                        }
                     }
                 } catch (\ReflectionException $e) { }
             }
@@ -131,6 +141,24 @@ class DataMap
         $this->propertyMaps[$propertyMap->getPropertyName()] = $propertyMap;
         $this->columnMaps[$propertyMap->getColumnName()] = $propertyMap;
         return $propertyMap;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnableDynamicParameters(): bool
+    {
+        return $this->enableDynamicParameters;
+    }
+
+    /**
+     * @param bool $enableDynamicParameters
+     * @return DataMap
+     */
+    public function setEnableDynamicParameters(bool $enableDynamicParameters): DataMap
+    {
+        $this->enableDynamicParameters = $enableDynamicParameters;
+        return $this;
     }
 
 }
