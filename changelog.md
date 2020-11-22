@@ -1,5 +1,15 @@
 #CHANGELOG#
 
+Ver 3.2.12 [2020-11-23]:
+-------------------------------
+  - Tagging and releasing branch `3.2` with version `3.2.8`.
+  - Tagging and releasing branch `3.2` with version `3.2.6`.
+  - Tagging and releasing branch `3.2` with version `3.2.4`.
+  - Tagging and releasing branch `3.2` with version `3.2.2`.
+  - Tagging and releasing branch `3.2` with version `3.2.0`.
+  - Added LTI 1.3 plugin
+
+
 Ver 3.2.8 [2020-11-22]:
 -------------------------------
 
