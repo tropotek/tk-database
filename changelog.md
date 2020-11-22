@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.2.10 [2020-11-23]:
+-------------------------------
+  - Merge branch 'master' of ssh://github.com/tropotek/tk-database
+
+
 Ver 3.0.38 [2020-02-14]:
 -------------------------------
 
