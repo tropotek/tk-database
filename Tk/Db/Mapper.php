@@ -81,6 +81,10 @@ abstract class Mapper extends \Tk\Db\Map\Mapper
             if (class_exists($class))
                 $obj = new $class();
         }
+        // TODO: Check this is ok here and in the Model obj
+        if (isset($row['del']))
+            $obj->del = (bool)$row['del'];
+
         if ($this->getDbMap())
             return $this->getDbMap()->loadObject($row, $obj);
         return (object)$row;

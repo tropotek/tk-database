@@ -154,6 +154,21 @@ abstract class Model implements \Tk\Db\ModelInterface
     }
 
     /**
+     * Return the deleted flag status of the object
+     * 1 = deleted
+     * 0 = not-deleted
+     *
+     * @return false
+     */
+    public function isDel()
+    {
+        if (isset($this->del)) {
+            return $this->del;
+        }
+        return false;
+    }
+
+    /**
      * Returns the object id if it is greater than 0 or the nextInsertId if is 0
      *
      * @return int
