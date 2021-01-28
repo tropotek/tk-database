@@ -651,7 +651,6 @@ abstract class Mapper implements Mappable
         return self::$DB_PREFIX;
     }
 
-
     /**
      * If a colum name is supplied then that column info is returned
      *
@@ -664,6 +663,15 @@ abstract class Mapper implements Mappable
             return $this->tableInfo[$column];
         }
         return $this->tableInfo;
+    }
+
+    /**
+     * @param string $column
+     * @return bool
+     */
+    public function hasColumn($column)
+    {
+        return array_key_exists($column, $this->tableInfo);
     }
 
     /**
