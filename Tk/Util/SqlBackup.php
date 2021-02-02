@@ -59,7 +59,8 @@ class SqlBackup
         }
 
         $host = escapeshellarg($this->db->getOption('host'));
-        $name = escapeshellarg($this->db->getOption('name'));
+        if ($this->db->getDatabaseName())
+            $name = escapeshellarg($this->db->getDatabaseName());
         $user = escapeshellarg($this->db->getOption('user'));
         $pass = escapeshellarg($this->db->getOption('pass'));
 
@@ -108,6 +109,8 @@ class SqlBackup
 
         $host = escapeshellarg($this->db->getOption('host'));
         $name = escapeshellarg($this->db->getOption('name'));
+        if ($this->db->getDatabaseName())
+            $name = escapeshellarg($this->db->getDatabaseName());
         $user = escapeshellarg($this->db->getOption('user'));
         $pass = escapeshellarg($this->db->getOption('pass'));
         $exclude = array();
@@ -153,7 +156,8 @@ class SqlBackup
     public function dump($options = array())
     {
         $host = escapeshellarg($this->db->getOption('host'));
-        $name = escapeshellarg($this->db->getOption('name'));
+        if ($this->db->getDatabaseName())
+            $name = escapeshellarg($this->db->getDatabaseName());
         $user = escapeshellarg($this->db->getOption('user'));
         $pass = escapeshellarg($this->db->getOption('pass'));
         $exclude = array();

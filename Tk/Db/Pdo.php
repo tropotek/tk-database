@@ -111,17 +111,18 @@ class Pdo extends \PDO
         $options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
         //vd($dsn, $username, $password, $options);
         parent::__construct($dsn, $username, $password, $options);
+
+        $this->dbName = $this->query('select database()')->fetchColumn();
+//            $regs = array();
+//            preg_match('/^([a-z]+):(([a-z]+)=([a-z0-9_-]+))+/i', $dsn, $regs);
+//            $this->dbName = $regs[4];
+
         $this->options = $options;
         $this->options['user'] = $username;
         $this->options['pass'] = $password;
 
         //$this->setAttribute(\PDO::ATTR_STATEMENT_CLASS, array(\Tk\Db\PdoStatement::class, array($this))); // Not compat with PHP 5.3
         $this->setAttribute(\PDO::ATTR_STATEMENT_CLASS, array('\Tk\Db\PdoStatement', array($this)));
-
-        $regs = array();
-        preg_match('/^([a-z]+):(([a-z]+)=([a-z0-9_-]+))+/i', $dsn, $regs);
-        $this->dbName = $regs[4];
-
         $this->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->setAttribute(\PDO::ATTR_TIMEOUT, self::$PDO_TIMEOUT);
 
@@ -132,10 +133,12 @@ class Pdo extends \PDO
             $version = (float)mb_substr($version, 0, 6);
             if ($version < '5.5.3') {
                 $this->exec('SET CHARACTER SET utf8;');
-                $this->exec('ALTER DATABASE CHARACTER SET utf8 COLLATE utf8_unicode_ci;');
+                if ($this->getDatabaseName())
+                    $this->exec('ALTER DATABASE CHARACTER SET utf8 COLLATE utf8_unicode_ci;');
             } else {
                 $this->exec('SET CHARACTER SET utf8mb4;');
-                $this->exec('ALTER DATABASE CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;');
+                if ($this->getDatabaseName())
+                    $this->exec('ALTER DATABASE CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;');
             }
 
             if (isset($options['timezone'])) {
@@ -214,7 +217,10 @@ class Pdo extends \PDO
      */
     public static function create($options)
     {
-        $dsn = $options['type'] . ':dbname=' . $options['name'] . ';host=' . $options['host'];
+        if (!empty($options['name']))
+            $dsn = $options['type'] . ':dbname=' . $options['name'] . ';host=' . $options['host'];
+        else
+            $dsn = $options['type'] . ':host=' . $options['host'];
         $db = new self($dsn, $options['user'], $options['pass'], $options);
         return $db;
     }
@@ -273,6 +279,20 @@ class Pdo extends \PDO
     public function getDatabaseName()
     {
         return $this->dbName;
+    }
+
+    /**
+     * @param null|string $dbName
+     * @return $this
+     * @throws \Tk\Db\Exception
+     */
+    public function setDatabase($dbName = '')
+    {
+        if ($dbName) {
+            $this->dbName = $dbName;
+            $this->query('USE ' . $dbName . ';');
+        }
+        return $this;
     }
 
     /**
