@@ -466,6 +466,7 @@ class Pdo extends \PDO
      */
     //public function tkQuery($statement, $mode =
     // PDO::ATTR_DEFAULT_FETCH_MODE, $arg3 = null, array $ctorargs = array())
+    //public function tkQuery($statement, $mode = PDO::ATTR_DEFAULT_FETCH_MODE, $arg3 = null, array $ctorargs = array())
     public function query(string $statement, ?int $mode = PDO::ATTR_DEFAULT_FETCH_MODE, mixed ...$fetchModeArgs)
     {
         $this->setLastQuery($statement);
