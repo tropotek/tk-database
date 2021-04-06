@@ -423,15 +423,33 @@ class Pdo extends \PDO
      * @param $name
      * @param $arguments
      */
-    public function __call($name, $arguments)
+//    public function __call($name, $arguments)
+//    {
+//        vd($name);
+//        // NOTE: this is to avoid the query() function inheritance issues with PHP7.4+
+//        if ($name = 'query') {
+//            vd();
+//            return call_user_func_array(array($this, 'tkQuery'), $arguments);
+//        }
+//    }
+
+
+    /**
+     * We will have to work out a way to use this in the future as the PDO::query override change with versions and is
+     * bad, alternatively we should stop inheriting th ePDO object and make it an instance variable That wew call..
+     *
+     *
+     * @param $statement
+     * @param int $mode
+     * @param null $arg3
+     * @param array $ctorargs
+     * @return mixed
+     */
+    public function tkQuery($statement, $mode = PDO::ATTR_DEFAULT_FETCH_MODE, $arg3 = null, array $ctorargs = array())
     {
-        vd($name);
-        // NOTE: this is to avoid the query() function inheritance issues with PHP7.4+
-        if ($name = 'query') {
-            vd();
-            return call_user_func_array(array($this, 'tkQuery'), $arguments);
-        }
+        return call_user_func_array(array($this, 'query'), func_get_args());
     }
+
 
     /**
      * Executes an SQL statement, returning a result set as a PDOStatement object
@@ -446,7 +464,8 @@ class Pdo extends \PDO
      * @return PDOStatement \PDO::query() returns a PDOStatement object, or FALSE on failure.
      * @throws \Tk\Db\Exception
      */
-    //public function tkQuery($statement, $mode = PDO::ATTR_DEFAULT_FETCH_MODE, $arg3 = null, array $ctorargs = array())
+    //public function tkQuery($statement, $mode =
+    // PDO::ATTR_DEFAULT_FETCH_MODE, $arg3 = null, array $ctorargs = array())
     public function query(string $statement, ?int $mode = PDO::ATTR_DEFAULT_FETCH_MODE, mixed ...$fetchModeArgs)
     {
         $this->setLastQuery($statement);
