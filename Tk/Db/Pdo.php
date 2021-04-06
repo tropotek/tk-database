@@ -418,6 +418,21 @@ class Pdo extends \PDO
         return $result;
     }
 
+
+    /**
+     * @param $name
+     * @param $arguments
+     */
+    public function __call($name, $arguments)
+    {
+        vd($name);
+        // NOTE: this is to avoid the query() function inheritance issues with PHP7.4+
+        if ($name = 'query') {
+            vd();
+            return call_user_func_array(array($this, 'tkQuery'), $arguments);
+        }
+    }
+
     /**
      * Executes an SQL statement, returning a result set as a PDOStatement object
      *
@@ -431,7 +446,8 @@ class Pdo extends \PDO
      * @return PDOStatement \PDO::query() returns a PDOStatement object, or FALSE on failure.
      * @throws \Tk\Db\Exception
      */
-    public function query($statement, $mode = PDO::ATTR_DEFAULT_FETCH_MODE, $arg3 = null, array $ctorargs = array())
+    //public function tkQuery($statement, $mode = PDO::ATTR_DEFAULT_FETCH_MODE, $arg3 = null, array $ctorargs = array())
+    public function query(string $statement, ?int $mode = PDO::ATTR_DEFAULT_FETCH_MODE, mixed ...$fetchModeArgs)
     {
         $this->setLastQuery($statement);
         $start = microtime(true);
