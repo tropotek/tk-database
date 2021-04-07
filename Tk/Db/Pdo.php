@@ -435,9 +435,12 @@ class Pdo extends \PDO
 
 
     /**
-     * We will have to work out a way to use this in the future as the PDO::query override change with versions and is
-     * bad, alternatively we should stop inheriting th ePDO object and make it an instance variable That wew call..
+     * NOTICE FOR PHP 8.0:
      *
+     * We will have to work out a way to use this in the future as the PDO::query override change with versions and is
+     * bad, alternatively we should stop inheriting the PDO object and make it an instance variable That wew call..
+     *
+     *  
      *
      * @param $statement
      * @param int $mode
