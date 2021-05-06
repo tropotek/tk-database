@@ -115,7 +115,8 @@ abstract class Model implements \Tk\Db\ModelInterface
     public function insert()
     {
         $id = self::createMapper()->insert($this);
-        $this->setId($id);  // Has to be here cause of private property
+        if (!$this->getId())
+            $this->setId($id);  // Has to be here cause of private property
         return $id;
     }
 
