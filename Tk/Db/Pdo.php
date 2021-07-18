@@ -303,6 +303,26 @@ class Pdo extends \PDO
         $this->getOnLogListener()->append($callable, $priority);
     }
 
+    protected $logEnabled = true;
+
+    /**
+     * @return bool
+     */
+    public function isLogEnabled(): bool
+    {
+        return $this->logEnabled;
+    }
+
+    /**
+     * @param bool $logEnabled
+     * @return Pdo
+     */
+    public function setLogEnabled(bool $logEnabled): Pdo
+    {
+        $this->logEnabled = $logEnabled;
+        return $this;
+    }
+
     /**
      * Adds an array entry to the log.
      *
@@ -310,12 +330,16 @@ class Pdo extends \PDO
      */
     public function addLog(array $entry)
     {
-        $this->log[] = $entry;
-        $this->getOnLogListener()->execute($entry);
+        if ($this->isLogEnabled()) {
+            $this->log[] = $entry;
+            $this->getOnLogListener()->execute($entry);
+        }
     }
 
     /**
      * Clears the log.
+     * // Damn this uses a lot of mem?????
+     * TODO: I think we need to look into removing this log as it can use a lot of unnecessary memory
      */
     public function clearLog()
     {
