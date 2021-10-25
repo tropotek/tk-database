@@ -1,6 +1,7 @@
 <?php
 namespace Tk\DataMap;
 
+use Tk\ConfigTrait;
 use Tk\Db\ModelInterface;
 
 /**
@@ -10,6 +11,7 @@ use Tk\Db\ModelInterface;
  */
 abstract class Map
 {
+    use ConfigTrait;
 
     /**
      * The storage property name, (IE: db column name)
