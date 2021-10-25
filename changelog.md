@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 3.2.42 [2021-10-25]:
+-------------------------------
+  - Merge branch '3.2' of ssh://github.com/tropotek/tk-database into 3.2
+  - Fixed sort order on pathologyId
+
+
 Ver 3.2.40 [2021-10-22]:
 -------------------------------
 
