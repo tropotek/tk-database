@@ -435,11 +435,11 @@ abstract class Mapper implements Mappable
             $alias = $this->getAlias();
             if ($alias) {
                 $alias = $alias . '.';
-                if (!preg_match('/^(ASC|DESC|FIELD\(|\'|RAND|SUBSTRING\(|IF\(|NULL|CASE)/i', $ordFieldsStr)) {
+                if (!preg_match('/^(ASC|DESC|FIELD\(|\'|RAND|CONCAT|SUBSTRING\(|IF\(|NULL|CASE)/i', $ordFieldsStr)) {
                     $ordFields = explode(',', $ordFieldsStr);
                     foreach ($ordFields as $i => $str) {
                         $str = trim($str);
-                        if (preg_match('/^(ASC|DESC|FIELD\(|\'|RAND|SUBSTRING\(|IF\(|NULL|CASE)/i', $str)) continue;
+                        if (preg_match('/^(ASC|DESC|FIELD\(|\'|RAND|CONCAT|SUBSTRING\(|IF\(|NULL|CASE)/i', $str)) continue;
                         if (strpos($str, '.') === false) {
                             $a = explode(' ', $str);
                             $str = $alias . $this->quoteParameter($a[0]);
