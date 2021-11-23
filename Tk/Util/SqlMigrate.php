@@ -337,7 +337,7 @@ class SqlMigrate
         $iterator = new \DirectoryIterator($path);
         foreach(new \RegexIterator($iterator, '/\.(php|sql)$/') as $file) {
             if (preg_match('/^(_|\.)/', $file->getBasename())) continue;
-            if ($file->basename() == 'install.sql' || $file->basename() == 'install.php') continue;
+            if ($file->getBasename() == 'install.sql' || $file->getBasename() == 'install.php') continue;
             $list[] = $file->getPathname();
         }
         return $list;
