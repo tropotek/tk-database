@@ -90,6 +90,28 @@ class SqlMigrate
      */
     public function migrateList($migrateList, $onStrWrite = null)
     {
+        vd($this->isInstall());
+        // Run the install.sql and install.php if one is found
+        if ($this->isInstall()) {
+            vd($migrateList);
+
+            foreach ($migrateList as $n => $searchPath) {
+                if (!is_dir($searchPath)) continue;
+                $dirItr = new \RecursiveDirectoryIterator($searchPath, \RecursiveIteratorIterator::CHILD_FIRST);
+                $itr = new \RecursiveIteratorIterator($dirItr);
+                $regItr = new \RegexIterator($itr, '/(install(\.sql|\.php))$/');
+                /** @var \SplFileInfo $d */
+                foreach ($regItr as $d) {
+                    vd($d->getPathname());
+                    if ($this->migrateFile($d->getPathname())) {
+                        if ($onStrWrite) call_user_func_array($onStrWrite, array($this->toRelative($d->getPathname()), $this));
+                    }
+                }
+
+            }
+
+        }
+exit();
         if (!empty($migrateList[self::MIGRATE_PREPEND])) {
             $pre = $migrateList[self::MIGRATE_PREPEND];
             if (!is_array($pre)) $pre = array($pre);
@@ -98,6 +120,7 @@ class SqlMigrate
                 $dirItr = new \RecursiveDirectoryIterator($searchPath, \RecursiveIteratorIterator::CHILD_FIRST);
                 $itr = new \RecursiveIteratorIterator($dirItr);
                 $regItr = new \RegexIterator($itr, '/(\.sql|\.php)$/');
+                /** @var \SplFileInfo $d */
                 foreach ($regItr as $d) {
                     if ($onStrWrite) call_user_func_array($onStrWrite, array('' . $d->getPath(), $this));
                     $this->migrate($d->getPath(), function ($f, $m) use ($onStrWrite) {
@@ -113,6 +136,7 @@ class SqlMigrate
             $dirItr = new \RecursiveDirectoryIterator($searchPath, \RecursiveIteratorIterator::CHILD_FIRST);
             $itr = new \RecursiveIteratorIterator($dirItr);
             $regItr = new \RegexIterator($itr, '/(\/sql\/\.)$/');
+                /** @var \SplFileInfo $d */
             foreach ($regItr as $d) {
                 if ($onStrWrite) call_user_func_array($onStrWrite, array('' . $d->getPath(), $this));
                 $this->migrate($d->getPath(), function ($f, $m) use ($onStrWrite) {
@@ -317,6 +341,7 @@ class SqlMigrate
         $iterator = new \DirectoryIterator($path);
         foreach(new \RegexIterator($iterator, '/\.(php|sql)$/') as $file) {
             if (preg_match('/^(_|\.)/', $file->getBasename())) continue;
+            if ($file->basename() == 'install.sql' || $file->basename() == 'install.php') continue;
             $list[] = $file->getPathname();
         }
         return $list;
@@ -373,6 +398,21 @@ CREATE TABLE IF NOT EXISTS $tbl (
 );
 SQL;
         $this->db->exec($sql);
+    }
+
+    /**
+     * Return true if the migration table is empty or does not exist
+     *
+     * @return bool
+     * @throws \Tk\Db\Exception
+     */
+    protected function isInstall()
+    {
+        if(!$this->db->hasTable($this->getTable())) return true;
+        $sql = sprintf('SELECT * FROM %s WHERE 1 LIMIT 1', $this->db->quoteParameter($this->getTable()));
+        $res = $this->db->query($sql);
+        if (!$res->rowCount()) return true;
+        return false;
     }
 
     /**
