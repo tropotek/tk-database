@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.4.2 [2022-04-30]:
+-------------------------------
+  - Fixed pending ChangeRequests not showing issue
+
+
 Ver 3.4.0 [2022-03-03]:
 -------------------------------
 
