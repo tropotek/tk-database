@@ -31,10 +31,10 @@ class Filter extends \Tk\Collection
 
 
     /**
-     * @param null|array $params
+     * @param null|array|Filter $params
      * @return Filter
      */
-    public static function create(?array $params)
+    public static function create($params)
     {
         if ($params instanceof Filter) return $params;
         $obj = new self();
