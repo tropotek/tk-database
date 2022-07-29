@@ -15,7 +15,6 @@ namespace Tk\Util;
  *     $minutes = 10;
  *     $from = \Tk\Date::create()->sub(new \DateInterval('PT'.$minutes.'M'));
  *     $list = $ipt->getIpSubmissions($this->getRequest()->getClientIp(), $from, null, $this->getRequest()->getTkUri()->getRelativePath());
- *     vd(count($list));
  *     if (count($list) >= $max) {
  *        // TODO: exit/redirect or whatever suits the situation
  *     }

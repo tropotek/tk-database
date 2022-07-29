@@ -109,7 +109,6 @@ class Pdo extends \PDO
     {
         $this->onLogListener = Callback::create();
         $options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
-        //vd($dsn, $username, $password, $options);
         parent::__construct($dsn, $username, $password, $options);
         $this->options = $options;
         $this->options['user'] = $username;
@@ -449,10 +448,8 @@ class Pdo extends \PDO
      */
 //    public function __call($name, $arguments)
 //    {
-//        vd($name);
 //        // NOTE: this is to avoid the query() function inheritance issues with PHP7.4+
 //        if ($name = 'query') {
-//            vd();
 //            return call_user_func_array(array($this, 'tkQuery'), $arguments);
 //        }
 //    }

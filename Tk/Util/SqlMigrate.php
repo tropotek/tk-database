@@ -100,7 +100,6 @@ class SqlMigrate
                 $regItr = new \RegexIterator($itr, '/(install(\.sql|\.php))$/');
                 /** @var \SplFileInfo $d */
                 foreach ($regItr as $d) {
-                    //vd($d->getPathname());
                     if ($this->migrateFile($d->getPathname())) {
                         if ($onStrWrite) call_user_func_array($onStrWrite, array($this->toRelative($d->getPathname()), $this));
                     }
