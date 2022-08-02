@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.4.4 [2022-08-03]:
+-------------------------------
+  - removed comments
+
+
 Ver 3.4.2 [2022-04-30]:
 -------------------------------
   - Fixed pending ChangeRequests not showing issue
