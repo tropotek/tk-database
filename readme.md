@@ -15,17 +15,17 @@ A database lib for the Tropotek tk library.
 
 ## Installation
 
-Available on Packagist ([uom/tk-database](http://packagist.org/packages/uom/tk-database))
+Available on Packagist ([ttek/tk-database](http://packagist.org/packages/ttek/tk-database))
 and installable via [Composer](http://getcomposer.org/).
 
 ```bash
-composer require uom/tk-database
+composer require ttek/tk-database
 ```
 
 Or add the following to your composer.json file:
 
 ```json
-"uom/tk-database": "~3.2.0"
+"ttek/tk-database": "~3.2.0"
 ```
 
 
