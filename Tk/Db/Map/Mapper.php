@@ -16,7 +16,7 @@ use Tk\Db\Tool;
  * If your columns conflict, then you should modify the mapper or DB accordingly
  *
  *
- * @author Michael Mifsud <info@tropotek.com>
+ * @author Michael Mifsud <http://www.tropotek.com/>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */

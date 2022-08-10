@@ -7,7 +7,7 @@ use Tk\Db\Exception;
 /**
  * PDO Database driver
  *
- * @author Tropotek <info@tropotek.com>
+ * @author Tropotek <http://www.tropotek.com/>
  * @see http://www.tropotek.com/
  * @author Patrick S Scott<lazeras@kaoses.com>
  * @see http://www.kaoses.com

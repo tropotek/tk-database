@@ -9,7 +9,7 @@ namespace Tk\Db;
  * Use this for application persistent storage of data
  * 
  *
- * @author Michael Mifsud <info@tropotek.com>
+ * @author Michael Mifsud <http://www.tropotek.com/>
  * @see http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */

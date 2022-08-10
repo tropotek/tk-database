@@ -7,7 +7,7 @@ namespace Tk\DataMap\Form;
  * Can be useful when using Serial or Json in the Db/Map that converts the
  * object or array tpo a string there
  *
- * @author Michael Mifsud <info@tropotek.com>
+ * @author Michael Mifsud <http://www.tropotek.com/>
  * @see http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */

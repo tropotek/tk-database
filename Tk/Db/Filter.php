@@ -6,7 +6,7 @@ namespace Tk\Db;
 /**
  * Use this object to enhance your Mapper filtered queries
  *
- * @author Michael Mifsud <info@tropotek.com>
+ * @author Michael Mifsud <http://www.tropotek.com/>
  * @link http://www.tropotek.com/
  * @license Copyright 2019 Michael Mifsud
  */

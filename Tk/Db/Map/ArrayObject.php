@@ -10,7 +10,7 @@ use Tk\Db\Tool;
  *
  * It automatically maps an objects data if the Model has the magic methods available
  *
- * @author Michael Mifsud <info@tropotek.com>
+ * @author Michael Mifsud <http://www.tropotek.com/>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  * @todo: Move this to the Tk::Db namespace so the FQN is Tk::Db::ArrayObject

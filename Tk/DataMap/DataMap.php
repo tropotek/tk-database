@@ -4,7 +4,7 @@ namespace Tk\DataMap;
 use Tk\Db\ModelInterface;
 
 /**
- * @author Michael Mifsud <info@tropotek.com>
+ * @author Michael Mifsud <http://www.tropotek.com/>
  * @see http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
