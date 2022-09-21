@@ -52,8 +52,6 @@ class SqlBackup
      */
     public function restore($sqlFile, $options = array())
     {
-        //  $this->db->dropAllTables(true);     // TODO: leave this up to the user
-        //  $this->db->exec(file_get_contents($sqlFile));           // Remove, no good for large backups....
         if (!is_readable($sqlFile)) {
             return;
         }
@@ -62,6 +60,17 @@ class SqlBackup
         $name = escapeshellarg($this->db->getOption('name'));
         $user = escapeshellarg($this->db->getOption('user'));
         $pass = escapeshellarg($this->db->getOption('pass'));
+
+        if (preg_match('/^(.+)\.gz$/', $sqlFile, $regs)) {
+            // Uncompress file first
+            $command = sprintf('gunzip %s', escapeshellarg($sqlFile));
+            @unlink($regs[1]);  // remove any existing unzipped files
+            exec($command, $out, $ret);
+            if ($ret != 0) {
+                throw new \Tk\Db\Exception(implode("\n", $out));
+            }
+            $sqlFile = $regs[1];
+        }
 
         $command = '';
         // TODO: create a windows valid commands ????
@@ -141,6 +150,7 @@ class SqlBackup
         if(filesize($sqlFile) <= 0) {
             throw new \Tk\Db\Exception('Size of file '.$sqlFile.' is ' . filesize($sqlFile));
         }
+
         return $sqlFile;
     }
 
