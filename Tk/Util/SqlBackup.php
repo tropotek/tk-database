@@ -61,10 +61,9 @@ class SqlBackup
         $user = escapeshellarg($this->db->getOption('user'));
         $pass = escapeshellarg($this->db->getOption('pass'));
 
+        // Uncompressed file if compressed
         if (preg_match('/^(.+)\.gz$/', $sqlFile, $regs)) {
-            // Uncompress file first
             $command = sprintf('gunzip %s', escapeshellarg($sqlFile));
-            @unlink($regs[1]);  // remove any existing unzipped files
             exec($command, $out, $ret);
             if ($ret != 0) {
                 throw new \Tk\Db\Exception(implode("\n", $out));
