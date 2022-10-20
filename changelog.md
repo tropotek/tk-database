@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.4.12 [2022-10-03]:
+-------------------------------
+  - fixed mirror command file cleanup
+
+
 Ver 3.4.10 [2022-09-21]:
 -------------------------------
   - Updated mirror command
