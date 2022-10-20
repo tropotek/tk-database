@@ -64,6 +64,9 @@ class SqlBackup
         // Uncompressed file if compressed
         if (preg_match('/^(.+)\.gz$/', $sqlFile, $regs)) {
             $command = sprintf('gunzip %s', escapeshellarg($sqlFile));
+            if (is_file($regs[1])) {
+                unlink($regs[1]);  // remove any existing unzipped files
+            }
             exec($command, $out, $ret);
             if ($ret != 0) {
                 throw new \Tk\Db\Exception(implode("\n", $out));
