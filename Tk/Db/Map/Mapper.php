@@ -671,6 +671,7 @@ abstract class Mapper implements Mappable
      */
     public function hasColumn($column)
     {
+        if (!$this->tableInfo) return false;
         return array_key_exists($column, $this->tableInfo);
     }
 

@@ -141,7 +141,7 @@ class SqlBackup
                 $v = array_shift($row);
                 $exclude[] = "--ignore-table={$this->db->getDatabaseName()}.{$v}";
             }
-            $command = sprintf('mysqldump %s --opt -h %s -u %s -p%s %s > %s', $name, $host, $user, $pass, implode(' ', $exclude), escapeshellarg($sqlFile));
+            $command = sprintf('mysqldump %s --opt -h %s -u %s -p%s %s > %s', implode(' ', $exclude), $host, $user, $pass, $name, escapeshellarg($sqlFile));
 
         } else if ('pgsql' == $this->db->getDriver()) {
             $command = sprintf('export PGPASSWORD=%s && pg_dump --inserts -O -h %s -U %s %s > %s', $pass, $host, $user, $name, escapeshellarg($sqlFile));
