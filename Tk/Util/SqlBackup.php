@@ -121,28 +121,27 @@ class SqlBackup
         $name = escapeshellarg($this->db->getOption('name'));
         $user = escapeshellarg($this->db->getOption('user'));
         $pass = escapeshellarg($this->db->getOption('pass'));
-        $exclude = array();
+        $exclude = [];
         if (!empty($options['exclude'])) {
             $exclude = $options['exclude'];
-            if (!is_array($exclude)) $exclude = array($exclude);
+            if (!is_array($exclude)) $exclude = [$exclude];
         }
 
         $command = '';
         // TODO: create a windows valid commands ????
         if ('mysql' == $this->db->getDriver()) {
-            $exclude = [];
             foreach ($exclude as $exTable) {
                 $exclude[] = "--ignore-table={$this->db->getDatabaseName()}.{$exTable}";
             }
 
-            // Ignore views
+            // Ignore views because mysqldump fuck`s the output file
             $sql = "SHOW FULL TABLES IN `{$this->db->getDatabaseName()}` WHERE TABLE_TYPE LIKE 'VIEW';";
             $result = $this->db->query($sql);
-            $views = [];
-            while ($row = $result->fetch()) {
-                $exclude[] = "--ignore-table={$this->db->getDatabaseName()}.{$row[0]}";
+            while ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
+                $v = array_shift($row);
+                $exclude[] = "--ignore-table={$this->db->getDatabaseName()}.{$v}";
             }
-            $command = sprintf('mysqldump %s --opt -h %s -u %s -p%s %s > %s', implode(' ', $exclude), $host, $user, $pass, $name, escapeshellarg($sqlFile));
+            $command = sprintf('mysqldump %s --opt -h %s -u %s -p%s %s > %s', $name, $host, $user, $pass, implode(' ', $exclude), escapeshellarg($sqlFile));
 
         } else if ('pgsql' == $this->db->getDriver()) {
             $command = sprintf('export PGPASSWORD=%s && pg_dump --inserts -O -h %s -U %s %s > %s', $pass, $host, $user, $name, escapeshellarg($sqlFile));
@@ -154,8 +153,6 @@ class SqlBackup
         }
 
         exec($command, $out, $ret);
-
-
 
         if ($ret != 0) {
             throw new \Tk\Db\Exception(implode("\n", $out));

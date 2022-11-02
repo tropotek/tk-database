@@ -140,16 +140,6 @@ class SqlMigrate
             }
         }
 
-        // Run all static scripts views.sql, triggers.sql, procedures.sql, functions.sql
-        $staticFiles = ['views.sql', 'triggers.sql', 'procedures.sql', 'functions.sql'];
-        $dump = new SqlBackup($this->db);
-        foreach ($staticFiles as $file) {
-            $path = "$this->sitePath/config/sql/".$file;
-            if (is_file($path)) {
-                call_user_func_array($onStrWrite, array('  . Updating ' . $file));
-                $dump->restore($path);
-            }
-        }
     }
 
     /**
