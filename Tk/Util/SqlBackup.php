@@ -166,66 +166,6 @@ class SqlBackup
     }
 
     /**
-     * str_replace_with_sed($search, $replace, $file_in, $file_out=null)
-     *
-     * Search for the fixed string `$search` inside the file `$file_in`
-     * and replace it with `$replace`. The replace occurs in-place unless
-     * `$file_out` is defined: in that case the resulting file is written
-     * into `$file_out`
-     *
-     * Return: sed return status (0 means success, any other integer failure)
-     */
-    function strReplace($search, $replace, $file_in, $file_out=null)
-    {
-        $cmd_opts = '';
-        if (! $file_out)
-        {
-            // replace inline in $file_in
-            $cmd_opts .= ' -i';
-        }
-
-        // We will use Basic Regular Expressions (BRE). This means that in the
-        // search pattern we must escape
-        // $.*[\]^
-        //
-        // The replacement string must have these characters escaped
-        // \ &
-        //
-        // In both cases we must escape the separator character too ( usually / )
-        //
-        // Since we run the command trough the shell we We must escape the string
-        // too (yai!). We're delimiting the string with single quotes (') and we'll
-        // escape them with '\'' (close string, write a single quote, reopen string)
-
-        // Replace all the backslashes as first thing. If we do it in the following
-        // batch replace we would end up with bogus results
-        $search_pattern = str_replace('\\', '\\\\', $search);
-
-        $search_pattern = str_replace(array('$', '.', '*', '[', ']', '^'),
-            array('\\$', '\\.', '\\*', '\\[', '\\]', '\\^'),
-            $search_pattern);
-
-        $replace_string = str_replace(array('\\', '&'),
-            array('\\\\', '\\&'),
-            $replace);
-
-        $output_suffix = $file_out ? " > '$file_out' " : '';
-        $cmd = sprintf("sed ".$cmd_opts." -e 's/%s/%s/g' \"%s\" ".$output_suffix,
-            str_replace('/','\\/', # escape the regexp separator
-                str_replace("'", "'\''", $search_pattern) // sh string escape
-            ),
-            str_replace('/','\\/', # escape the regexp separator
-                str_replace("'", "'\''", $replace_string) // sh string escape
-            ),
-            $file_in
-        );
-
-        passthru($cmd, $status);
-
-        return $status;
-    }
-
-    /**
      * @param array $options
      * @return string   Return the sql dump generated
      * @throws Exception
@@ -246,11 +186,19 @@ class SqlBackup
         $command = '';
         // TODO: create a windows valid commands ????
         if ('mysql' == $this->db->getDriver()) {
-            $excludeStr = '';
+            $excludeParam = [];
             foreach ($exclude as $exTable) {
-                $excludeStr .= '--ignore-table=' . $this->db->getDatabaseName() . '.' . $exTable . ' ';
+                $excludeParam[] = "--ignore-table={$this->db->getDatabaseName()}.{$exTable}";
             }
-            $command = sprintf('mysqldump %s --opt -h %s -u %s -p%s %s', $excludeStr, $host, $user, $pass, $name);
+
+            // Ignore views because mysqldump fuck`s the output file
+            $sql = "SHOW FULL TABLES IN `{$this->db->getDatabaseName()}` WHERE TABLE_TYPE LIKE 'VIEW';";
+            $result = $this->db->query($sql);
+            while ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
+                $v = array_shift($row);
+                $excludeParam[] = "--ignore-table={$this->db->getDatabaseName()}.{$v}";
+            }
+            $command = sprintf('mysqldump %s --opt -h %s -u %s -p%s %s', implode(' ', $excludeParam), $host, $user, $pass, $name);
         } else if ('pgsql' == $this->db->getDriver()) {
             $command = sprintf('export PGPASSWORD=%s && pg_dump --inserts -O -h %s -U %s %s', $pass, $host, $user, $name);
         }
