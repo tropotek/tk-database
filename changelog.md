@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.4.14 [2022-11-03]:
+-------------------------------
+  - Merge branch '3.4' of ssh://github.com/tropotek/tk-database into 3.4
+
+
 Ver 3.4.12 [2022-10-03]:
 -------------------------------
   - fixed mirror command file cleanup
