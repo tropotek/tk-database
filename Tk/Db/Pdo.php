@@ -539,6 +539,7 @@ class Pdo extends \PDO
      * @see http://www.php.net/manual/en/pdo.commit.php
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function commit()
     {
         if (!--$this->transactionCounter)
