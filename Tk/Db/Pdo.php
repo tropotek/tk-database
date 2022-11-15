@@ -523,6 +523,7 @@ class Pdo extends \PDO
      * @see http://www.php.net/manual/en/pdo.begintransaction.php
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     function beginTransaction()
     {
         if (!$this->transactionCounter++)
@@ -553,6 +554,7 @@ class Pdo extends \PDO
      * @see http://www.php.net/manual/en/pdo.rollback.php
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function rollback()
     {
         if ($this->transactionCounter >= 0) {
