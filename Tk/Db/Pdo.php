@@ -414,6 +414,7 @@ class Pdo extends \PDO
      * @return PDOStatement|int
      * @throws \Tk\Db\Exception
      */
+    #[\ReturnTypeWillChange]
     public function exec($statement)
     {
         $this->setLastQuery($statement);
