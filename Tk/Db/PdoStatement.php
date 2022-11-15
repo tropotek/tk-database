@@ -45,6 +45,7 @@ class PdoStatement extends \PDOStatement
      * @return bool $boolean (Hum, shouldn't it return this so we can query the results???)
      * @throws Exception
      */
+    #[\ReturnTypeWillChange]
     public function execute($args = null)
     {
         $start  = microtime(true);
