@@ -9,8 +9,6 @@ use Tk\Db\Exception;
  *
  * @author Tropotek <http://www.tropotek.com/>
  * @see http://www.tropotek.com/
- * @author Patrick S Scott<lazeras@kaoses.com>
- * @see http://www.kaoses.com
  * @license Copyright 2007 Tropotek
  */
 class Pdo extends \PDO
