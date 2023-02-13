@@ -328,6 +328,9 @@ class Pdo extends \PDO
     public function addLog(array $entry)
     {
         if ($this->isLogEnabled()) {
+            if (count($this->getLog()) > 10) {
+                $this->clearLog();
+            }
             $this->log[] = $entry;
             $this->getOnLogListener()->execute($entry);
         }
@@ -340,7 +343,7 @@ class Pdo extends \PDO
      */
     public function clearLog()
     {
-        $this->log = array();
+        $this->log = [];
     }
 
     /**
