@@ -34,7 +34,7 @@ class Filter extends \Tk\Collection
      * @param null|array|Filter $params
      * @return Filter
      */
-    public static function create($params)
+    public static function create($params = []): Filter
     {
         if ($params instanceof Filter) return $params;
         $obj = new self();
@@ -46,7 +46,7 @@ class Filter extends \Tk\Collection
      * @param string $default
      * @return string
      */
-    public function getSelect($default = ''): string
+    public function getSelect(string $default = ''): string
     {
         if ($this->select)
             $default = $this->select;
