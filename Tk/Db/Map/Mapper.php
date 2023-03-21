@@ -173,6 +173,8 @@ abstract class Mapper implements Mappable
             // TODO: Look into using the following so we no longer have to manage the created and modified fields:
             // TODO:   `modified` DATETIME ON UPDATE CURRENT_TIMESTAMP,
             // TODO:   `created` DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+            // TODO: Deprecate this code, use the Timestamp trait object to manage modified and created. (or implement the above)
             if (self::$AUTO_DATES) {
                 if ($col == 'modified' || $col == 'created') {
                     //$value = date('Y-m-d H:i:s.u');
