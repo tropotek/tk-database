@@ -848,7 +848,6 @@ class Pdo
         return $row[$pKey]+1;
     }
 
-
     public function lastInsertId(?string $name = null)
     {
         return $this->getPdo()->lastInsertId($name);
