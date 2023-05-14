@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.4.34 [2023-05-14]:
+-------------------------------
+  - Added DKIM signing to institution settings
+
+
 Ver 3.4.32 [2023-05-08]:
 -------------------------------
   - Fix PDO method
