@@ -471,19 +471,22 @@ abstract class Mapper implements Mappable
 
 
     /**
+     * This method will find objects that have been marked deleted
      *
      * @param int $id
+     * @param bool $hideDeleted
      * @return null|Model|\Tk\Db\ModelInterface
      * @throws \Exception
      */
-    public function find($id)
+    public function find($id, bool $hideDeleted = true)
     {
-
-//        $b = self::$HIDE_DELETED;
-//        self::$HIDE_DELETED = false;
+        $b = self::$HIDE_DELETED;
+        if ($hideDeleted) {
+            self::$HIDE_DELETED = false;
+        }
         $where = sprintf('%s = %s', $this->quoteParameter($this->getPrimaryKey()), (int)$id);
         $list = $this->select($where, null);
-        //self::$HIDE_DELETED = $b;
+        self::$HIDE_DELETED = $b;
 
         return $list->current();
     }
@@ -495,9 +498,15 @@ abstract class Mapper implements Mappable
      * @return ArrayObject
      * @throws \Exception
      */
-    public function findAll($tool = null)
+    public function findAll($tool = null, bool $hideDeleted = true)
     {
-        return $this->select('', $tool);
+        $b = self::$HIDE_DELETED;
+        if ($hideDeleted) {
+            self::$HIDE_DELETED = false;
+        }
+        $list = $this->select('', $tool);
+        self::$HIDE_DELETED = $b;
+        return $list;
     }
 
     /**
