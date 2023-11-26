@@ -478,14 +478,12 @@ abstract class Mapper implements Mappable
      * @return null|Model|\Tk\Db\ModelInterface
      * @throws \Exception
      */
-    public function find($id, bool $hideDeleted = true)
+    public function find($id, bool $hideDeleted = false)
     {
         $b = self::$HIDE_DELETED;
-        if ($hideDeleted) {
-            self::$HIDE_DELETED = false;
-        }
+        self::$HIDE_DELETED = $hideDeleted;
         $where = sprintf('%s = %s', $this->quoteParameter($this->getPrimaryKey()), (int)$id);
-        $list = $this->select($where, null);
+        $list = $this->select($where, Tool::create('', 1));
         self::$HIDE_DELETED = $b;
 
         return $list->current();
@@ -501,9 +499,7 @@ abstract class Mapper implements Mappable
     public function findAll($tool = null, bool $hideDeleted = true)
     {
         $b = self::$HIDE_DELETED;
-        if ($hideDeleted) {
-            self::$HIDE_DELETED = false;
-        }
+        self::$HIDE_DELETED = $hideDeleted;
         $list = $this->select('', $tool);
         self::$HIDE_DELETED = $b;
         return $list;
