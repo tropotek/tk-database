@@ -234,6 +234,7 @@ class ArrayObject implements \Iterator, \Countable
      *
      * @return int
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->rows);
@@ -247,6 +248,7 @@ class ArrayObject implements \Iterator, \Countable
      *
      * @return $this
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->idx = 0;
@@ -258,6 +260,7 @@ class ArrayObject implements \Iterator, \Countable
      *
      * @return \Tk\Db\Map\Model
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->get($this->idx);
@@ -268,6 +271,7 @@ class ArrayObject implements \Iterator, \Countable
      *
      * @return \Tk\Db\Map\Model
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         $this->idx++;
@@ -279,6 +283,7 @@ class ArrayObject implements \Iterator, \Countable
      *
      * @return int
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->idx;
@@ -289,6 +294,7 @@ class ArrayObject implements \Iterator, \Countable
      *
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         if ($this->current()) {
