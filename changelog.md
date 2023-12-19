@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.4.36 [2023-12-19]:
+-------------------------------
+  - added new student DB table and fields
+
+
 Ver 3.4.34 [2023-05-14]:
 -------------------------------
   - Added DKIM signing to institution settings
